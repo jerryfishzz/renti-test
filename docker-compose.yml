@@ -1,66 +1,16 @@
 version: '3.8'
 
-x-postgres-env: &postgres-env
-  POSTGRES_DB: postgres
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres
-  POSTGRES_HOST: postgres
-  POSTGRES_PORT: 5432
-
-x-api-common: &api-common
-  # build:
-  #   context: .
-  #   dockerfile: Dockerfile
-  #   args:
-  #     - NODE_ENV=development
-  # env_file:
-  #   - .env
-  environment:
-    # NODE_ENV: development
-    <<: *postgres-env
-  # volumes:
-  #   - .:/usr/src/renti-test/server/
-  #   - node_modules:/usr/src/renti-test/server/node_modules
-
 services:
   db:
     image: postgres:15-alpine
     environment:
-      <<: *postgres-env
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     ports:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-  migrations:
-    build: ./server
-    # <<: *api-common
-    ports:
-      - 6666:6666
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
-    depends_on:
-      - db
-    command:
-      - npm
-      - run
-      - dev
-
-  # server:
-  #   build: ./server
-  #   ports:
-  #     - '3001:3001'
-  #   environment:
-  #     DATABASE_URL: postgres://postgres:postgres@db:5432/fullstack_db
-  #   depends_on:
-  #     - db
-
-  # client:
-  #   build: ./client
-  #   ports:
-  #     - '80:80'
-  #   depends_on:
-  #     - server
 
 volumes:
   pgdata:
