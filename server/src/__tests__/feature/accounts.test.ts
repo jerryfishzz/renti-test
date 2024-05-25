@@ -1,7 +1,7 @@
 import request from 'supertest'
 
 import Account from './models/account'
-import app from '../../lib/express'
+import app from 'lib/express'
 
 test(`log in`, async () => {
   // const account = new Account()
