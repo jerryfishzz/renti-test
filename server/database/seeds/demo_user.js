@@ -1,10 +1,11 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
+const bcrypt = require('bcrypt')
+
+const { SALT_ROUNDS } = process.env
+
 exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex('accounts').del()
 
-  await knex('accounts').insert([{ username: 'renti', password: 'renti' }])
+  const hashed = await bcrypt.hash('renti', Number(SALT_ROUNDS))
+  await knex('accounts').insert([{ username: 'renti', password: hashed }])
 }
