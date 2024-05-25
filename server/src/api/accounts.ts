@@ -1,15 +1,11 @@
-import { Router } from 'express'
-
 import { db } from 'lib/db'
-import { guard } from 'lib/guard'
+import { guard, router } from './utils'
 import validate from 'lib/validate'
 import {
   GetByIdRequest,
   GetByIdResponse,
   getById,
 } from 'schemas/account.schema'
-
-export const router = Router({ mergeParams: true })
 
 router.get(
   '/accounts/:id',
