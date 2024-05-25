@@ -3,4 +3,5 @@ export type Account = {
   username: string
   password: string
   created_at: Date
+  updated_at: Date
 }
