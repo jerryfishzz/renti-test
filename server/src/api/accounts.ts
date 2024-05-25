@@ -1,21 +1,30 @@
 import { Router } from 'express'
 
 import { db } from 'lib/db'
+import { guard } from 'lib/guard'
 import validate from 'lib/validate'
-import { getById } from 'schemas/account.schema'
+import {
+  GetByIdRequest,
+  GetByIdResponse,
+  getById,
+} from 'schemas/account.schema'
 
-const router = Router({ mergeParams: true })
+export const router = Router({ mergeParams: true })
 
-router.get('/accounts/:id', validate(getById), async (req, res) => {
-  try {
-    const account = await db('accounts').where('id', req.params.id).first()
-    console.log('account')
-    console.log(account)
-    return res.sendStatus(200)
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-})
+router.get(
+  '/accounts/:id',
+  validate(getById),
+  guard(async (req: GetByIdRequest, res: GetByIdResponse) => {
+    try {
+      const account = await db('accounts').where('id', req.params.id).first()
+      if (!account) return res.sendStatus(404)
 
-export { router }
+      return res.send(account)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  })
+)
+
+export { router as accounts }
