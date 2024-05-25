@@ -19,6 +19,7 @@
   "_moduleAliases": {
     "api": "dist/api",
     "lib": "dist/lib",
+    "schemas": "dist/schemas",
     "types": "dist/types"
   },
   "dependencies": {

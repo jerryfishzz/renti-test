@@ -12,6 +12,7 @@
     "paths": {
       "api/*": ["api/*"],
       "lib/*": ["lib/*"],
+      "schemas/*": ["schemas/*"],
       "types/*": ["types/*"],
       "*": ["*", "node_modules/*"]
     }
