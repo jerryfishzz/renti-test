@@ -26,6 +26,9 @@ export const query = async (
 ): Promise<any> => {
   // count_coverage(path, options)
 
+  console.log('test here')
+  console.log(`${API_SCHEME}://${API_DOMAIN}${path}`)
+
   const response = await fetch(`${API_SCHEME}://${API_DOMAIN}${path}`, {
     ...options,
     headers: {
