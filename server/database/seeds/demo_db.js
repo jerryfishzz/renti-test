@@ -2,14 +2,61 @@ const bcrypt = require('bcrypt')
 
 const { SALT_ROUNDS } = process.env
 
+const accounts = [
+  {
+    id: 1,
+    username: 'booklover1',
+    email: 'booklover1@example.com',
+    password: 'hashedpassword1',
+    profile: {
+      name: 'Alice Johnson',
+      reading_preferences: ['Fiction', 'Mystery', 'Science Fiction'],
+    },
+  },
+  {
+    id: 2,
+    username: 'literaturefan',
+    email: 'literaturefan@example.com',
+    password: 'hashedpassword2',
+    profile: {
+      name: 'Bob Smith',
+      reading_preferences: ['Non-Fiction', 'Biography', 'History'],
+    },
+  },
+  {
+    id: 3,
+    username: 'novelenthusiast',
+    email: 'novelenthusiast@example.com',
+    password: 'hashedpassword3',
+    profile: {
+      name: 'Charlie Brown',
+      reading_preferences: ['Fantasy', 'Adventure', 'Young Adult'],
+    },
+  },
+]
+
 exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex('accounts').del()
   await knex('genres').del()
 
   // Accounts
-  const hashed = await bcrypt.hash('renti', Number(SALT_ROUNDS))
-  await knex('accounts').insert([{ username: 'renti', password: hashed }])
+  for (const account of accounts) {
+    const {
+      username,
+      password,
+      email,
+      profile: { name, reading_preferences },
+    } = account
+    const hashed = await bcrypt.hash(password, Number(SALT_ROUNDS))
+    await knex('accounts').insert({
+      username,
+      password: hashed,
+      email,
+      name,
+      reading_preferences: JSON.stringify(reading_preferences),
+    })
+  }
 
   // Genres
   await knex('genres').insert([
