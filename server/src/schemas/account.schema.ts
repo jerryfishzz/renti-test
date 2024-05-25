@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { Request, Response } from 'express'
 
-import { Account, accountSchema } from 'types/db'
+import { Account, account } from 'types/db'
 
 // const queryParams = z.object({
 //   id: z.number().optional(),
@@ -22,7 +22,7 @@ export type GetByIdRequest = Request<z.infer<typeof getById>['params']>
 export type GetByIdResponse = Response<Account>
 
 export const getByUsername = z.object({
-  params: accountSchema.pick({ username: true }),
+  params: account.pick({ username: true }),
 })
 export type GetByUsernameRequest = Request<
   z.infer<typeof getByUsername>['params']

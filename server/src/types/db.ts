@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const accountSchema = z.object({
+export const account = z.object({
   id: z.number(),
   username: z.string(),
   password: z.string(),
@@ -10,7 +10,7 @@ export const accountSchema = z.object({
   name: z.string().optional(),
   reading_preferences: z.array(z.string()),
 })
-export type Account = z.infer<typeof accountSchema>
+export type Account = z.infer<typeof account>
 
 export type Genre = {
   id: number
