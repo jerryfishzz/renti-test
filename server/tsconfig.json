@@ -11,6 +11,7 @@
     "baseUrl": "./src",
     "paths": {
       "api/*": ["api/*"],
+      "lib/*": ["lib/*"],
       "types/*": ["types/*"],
       "*": ["*", "node_modules/*"]
     }

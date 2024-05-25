@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { db } from '../db'
+import { db } from 'lib/db'
 
 const router = Router({ mergeParams: true })
 
