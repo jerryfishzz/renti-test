@@ -2,10 +2,12 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "start": "node dist/index.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register' src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "migration:make": "knex migrate:make",
     "migration:run": "knex migrate:latest",
     "seed:make": "knex seed:make",
@@ -14,6 +16,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "_moduleAliases": {
+    "api": "dist/api",
+    "types": "dist/types"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
