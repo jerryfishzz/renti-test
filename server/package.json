@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register' src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migration:make": "knex migrate:make",
     "migration:run": "knex migrate:latest",
@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "knex": "^3.1.0",
+    "module-alias": "^2.2.3",
     "pg": "^8.11.5"
   },
   "devDependencies": {
@@ -28,6 +29,7 @@
     "@types/pg": "^8.11.6",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   }
 }
