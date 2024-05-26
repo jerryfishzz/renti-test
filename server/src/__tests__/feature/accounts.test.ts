@@ -16,7 +16,7 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
-  // await test_acct.delete()
+  await test_acct.delete()
   test_acct = null as unknown as Account
 })
 
@@ -24,7 +24,7 @@ afterAll(async () => {
   await db.destroy()
 })
 
-test(`log in`, async () => {
+test(`log in succeeds`, async () => {
   const { username, password } = test_acct.json
   const response = await agent.post('/login').send({ username, password })
   expect(response.status).toBe(200)
