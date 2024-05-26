@@ -1,3 +1,5 @@
+import TestAgent from 'supertest/lib/agent'
+
 const API_SCHEME = process.env.API_SCHEME || 'http'
 const API_DOMAIN = process.env.API_DOMAIN || 'localhost:6666'
 
@@ -19,51 +21,48 @@ let access_token: any = null
 //   access_token = json.access_token
 // }
 
+type Options = {
+  method?: 'get' | 'post' | 'patch' | 'delete'
+  body?: Record<string, any>
+}
 export const query = async (
   path: string,
-  options: RequestInit = {},
+  options: Options = {},
+  agent: TestAgent,
   failed = false
-): Promise<any> => {
-  // count_coverage(path, options)
+) => {
+  const { method, body } = options
 
-  console.log('test here')
-  console.log(`${API_SCHEME}://${API_DOMAIN}${path}`)
+  try {
+    const response =
+      method === 'post'
+        ? await agent.post(path).send(body)
+        : method === 'delete'
+        ? await agent.delete(path)
+        : await agent.get(path)
 
-  const response = await fetch(`${API_SCHEME}://${API_DOMAIN}${path}`, {
-    ...options,
-    headers: {
-      ...(options?.headers || []),
-      'Content-Type': 'application/json',
-      // Authorization: `Bearer ${access_token}`,
-    },
-  })
+    if (response.status == 422) throw Error(await response.text)
 
-  // debug(
-  //   `${
-  //     options?.method || 'GET'
-  //   } ${API_SCHEME}://${API_DOMAIN}/${API_BASE_PATH}${path}`
-  // )
+    // if (response.status == 403 && !failed) {
+    //   // await login()
+    //   return query(path, options, true)
+    // }
 
-  if (response.status == 422) throw Error(await response.text())
-  if (response.status == 403 && !failed) {
-    // await login()
-    return query(path, options, true)
+    return response
+  } catch (error) {
+    console.error(error)
+    throw error
   }
-  if (!response.ok) {
-    const error = await response.text()
-    console.error(response.status, error)
-    throw Error(error)
-  }
-  return response
 }
 
 export const jsonQuery = async (
   path: string,
-  options: RequestInit = {},
+  options: Options = {},
+  agent: TestAgent,
   failed = false
 ): Promise<any> => {
-  const response = await query(path, options, failed)
-  return await response.json()
+  const response = await query(path, options, agent, failed)
+  return response.body
 }
 
 export const config = {
