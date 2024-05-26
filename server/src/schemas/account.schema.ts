@@ -50,12 +50,12 @@ export type CreateAccountResponse = Response<Account>
 // export type DeleteRequest = Request<z.infer<typeof Delete>['params']>
 // export type DeleteResponse = Response
 
-// export const Login = z.object({
-//   body: Account.pick({ username: true, password: true }),
-// })
-// export type LoginRequest = Request<
-//   unknown,
-//   unknown,
-//   z.infer<typeof Login>['body']
-// >
-// export type LoginResponse = Response<{ access_token: string }>
+export const login = z.object({
+  body: account.pick({ username: true, password: true }),
+})
+export type LoginRequest = Request<
+  unknown,
+  unknown,
+  z.infer<typeof login>['body']
+>
+export type LoginResponse = Response
