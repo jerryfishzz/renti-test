@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 const { SALT_ROUNDS } = process.env
 
@@ -48,7 +48,8 @@ exports.seed = async function (knex) {
       email,
       profile: { name, reading_preferences },
     } = account
-    const hashed = await bcrypt.hash(password, Number(SALT_ROUNDS))
+    const salt = bcrypt.genSaltSync(SALT_ROUNDS)
+    const hashed = bcrypt.hashSync(password, salt)
     await knex('accounts').insert({
       username,
       password: hashed,

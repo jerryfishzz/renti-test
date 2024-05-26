@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+const bcrypt = require('bcryptjs')
 
 import { db } from 'lib/db'
 import { guard, router } from './utils'
@@ -49,10 +49,9 @@ router.post(
   '/accounts',
   validate(createAccount),
   guard(async (req: CreateAccountRequest, res: CreateAccountResponse) => {
-    const hashed = await bcrypt.hash(
-      req.body.password,
-      Number(process.env.SALT_ROUNDS)
-    )
+    const salt = bcrypt.genSaltSync(process.env.SALT_ROUNDS)
+    const hashed = bcrypt.hashSync(req.body.password, salt)
+
     const [account] = await db('accounts')
       .insert({ ...req.body, password: hashed })
       .returning('*')
