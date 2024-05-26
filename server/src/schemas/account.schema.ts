@@ -50,6 +50,12 @@ export type CreateAccountResponse = Response<Account>
 // export type DeleteRequest = Request<z.infer<typeof Delete>['params']>
 // export type DeleteResponse = Response
 
+export const deleteById = z.object({
+  params: z.object({ id: z.coerce.number() }),
+})
+export type DeleteByIdRequest = Request<z.infer<typeof deleteById>['params']>
+export type DeleteByIdResponse = Response
+
 export const login = z.object({
   body: account.pick({ username: true, password: true }),
 })

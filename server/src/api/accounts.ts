@@ -6,6 +6,8 @@ import validate from 'lib/validate'
 import {
   CreateAccountRequest,
   CreateAccountResponse,
+  DeleteByIdRequest,
+  DeleteByIdResponse,
   GetByIdRequest,
   GetByIdResponse,
   GetByUsernameRequest,
@@ -13,6 +15,7 @@ import {
   LoginRequest,
   LoginResponse,
   createAccount,
+  deleteById,
   getById,
   getByUsername,
   login,
@@ -94,6 +97,17 @@ router.post(
     //   exp: addHours(new Date(), 1).getTime() / 1000
     // })
     // return res.send({ access_token })
+  })
+)
+
+router.delete(
+  '/accounts/:id',
+  validate(deleteById),
+  guard(async (req: DeleteByIdRequest, res: DeleteByIdResponse) => {
+    const rowsDeleted = await db('accounts').where('id', req.params.id).del()
+    if (!rowsDeleted) return res.sendStatus(404)
+
+    return res.sendStatus(200)
   })
 )
 
