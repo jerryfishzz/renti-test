@@ -1,14 +1,31 @@
 import request from 'supertest'
 
-import Account from './models/account'
 import app from 'lib/express'
+import { accounts } from 'api/accounts'
+import Account from './models/account'
+import { db } from 'lib/db'
+
+app.use(accounts)
+const agent = request(app)
+
+let test_acct: Account = null as unknown as Account
+
+beforeEach(async () => {
+  test_acct = new Account(agent)
+  await test_acct.create()
+})
+
+afterEach(async () => {
+  // await test_acct.delete()
+  test_acct = null as unknown as Account
+})
+
+afterAll(async () => {
+  await db.destroy()
+})
 
 test(`log in`, async () => {
-  // const account = new Account()
-  // let json = await account.readByUsername('booklover1')
-  // expect(json.userName).toEqual('booklover1')
-
-  const response = await request(app).get('/')
+  const { username, password } = test_acct.json
+  const response = await agent.post('/login').send({ username, password })
   expect(response.status).toBe(200)
-  expect(response.text).toEqual('Hello, World!')
 })
