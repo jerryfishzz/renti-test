@@ -29,15 +29,15 @@ export type GetByUsernameRequest = Request<
 >
 export type GetByUsernameResponse = Response<Account>
 
-// export const Post = z.object({
-//   body: Account.omit({ id: true, created_at: true, updated_at: true }),
-// })
-// export type PostRequest = Request<
-//   unknown,
-//   unknown,
-//   z.infer<typeof Post>['body']
-// >
-// export type PostResponse = Response<Partial<DBAccount>>
+export const createAccount = z.object({
+  body: account.omit({ id: true, created_at: true, updated_at: true }),
+})
+export type CreateAccountRequest = Request<
+  unknown,
+  unknown,
+  z.infer<typeof createAccount>['body']
+>
+export type CreateAccountResponse = Response<Account>
 
 // export const Patch = Get.merge(z.object({ body: Account.partial() }))
 // export type PatchRequest = Request<

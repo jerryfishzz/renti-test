@@ -1,11 +1,16 @@
+import bcrypt from 'bcrypt'
+
 import { db } from 'lib/db'
 import { guard, router } from './utils'
 import validate from 'lib/validate'
 import {
+  CreateAccountRequest,
+  CreateAccountResponse,
   GetByIdRequest,
   GetByIdResponse,
   GetByUsernameRequest,
   GetByUsernameResponse,
+  createAccount,
   getById,
   getByUsername,
 } from 'schemas/account.schema'
@@ -41,6 +46,21 @@ router.get(
       console.error(error)
       throw error
     }
+  })
+)
+
+router.post(
+  '/accounts',
+  validate(createAccount),
+  guard(async (req: CreateAccountRequest, res: CreateAccountResponse) => {
+    const hashed = await bcrypt.hash(
+      req.body.password,
+      Number(process.env.SALT_ROUNDS)
+    )
+    const [account] = await db('accounts')
+      .insert({ ...req.body, password: hashed })
+      .returning('*')
+    return res.send(account)
   })
 )
 
