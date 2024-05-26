@@ -4,7 +4,7 @@ import knex from 'knex'
 const config = {
   client: 'pg',
   connection: {
-    host: 'localhost',
+    host: process.env.DB_HOST || 'localhost',
     user: 'postgres',
     password: 'postgres',
     port: 5432,
