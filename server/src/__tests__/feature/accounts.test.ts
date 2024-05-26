@@ -29,3 +29,11 @@ test(`log in succeeds`, async () => {
   const response = await agent.post('/login').send({ username, password })
   expect(response.status).toBe(200)
 })
+
+test(`log in fails`, async () => {
+  const { username } = test_acct.json
+  const response = await agent
+    .post('/login')
+    .send({ username, password: 'this password is wrong' })
+  expect(response.status).toBe(403)
+})
