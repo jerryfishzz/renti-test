@@ -70,7 +70,7 @@ services:
       - 6666:6666
     volumes:
       - ./server:/usr/src/renti
-      - ./server/node_modules:/usr/src/renti/node_modules
+      - node_modules_server:/usr/src/renti/node_modules
     depends_on:
       db:
         condition: service_healthy
@@ -93,3 +93,4 @@ services:
 
 volumes:
   db-data:
+  node_modules_server:
