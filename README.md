@@ -8,15 +8,20 @@
 
 ```yml
 # docker-compose.yml
-env_file:
-  - .env
-environment:
-  DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
-  DB_HOST: db
-  DB_PORT: 5432
-  DB_USER: postgres
-  DB_PASSWORD: postgres
-  DB_NAME: postgres
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
 ```
 
 ```sh
