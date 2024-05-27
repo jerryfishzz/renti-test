@@ -1,8 +1,18 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react'
+import logo from './logo.svg'
+import './App.css'
 
 function App() {
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/accounts/1')
+      console.log(response)
+      const data = await response.json()
+      console.log(data)
+    }
+    fetchData()
+  }, [])
+
   return (
     <div className="App">
       <header className="App-header">
@@ -20,7 +30,7 @@ function App() {
         </a>
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
