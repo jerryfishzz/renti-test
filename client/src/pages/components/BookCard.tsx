@@ -21,7 +21,7 @@ export default function BookCard({ book }: BookCardProps) {
   }, [])
 
   return (
-    <Grid item xs={12} sm={6} md={4} key={book.id} sx={{ display: 'flex' }}>
+    <Grid item xs={12} sm={6} md={3} key={book.id} sx={{ display: 'flex' }}>
       <Card
         sx={{
           display: 'flex',
