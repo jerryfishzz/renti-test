@@ -1,6 +1,7 @@
 import { RouterProvider } from 'react-router-dom'
 
 import router from './router'
+import Library from './pages/Library'
 
 function App() {
   // useEffect(() => {
@@ -13,11 +14,7 @@ function App() {
   //   fetchData()
   // }, [])
 
-  return (
-    <div>
-      <RouterProvider router={router} />
-    </div>
-  )
+  return <RouterProvider router={router} />
 }
 
 export default App
