@@ -1,20 +1,20 @@
-import type {} from '@mui/material/themeCssVarsAugmentation';
-import { ThemeOptions, alpha } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
-import { PaletteMode } from '@mui/material';
+import type {} from '@mui/material/themeCssVarsAugmentation'
+import { ThemeOptions, alpha } from '@mui/material/styles'
+import { red } from '@mui/material/colors'
+import { PaletteMode } from '@mui/material'
 
 declare module '@mui/material/styles/createPalette' {
   interface ColorRange {
-    50: string;
-    100: string;
-    200: string;
-    300: string;
-    400: string;
-    500: string;
-    600: string;
-    700: string;
-    800: string;
-    900: string;
+    50: string
+    100: string
+    200: string
+    300: string
+    400: string
+    500: string
+    600: string
+    700: string
+    800: string
+    900: string
   }
 
   interface PaletteColor extends ColorRange {}
@@ -31,7 +31,7 @@ export const brand = {
   700: '#033363',
   800: '#02294F',
   900: '#021F3B',
-};
+}
 
 export const secondary = {
   50: '#F9F0FF',
@@ -44,7 +44,7 @@ export const secondary = {
   700: '#3B0363',
   800: '#2F024F',
   900: '#23023B',
-};
+}
 
 export const gray = {
   50: '#FBFCFE',
@@ -57,7 +57,7 @@ export const gray = {
   700: '#364049',
   800: '#131B20',
   900: '#090E10',
-};
+}
 
 export const green = {
   50: '#F6FEF6',
@@ -70,7 +70,7 @@ export const green = {
   700: '#0A470A',
   800: '#042F04',
   900: '#021D02',
-};
+}
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -106,7 +106,11 @@ const getDesignTokens = (mode: PaletteMode) => ({
       light: red[50],
       main: red[500],
       dark: red[700],
-      ...(mode === 'dark' && { light: '#D32F2F', main: '#D32F2F', dark: '#B22A2A' }),
+      ...(mode === 'dark' && {
+        light: '#D32F2F',
+        main: '#D32F2F',
+        dark: '#B22A2A',
+      }),
     },
     success: {
       light: green[300],
@@ -149,7 +153,6 @@ const getDesignTokens = (mode: PaletteMode) => ({
     },
   },
   typography: {
-    fontFamily: ['"Inter", "sans-serif"'].join(','),
     h1: {
       fontSize: 60,
       fontWeight: 600,
@@ -196,7 +199,7 @@ const getDesignTokens = (mode: PaletteMode) => ({
       fontSize: 12,
     },
   },
-});
+})
 
 export default function getLPTheme(mode: PaletteMode): ThemeOptions {
   return {
@@ -384,7 +387,7 @@ export default function getLPTheme(mode: PaletteMode): ThemeOptions {
               ...(ownerState.variant === 'outlined' && {
                 background: `linear-gradient(to bottom, ${gray[900]}, ${alpha(
                   gray[800],
-                  0.5,
+                  0.5
                 )})`,
                 '&:hover': {
                   borderColor: brand[700],
@@ -629,5 +632,5 @@ export default function getLPTheme(mode: PaletteMode): ThemeOptions {
         },
       },
     },
-  };
+  }
 }
