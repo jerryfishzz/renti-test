@@ -33,11 +33,11 @@ export default function BookCard({ book }: BookCardProps) {
   const containerRef = useRef<HTMLDivElement>(null!)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
   const [status, setStatus] = useState<StatusState>('wishlist')
-
   const [isAdded, setIsAdded] = useState(false)
 
   const handleClick = () => {
     setIsAdded(cur => !cur)
+    isAdded && setStatus('wishlist')
   }
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function BookCard({ book }: BookCardProps) {
           image={book.cover_image}
           title="green iguana"
         />
-        <StatusMenu status={status} setStatus={setStatus} />
+        {isAdded && <StatusMenu status={status} setStatus={setStatus} />}
         <CardContent>
           <Typography component="h2" variant="h4" color="text.primary">
             {book.title}
@@ -78,14 +78,16 @@ export default function BookCard({ book }: BookCardProps) {
             size="small"
             color="info"
           />
-          <Typography
-            sx={{ mt: 1 }}
-            variant="overline"
-            color={theme.palette[readingStatus[status].color].main}
-            display="block"
-          >
-            {readingStatus[status].text}
-          </Typography>
+          {isAdded && (
+            <Typography
+              sx={{ mt: 1 }}
+              variant="overline"
+              color={theme.palette[readingStatus[status].color].main}
+              display="block"
+            >
+              {readingStatus[status].text}
+            </Typography>
+          )}
         </CardContent>
         <CardActions>
           {!isAdded ? (
