@@ -1,9 +1,13 @@
+import { useEffect, useRef, useState } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import CardMedia from '@mui/material/CardMedia'
-import { useEffect, useRef, useState } from 'react'
+import CardActions from '@mui/material/CardActions'
+import Button from '@mui/material/Button'
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
 
 import { Book } from 'pages/types'
 
@@ -14,6 +18,12 @@ type BookCardProps = {
 export default function BookCard({ book }: BookCardProps) {
   const containerRef = useRef<HTMLDivElement>(null!)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
+
+  const [isAdded, setIsAdded] = useState(false)
+
+  const handleClick = () => {
+    setIsAdded(cur => !cur)
+  }
 
   useEffect(() => {
     const { width, height } = containerRef.current.getBoundingClientRect()
@@ -45,6 +55,27 @@ export default function BookCard({ book }: BookCardProps) {
             {book.author}
           </Typography>
         </CardContent>
+        <CardActions>
+          {!isAdded ? (
+            <Button
+              fullWidth
+              variant="contained"
+              startIcon={<BookmarkAddIcon />}
+              onClick={handleClick}
+            >
+              Add to List
+            </Button>
+          ) : (
+            <Button
+              fullWidth
+              color="secondary"
+              onClick={handleClick}
+              startIcon={<BookmarkRemoveIcon />}
+            >
+              Remove from List
+            </Button>
+          )}
+        </CardActions>
       </Card>
     </Grid>
   )
