@@ -10,6 +10,7 @@ import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
 
 import { Book } from 'pages/types'
+import { Chip } from '@mui/material'
 
 type BookCardProps = {
   book: Book
@@ -54,6 +55,13 @@ export default function BookCard({ book }: BookCardProps) {
           <Typography variant="body1" color="text.secondary">
             {book.author}
           </Typography>
+          <Chip
+            sx={{ mt: 1 }}
+            label={book.genre}
+            variant="outlined"
+            size="small"
+            color="info"
+          />
         </CardContent>
         <CardActions>
           {!isAdded ? (
