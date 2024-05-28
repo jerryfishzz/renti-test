@@ -17,6 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
+      "contexts/*": ["contexts/*"],
       "lib/*": ["lib/*"],
       "pages/*": ["pages/*"],
       "*": ["*", "node_modules/*"]
