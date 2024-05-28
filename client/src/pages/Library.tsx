@@ -17,6 +17,7 @@ import Hero from './components/Hero'
 // import FAQ from './components/FAQ'
 // import Footer from './components/Footer'
 import getLPTheme from './getLPTheme'
+import BookList from './components/BookList'
 
 // interface ToggleCustomThemeProps {
 //   showCustomTheme: Boolean
@@ -78,7 +79,8 @@ export default function Library() {
   return (
     <>
       {/* <AppAppBar mode={mode} toggleColorMode={toggleColorMode} /> */}
-      <Hero />
+      {/* <Hero /> */}
+      <BookList />
       {/* <Box sx={{ bgcolor: 'background.default' }}>
         <LogoCollection />
         <Features />
