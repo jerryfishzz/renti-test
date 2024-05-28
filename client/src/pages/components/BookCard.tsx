@@ -5,7 +5,13 @@ import Grid from '@mui/material/Grid'
 import CardMedia from '@mui/material/CardMedia'
 import { useEffect, useRef, useState } from 'react'
 
-export default function BookCard({ book }: any) {
+import { Book } from 'pages/types'
+
+type BookCardProps = {
+  book: Book
+}
+
+export default function BookCard({ book }: BookCardProps) {
   const containerRef = useRef<HTMLDivElement>(null!)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
 

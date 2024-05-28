@@ -4,6 +4,8 @@ import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/system'
 import BookCard from './BookCard'
 
+import { Book } from 'pages/types'
+
 const userTestimonials = [
   {
     avatar: <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />,
@@ -72,7 +74,7 @@ const logoStyle = {
   opacity: 0.3,
 }
 
-const bookList = [
+const bookList: Book[] = [
   {
     id: 1,
     title: 'The Great Gatsby',
