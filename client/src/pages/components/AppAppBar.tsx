@@ -1,48 +1,48 @@
-import * as React from 'react';
-import { PaletteMode } from '@mui/material';
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import MenuItem from '@mui/material/MenuItem';
-import Drawer from '@mui/material/Drawer';
-import MenuIcon from '@mui/icons-material/Menu';
-import ToggleColorMode from './ToggleColorMode';
+import * as React from 'react'
+import { PaletteMode } from '@mui/material'
+import Box from '@mui/material/Box'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import MenuItem from '@mui/material/MenuItem'
+import Drawer from '@mui/material/Drawer'
+import MenuIcon from '@mui/icons-material/Menu'
+import ToggleColorMode from './ToggleColorMode'
 
 const logoStyle = {
   width: '140px',
   height: 'auto',
   cursor: 'pointer',
-};
+}
 
 interface AppAppBarProps {
-  mode: PaletteMode;
-  toggleColorMode: () => void;
+  mode: PaletteMode
+  toggleColorMode: () => void
 }
 
 function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false)
 
   const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
+    setOpen(newOpen)
+  }
 
   const scrollToSection = (sectionId: string) => {
-    const sectionElement = document.getElementById(sectionId);
-    const offset = 128;
+    const sectionElement = document.getElementById(sectionId)
+    const offset = 128
     if (sectionElement) {
-      const targetScroll = sectionElement.offsetTop - offset;
-      sectionElement.scrollIntoView({ behavior: 'smooth' });
+      const targetScroll = sectionElement.offsetTop - offset
+      sectionElement.scrollIntoView({ behavior: 'smooth' })
       window.scrollTo({
         top: targetScroll,
         behavior: 'smooth',
-      });
-      setOpen(false);
+      })
+      setOpen(false)
     }
-  };
+  }
 
   return (
     <div>
@@ -58,7 +58,7 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
         <Container maxWidth="lg">
           <Toolbar
             variant="regular"
-            sx={(theme) => ({
+            sx={theme => ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -193,7 +193,10 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       flexGrow: 1,
                     }}
                   >
-                    <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+                    <ToggleColorMode
+                      mode={mode}
+                      toggleColorMode={toggleColorMode}
+                    />
                   </Box>
                   <MenuItem onClick={() => scrollToSection('features')}>
                     Features
@@ -207,7 +210,9 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                   <MenuItem onClick={() => scrollToSection('pricing')}>
                     Pricing
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
+                  <MenuItem onClick={() => scrollToSection('faq')}>
+                    FAQ
+                  </MenuItem>
                   <Divider />
                   <MenuItem>
                     <Button
@@ -240,7 +245,7 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
         </Container>
       </AppBar>
     </div>
-  );
+  )
 }
 
-export default AppAppBar;
+export default AppAppBar
