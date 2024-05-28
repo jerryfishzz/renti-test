@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from 'react'
+import { useState, MouseEvent, Dispatch, SetStateAction } from 'react'
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -6,22 +6,16 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { Fab, ListItemIcon, ListItemText } from '@mui/material'
 import { Check } from '@mui/icons-material'
 
-type StatusValue = {
-  text: string
-  color: 'success' | 'error' | 'warning'
-}
-const readingStatus: Record<string, StatusValue> = {
-  read: { text: 'Read', color: 'success' },
-  reading: { text: 'Currently reading', color: 'warning' },
-  want: { text: 'Want to read', color: 'error' },
-}
-type ReadingStatus = keyof typeof readingStatus
+import { StatusState, readingStatus } from './BookCard'
 
-export default function StatusMenu() {
+type StatusMenuProps = {
+  status: StatusState
+  setStatus: Dispatch<SetStateAction<StatusState>>
+}
+export default function StatusMenu({ status, setStatus }: StatusMenuProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
-  const [status, setStatus] = useState<ReadingStatus>('want')
   const [selectedIndex, setSelectedIndex] = useState(2)
 
   const handleFabClick = (event: MouseEvent<HTMLElement>) => {
@@ -31,7 +25,7 @@ export default function StatusMenu() {
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLElement>,
     index: number,
-    status: ReadingStatus
+    status: StatusState
   ) => {
     setSelectedIndex(index)
     setStatus(status)
@@ -63,7 +57,7 @@ export default function StatusMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {Object.keys(readingStatus).map((s, index) => (
+        {(Object.keys(readingStatus) as StatusState[]).map((s, index) => (
           <MenuItem
             onClick={e => handleMenuItemClick(e, index, s)}
             key={index}

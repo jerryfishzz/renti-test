@@ -9,17 +9,30 @@ import Button from '@mui/material/Button'
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
 import { Book } from 'pages/types'
-import { Chip } from '@mui/material'
+import { Chip, useTheme } from '@mui/material'
 
 import StatusMenu from './StatusMenu'
+
+type StatusValue = {
+  text: string
+  color: 'success' | 'error' | 'warning'
+}
+export const readingStatus: Record<StatusState, StatusValue> = {
+  completed: { text: 'Read', color: 'success' },
+  reading: { text: 'Currently reading', color: 'warning' },
+  wishlist: { text: 'Want to read', color: 'error' },
+}
 
 type BookCardProps = {
   book: Book
 }
+export type StatusState = 'reading' | 'completed' | 'wishlist'
 
 export default function BookCard({ book }: BookCardProps) {
+  const theme = useTheme()
   const containerRef = useRef<HTMLDivElement>(null!)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
+  const [status, setStatus] = useState<StatusState>('wishlist')
 
   const [isAdded, setIsAdded] = useState(false)
 
@@ -50,7 +63,7 @@ export default function BookCard({ book }: BookCardProps) {
           image={book.cover_image}
           title="green iguana"
         />
-        <StatusMenu />
+        <StatusMenu status={status} setStatus={setStatus} />
         <CardContent>
           <Typography component="h2" variant="h4" color="text.primary">
             {book.title}
@@ -65,6 +78,14 @@ export default function BookCard({ book }: BookCardProps) {
             size="small"
             color="info"
           />
+          <Typography
+            sx={{ mt: 1 }}
+            variant="overline"
+            color={theme.palette[readingStatus[status].color].main}
+            display="block"
+          >
+            {readingStatus[status].text}
+          </Typography>
         </CardContent>
         <CardActions>
           {!isAdded ? (
