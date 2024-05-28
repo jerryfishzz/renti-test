@@ -8,9 +8,10 @@ import CardActions from '@mui/material/CardActions'
 import Button from '@mui/material/Button'
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
-
 import { Book } from 'pages/types'
 import { Chip } from '@mui/material'
+
+import StatusMenu from './StatusMenu'
 
 type BookCardProps = {
   book: Book
@@ -40,6 +41,7 @@ export default function BookCard({ book }: BookCardProps) {
           justifyContent: 'space-between',
           flexGrow: 1,
           p: 1,
+          position: 'relative',
         }}
       >
         <CardMedia
@@ -48,6 +50,7 @@ export default function BookCard({ book }: BookCardProps) {
           image={book.cover_image}
           title="green iguana"
         />
+        <StatusMenu />
         <CardContent>
           <Typography component="h2" variant="h4" color="text.primary">
             {book.title}
