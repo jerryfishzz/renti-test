@@ -190,7 +190,7 @@ export default function BookList() {
     >
       <Grid container spacing={2}>
         {bookList.map(book => (
-          <BookCard book={book} />
+          <BookCard book={book} key={book.id} />
         ))}
       </Grid>
     </Container>
