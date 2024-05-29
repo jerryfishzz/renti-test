@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   CssBaseline,
   PaletteMode,
@@ -18,15 +18,15 @@ function App() {
   const toggleColorMode = () => {
     setMode(prev => (prev === 'dark' ? 'light' : 'dark'))
   }
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await fetch('/accounts/1')
-  //     console.log(response)
-  //     const data = await response.json()
-  //     console.log(data)
-  //   }
-  //   fetchData()
-  // }, [])
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/accounts/1')
+      console.log(response)
+      const data = await response.json()
+      console.log(data)
+    }
+    fetchData()
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
