@@ -15,12 +15,14 @@ function App() {
   const [mode, setMode] = useState<PaletteMode>('light')
   const theme = createTheme({ palette: { mode } })
 
+  console.log(process.env.NODE_ENV)
+
   const toggleColorMode = () => {
     setMode(prev => (prev === 'dark' ? 'light' : 'dark'))
   }
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/accounts/1')
+      const response = await fetch('http://localhost:3001/accounts/1')
       console.log(response)
       const data = await response.json()
       console.log(data)
