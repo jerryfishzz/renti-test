@@ -15,3 +15,7 @@ dist/
 
 # System files
 .DS_Store
+
+# jwt
+*.key
+*.key.pub
