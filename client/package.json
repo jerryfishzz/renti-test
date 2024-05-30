@@ -46,7 +46,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:6666",
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@eslint/js": "^9.3.0",
