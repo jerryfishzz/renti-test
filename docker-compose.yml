@@ -67,7 +67,7 @@ services:
       DB_PASSWORD: postgres
       DB_NAME: postgres
     ports:
-      - 6666:6666
+      - 3001:3001
     volumes:
       - ./server:/usr/src/renti
       - node_modules_server:/usr/src/renti/node_modules
@@ -80,17 +80,27 @@ services:
         condition: service_completed_successfully
     command: npm run dev
 
-  # client:
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./client:/usr/src/renti
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - server
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - ./client:/usr/src/renti
+      - node_modules_client:/usr/src/renti/node_modules
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+      server:
+        condition: service_completed_successfully
+    command: npm start
 
 volumes:
   db-data:
   node_modules_server:
+  node_modules_client:

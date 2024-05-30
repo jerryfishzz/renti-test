@@ -1,7 +1,7 @@
 import TestAgent from 'supertest/lib/agent'
 
 const API_SCHEME = process.env.API_SCHEME || 'http'
-const API_DOMAIN = process.env.API_DOMAIN || 'localhost:6666'
+const API_DOMAIN = process.env.API_DOMAIN || 'localhost:3001'
 
 let access_token: any = null
 
