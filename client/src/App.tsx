@@ -10,6 +10,7 @@ import {
 import router from './router'
 import { ModeProvider } from 'contexts/mode'
 import AppAppBar from 'pages/components/AppAppBar'
+import { query } from 'lib/query'
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light')
@@ -22,7 +23,7 @@ function App() {
   }
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('http://localhost:3001/accounts/1')
+      const response = await query('/accounts/1')
       console.log(response)
       const data = await response.json()
       console.log(data)
