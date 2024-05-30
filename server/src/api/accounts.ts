@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs')
 
+import { sign } from 'lib/jwt'
+import { addHours } from 'date-fns'
+
 import { db } from 'lib/db'
 import { guard, router } from './utils'
 import validate from 'lib/validate'
@@ -77,15 +80,13 @@ router.post(
     )
     if (!checkPassword) return res.sendStatus(403)
 
-    return res.sendStatus(200)
-    // const role = account.username == 'Paysauce' ? 'admin' : 'api'
-    // const access_token = sign({
-    //   id: account.id,
-    //   role,
-    //   iat: new Date().getTime() / 1000,
-    //   exp: addHours(new Date(), 1).getTime() / 1000
-    // })
-    // return res.send({ access_token })
+    const access_token = sign({
+      id: account.id,
+      isAuthenticated: true,
+      iat: new Date().getTime() / 1000,
+      exp: addHours(new Date(), 1).getTime() / 1000,
+    })
+    return res.send({ access_token })
   })
 )
 
