@@ -18,9 +18,6 @@ function App() {
 
   console.log(process.env.NODE_ENV)
 
-  const toggleColorMode = () => {
-    setMode(prev => (prev === 'dark' ? 'light' : 'dark'))
-  }
   useEffect(() => {
     const fetchData = async () => {
       const response = await query('/accounts/1')
@@ -34,8 +31,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <ModeProvider value={[mode, setMode]}>
-        <AppAppBar mode={mode} toggleColorMode={toggleColorMode} />
+      <ModeProvider value={{ mode, setMode }}>
+        <AppAppBar />
         <RouterProvider router={router} />
       </ModeProvider>
     </ThemeProvider>
