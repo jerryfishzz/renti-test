@@ -3,9 +3,9 @@ export {}
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      API_PORT: string
-      API_DOMAIN: string
-      API_SCHEME: string
+      REACT_APP_API_PORT: string
+      REACT_APP_API_DOMAIN: string
+      REACT_APP_API_SCHEME: string
     }
   }
 }
