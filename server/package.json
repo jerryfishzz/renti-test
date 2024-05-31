@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "dev": "nodemon",
     "test": "jest",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "migration:make": "knex migrate:make --knexfile ./database/knexfile.js",
     "migration:run": "knex migrate:latest --knexfile ./database/knexfile.js",
     "seed:make": "knex seed:make --knexfile ./database/knexfile.js",
