@@ -1,25 +1,23 @@
 import TestAgent from 'supertest/lib/agent'
+import Test from 'supertest/lib/test'
 
-const API_SCHEME = process.env.API_SCHEME || 'http'
-const API_DOMAIN = process.env.API_DOMAIN || 'localhost:3001'
+const { API_USER, API_PASS } = process.env
 
-let access_token: any = null
+let access_token: string = ''
 
-// const login = async () => {
-//   const auth_request = await fetch(`${API_SCHEME}://${API_DOMAIN}/${API_BASE_PATH}/login`, {
-//     method: 'post',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ username: API_USER, password: API_PASS })
-//   })
-//   if (auth_request.status == 403) {
-//     console.error(auth_request.text())
-//     throw Error('Failed to login')
-//   }
-//   const json: any = await auth_request.json()
-//   access_token = json.access_token
-// }
+const login = async (agent: TestAgent) => {
+  const auth_request = await agent
+    .post('/login')
+    .send({ username: API_USER, password: API_PASS })
+
+  if (auth_request.status == 403) {
+    console.error(auth_request.text)
+    throw Error('Failed to login')
+  }
+
+  const json = await auth_request.body
+  access_token = json.access_token
+}
 
 type Options = {
   method?: 'get' | 'post' | 'patch' | 'delete'
@@ -30,23 +28,30 @@ export const query = async (
   options: Options = {},
   agent: TestAgent,
   failed = false
-) => {
+): Promise<any> => {
   const { method, body } = options
+
+  const agentWithAuthHeader = (test: Test) => {
+    return test
+      .set('API-Key', 'foobar')
+      .set('Authorization', `Bearer ${access_token}`)
+      .set('Accept', 'application/json')
+  }
 
   try {
     const response =
       method === 'post'
-        ? await agent.post(path).send(body)
+        ? await agentWithAuthHeader(agent.post(path)).send(body)
         : method === 'delete'
-        ? await agent.delete(path)
-        : await agent.get(path)
+        ? await agentWithAuthHeader(agent.delete(path))
+        : await agentWithAuthHeader(agent.get(path))
 
     if (response.status == 422) throw Error(await response.text)
 
-    // if (response.status == 403 && !failed) {
-    //   // await login()
-    //   return query(path, options, true)
-    // }
+    if (response.status == 403 && !failed) {
+      await login(agent)
+      return query(path, options, agent, true)
+    }
 
     return response
   } catch (error) {
