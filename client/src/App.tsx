@@ -9,7 +9,7 @@ import {
 import { ModeProvider } from 'contexts/mode'
 import AppAppBar from 'pages/components/AppAppBar'
 import { query } from 'lib/query'
-import RouterWrapper from 'RouterWrapper'
+import RouterWrapper from 'pages/components/RouterWrapper'
 import { AuthProvider } from 'contexts/auth'
 
 function App() {
