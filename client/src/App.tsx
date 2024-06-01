@@ -1,4 +1,3 @@
-import { RouterProvider } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
   CssBaseline,
@@ -7,10 +6,10 @@ import {
   createTheme,
 } from '@mui/material'
 
-import router from './router'
 import { ModeProvider } from 'contexts/mode'
 import AppAppBar from 'pages/components/AppAppBar'
 import { query } from 'lib/query'
+import RouterWrapper from 'RouterWrapper'
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light')
@@ -33,7 +32,7 @@ function App() {
       <CssBaseline />
       <ModeProvider value={{ mode, setMode }}>
         <AppAppBar />
-        <RouterProvider router={router} />
+        <RouterWrapper />
       </ModeProvider>
     </ThemeProvider>
   )
