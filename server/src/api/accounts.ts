@@ -1,9 +1,8 @@
-const bcrypt = require('bcryptjs')
-
-import { sign } from 'lib/jwt'
 import { addHours } from 'date-fns'
+import bcrypt from 'bcryptjs'
 
 import { db } from 'lib/db'
+import { auth, sign } from 'lib/jwt'
 import { guard, router } from './utils'
 import validate from 'lib/validate'
 import {
@@ -26,6 +25,7 @@ import {
 
 router.get(
   '/accounts/:id',
+  auth(),
   validate(getById),
   guard(async (req: GetByIdRequest, res: GetByIdResponse) => {
     const account = await db('accounts').where('id', req.params.id).first()
@@ -37,6 +37,7 @@ router.get(
 
 router.get(
   '/accounts/username/:username',
+  auth(),
   validate(getByUsername),
   guard(async (req: GetByUsernameRequest, res: GetByUsernameResponse) => {
     const account = await db('accounts')
@@ -50,9 +51,10 @@ router.get(
 
 router.post(
   '/accounts',
+  auth(),
   validate(createAccount),
   guard(async (req: CreateAccountRequest, res: CreateAccountResponse) => {
-    const salt = bcrypt.genSaltSync(process.env.SALT_ROUNDS)
+    const salt = bcrypt.genSaltSync(Number(process.env.SALT_ROUNDS))
     const hashed = bcrypt.hashSync(req.body.password, salt)
 
     const [account] = await db('accounts')
