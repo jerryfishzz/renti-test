@@ -15,7 +15,8 @@
       "schemas/*": ["schemas/*"],
       "types/*": ["types/*"],
       "*": ["*", "node_modules/*"]
-    }
+    },
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src/**/*"]
 }
