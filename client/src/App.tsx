@@ -10,6 +10,7 @@ import { ModeProvider } from 'contexts/mode'
 import AppAppBar from 'pages/components/AppAppBar'
 import { query } from 'lib/query'
 import RouterWrapper from 'RouterWrapper'
+import { AuthProvider } from 'contexts/auth'
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light')
@@ -31,8 +32,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ModeProvider value={{ mode, setMode }}>
-        <AppAppBar />
-        <RouterWrapper />
+        <AuthProvider>
+          <AppAppBar />
+          <RouterWrapper />
+        </AuthProvider>
       </ModeProvider>
     </ThemeProvider>
   )
