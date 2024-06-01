@@ -48,7 +48,7 @@ exports.seed = async function (knex) {
       email,
       profile: { name, reading_preferences },
     } = account
-    const salt = bcrypt.genSaltSync(SALT_ROUNDS)
+    const salt = bcrypt.genSaltSync(Number(SALT_ROUNDS))
     const hashed = bcrypt.hashSync(password, salt)
     await knex('accounts').insert({
       username,
