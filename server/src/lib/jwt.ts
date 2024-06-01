@@ -34,21 +34,20 @@ export const verify = (access_token: string) => {
   return jwt.verify(access_token, jwtMaterial)
 }
 
-export const auth =
-  (roles: string[]) => (req: Request, res: Response, next: NextFunction) => {
-    // Token from query or header
-    const access_token = req.header('Authorization') || null
-    if (!access_token) return res.sendStatus(403)
+export const auth = () => (req: Request, res: Response, next: NextFunction) => {
+  // Token from query or header
+  const access_token = req.header('Authorization') || null
+  if (!access_token) return res.sendStatus(403)
 
-    try {
-      // Token valid and correct role
-      const sub = verify(access_token.replace('Bearer ', ''))
-      if (typeof sub === 'string' || !sub.isAuthenticated)
-        return res.sendStatus(403)
-
-      next()
-    } catch (e) {
-      console.error(e)
+  try {
+    // Token valid and correct role
+    const sub = verify(access_token.replace('Bearer ', ''))
+    if (typeof sub === 'string' || !sub.isAuthenticated)
       return res.sendStatus(403)
-    }
+
+    next()
+  } catch (e) {
+    console.error(e)
+    return res.sendStatus(403)
   }
+}
