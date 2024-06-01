@@ -8,16 +8,18 @@ import { db } from 'lib/db'
 app.use(accounts)
 const agent = request(app)
 
+const { API_USER, API_PASS } = process.env
+
 let test_acct: Account = null as unknown as Account
 
 beforeEach(async () => {
-  test_acct = new Account(agent)
-  await test_acct.create()
+  // test_acct = new Account(agent)
+  // await test_acct.create()
 })
 
 afterEach(async () => {
-  await test_acct.delete()
-  test_acct = null as unknown as Account
+  // await test_acct.delete()
+  // test_acct = null as unknown as Account
 })
 
 afterAll(async () => {
@@ -25,15 +27,15 @@ afterAll(async () => {
 })
 
 test(`log in succeeds`, async () => {
-  const { username, password } = test_acct.json
-  const response = await agent.post('/login').send({ username, password })
+  const response = await agent
+    .post('/login')
+    .send({ username: API_USER, password: API_PASS })
   expect(response.status).toBe(200)
 })
 
 test(`log in fails`, async () => {
-  const { username } = test_acct.json
   const response = await agent
     .post('/login')
-    .send({ username, password: 'this password is wrong' })
+    .send({ username: API_USER, password: 'this password is wrong' })
   expect(response.status).toBe(403)
 })
