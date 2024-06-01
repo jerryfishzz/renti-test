@@ -8,7 +8,7 @@ export const account = z.object({
   updated_at: z.date(),
   email: z.string(),
   name: z.string().nullable(),
-  reading_preferences: z.string(), // JSON stringified array of strings
+  reading_preferences: z.array(z.string()),
 })
 export type Account = z.infer<typeof account>
 
