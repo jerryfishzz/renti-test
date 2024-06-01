@@ -10,7 +10,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Drawer from '@mui/material/Drawer'
 import MenuIcon from '@mui/icons-material/Menu'
 import ToggleColorMode from './ToggleColorMode'
+
 import { useMode } from 'contexts/mode'
+import { useAuth } from 'contexts/auth'
 
 const logoStyle = {
   width: '140px',
@@ -21,6 +23,8 @@ const logoStyle = {
 function AppAppBar() {
   const { mode, toggleColorMode } = useMode()
   const [open, setOpen] = React.useState(false)
+
+  const { logout } = useAuth()
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen)
@@ -155,9 +159,7 @@ function AppAppBar() {
                 color="primary"
                 variant="contained"
                 size="small"
-                component="a"
-                href="/material-ui/getting-started/templates/sign-up/"
-                target="_blank"
+                onClick={logout}
               >
                 Sign up
               </Button>
@@ -214,10 +216,8 @@ function AppAppBar() {
                     <Button
                       color="primary"
                       variant="contained"
-                      component="a"
-                      href="/material-ui/getting-started/templates/sign-up/"
-                      target="_blank"
                       sx={{ width: '100%' }}
+                      onClick={logout}
                     >
                       Sign up
                     </Button>

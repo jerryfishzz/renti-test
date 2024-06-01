@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
+import { useAuth } from 'contexts/auth'
+
 function Copyright(props: any) {
   return (
     <Typography
@@ -35,6 +37,8 @@ function Copyright(props: any) {
 const defaultTheme = createTheme()
 
 export default function SignIn() {
+  const { login } = useAuth()
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -42,6 +46,7 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     })
+    login(data.get('email') as string, data.get('password') as string)
   }
 
   return (
