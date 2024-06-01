@@ -18,6 +18,7 @@
     "baseUrl": "./src",
     "paths": {
       "contexts/*": ["contexts/*"],
+      "hooks/*": ["hooks/*"],
       "lib/*": ["lib/*"],
       "pages/*": ["pages/*"],
       "*": ["*", "node_modules/*"]

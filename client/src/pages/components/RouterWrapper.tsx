@@ -1,6 +1,6 @@
 import { RouterProvider } from 'react-router-dom'
 
-import { useRouter } from 'router'
+import { useRouter } from 'hooks/router'
 
 export default function RouterWrapper() {
   const router = useRouter()
