@@ -6,34 +6,22 @@ const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'
 
 type AuthContext = {
-  user: UserState
+  user: string
   login: (email: string, password: string) => void
   logout: () => void
 }
 const [useAuth, authContext] = createContext<AuthContext>()
 
-type UserState = { email: string } | null
 type TimeoutIdState = NodeJS.Timeout | null
 type AuthProviderProps = {
   children: ReactNode
 }
 function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserState>(null)
+  const [user, setUser] = useState<string>('')
   const [timeoutId, setTimeoutId] = useState<TimeoutIdState>(null)
 
-  const login = (email: string, password: string) => {
-    if (email === 'user@example.com' && password === 'password') {
-      const user = { email }
-      setUser(user)
-      localStorage.setItem(USER_LOGIN, JSON.stringify(user))
-      startAutoLogoutTimer()
-    } else {
-      throw new Error('Invalid email or password')
-    }
-  }
-
   const logout = useCallback(() => {
-    setUser(null)
+    setUser('')
     localStorage.removeItem(USER_LOGIN)
     if (timeoutId) {
       clearTimeout(timeoutId)
@@ -51,13 +39,28 @@ function AuthProvider({ children }: AuthProviderProps) {
     setTimeoutId(id)
   }, [logout, timeoutId])
 
+  const login = useCallback(
+    (email: string, password: string) => {
+      if (email === 'user@example.com' && password === 'password') {
+        const user = { email }
+        setUser(JSON.stringify(user))
+        localStorage.setItem(USER_LOGIN, JSON.stringify(user))
+        startAutoLogoutTimer()
+      } else {
+        throw new Error('Invalid email or password')
+      }
+    },
+    [startAutoLogoutTimer],
+  )
+
+  // Use local storage if there is a user stored
   useEffect(() => {
     const storedUser = localStorage.getItem(USER_LOGIN)
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    if (storedUser !== null && storedUser !== user) {
+      setUser(storedUser)
       startAutoLogoutTimer()
     }
-  }, [logout, startAutoLogoutTimer, timeoutId])
+  }, [startAutoLogoutTimer, user])
 
   return (
     <authContext.Provider value={{ user, login, logout }}>
