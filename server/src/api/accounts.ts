@@ -85,15 +85,17 @@ router.post(
     const { id, username, name, email, reading_preferences } = account
     const access_token = sign({
       id,
-      username,
-      name,
-      email,
-      reading_preferences,
       isAuthenticated: true,
       iat: new Date().getTime() / 1000,
       exp: addHours(new Date(), 1).getTime() / 1000,
     })
-    return res.send({ access_token })
+    return res.send({
+      access_token,
+      username,
+      name,
+      email,
+      reading_preferences,
+    })
   })
 )
 
