@@ -82,8 +82,13 @@ router.post(
     )
     if (!checkPassword) return res.sendStatus(403)
 
+    const { id, username, name, email, reading_preferences } = account
     const access_token = sign({
-      id: account.id,
+      id,
+      username,
+      name,
+      email,
+      reading_preferences,
       isAuthenticated: true,
       iat: new Date().getTime() / 1000,
       exp: addHours(new Date(), 1).getTime() / 1000,

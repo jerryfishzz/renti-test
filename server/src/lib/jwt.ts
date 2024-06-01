@@ -20,6 +20,10 @@ function getJwtMaterial() {
 
 type Payload = {
   id: number
+  username: string
+  name: string | null
+  email: string
+  reading_preferences: string
   isAuthenticated: boolean
   iat: number
   exp: number
