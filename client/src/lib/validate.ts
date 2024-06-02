@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { fromZodError } from 'zod-validation-error'
 
-export function validate(schema: z.Schema, data: unknown) {
+export function validate<T>(schema: z.Schema<T>, data: unknown) {
   try {
     const result = schema.safeParse(data)
     if (!result.success) throw result.error
