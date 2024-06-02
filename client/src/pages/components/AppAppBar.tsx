@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Drawer from '@mui/material/Drawer'
 import MenuIcon from '@mui/icons-material/Menu'
 import ToggleColorMode from './ToggleColorMode'
+import PersonIcon from '@mui/icons-material/Person'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 import { useMode } from 'contexts/mode'
@@ -49,6 +50,8 @@ function AppAppBar() {
   const toggleDrawerDesktop = (newOpen: boolean) => () => {
     setOpenDesktop(newOpen)
   }
+
+  if (!user) return null
 
   // const scrollToSection = (sectionId: string) => {
   //   const sectionElement = document.getElementById(sectionId)
@@ -184,44 +187,43 @@ function AppAppBar() {
                   <Box
                     sx={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'end',
+                      justifyContent: 'space-between',
                       flexGrow: 1,
+                      mb: 3,
                     }}
                   >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Avatar
+                        name={user.name ?? ''}
+                        style={{ marginLeft: 16 }}
+                      />
+                      <Typography variant="subtitle1" sx={{ ml: 1 }}>
+                        {user.name}
+                      </Typography>
+                    </Box>
                     <ToggleColorMode
                       mode={mode}
                       toggleColorMode={toggleColorMode}
                     />
                   </Box>
-                  {Object.keys(nav).map(navKey => (
-                    <ItemMobile
-                      key={navKey}
-                      navKey={navKey as Nav}
-                      navigate={navigate}
-                    />
-                  ))}
+                  <MenuItem onClick={() => navigate(`/user/${user.id}`)}>
+                    <PersonIcon sx={{ mr: 1 }} />
+                    Your Profile
+                  </MenuItem>
                   <Divider />
-                  <MenuItem>
+                  <MenuItem sx={{ mt: 1 }}>
                     <Button
-                      color="primary"
+                      color="secondary"
                       variant="contained"
                       sx={{ width: '100%' }}
                       onClick={logout}
                     >
-                      Sign up
-                    </Button>
-                  </MenuItem>
-                  <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="outlined"
-                      component="a"
-                      href="/material-ui/getting-started/templates/sign-in/"
-                      target="_blank"
-                      sx={{ width: '100%' }}
-                    >
-                      Sign in
+                      Log out
                     </Button>
                   </MenuItem>
                 </Box>
