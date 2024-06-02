@@ -1,20 +1,18 @@
-import { query } from 'lib/query'
-import { LoginResponse } from 'schemas/auth.schema'
+import query from 'lib/query'
+import { LoginResponse, loginRequest } from 'schemas/auth.schema'
 
 export async function doLogIn(
   username: string,
   password: string,
 ): Promise<LoginResponse> {
   try {
-    const response = await query('/login', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
+    return await query.post('/login', loginRequest, {
+      username,
+      password,
     })
-    const data = await response.json()
-    return data
+
+    // const data = await response.json()
+    // return data
   } catch (error) {
     console.error(error)
     throw error
