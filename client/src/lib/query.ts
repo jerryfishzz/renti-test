@@ -24,20 +24,24 @@ const baseQuery = (url: string, options: RequestInit = {}) => {
 }
 
 function post(logout: () => void, location: Location) {
-  return async <T extends Record<string, unknown>>(
+  return async <
+    TRequest extends Record<string, unknown>,
+    TResponse extends Record<string, unknown>,
+  >(
     url: string,
-    schema: z.Schema<T> | null,
-    data: T,
+    reqSchema: z.Schema<TRequest>,
+    data: unknown,
+    resSchema: z.Schema<TResponse>,
   ) => {
     try {
-      const validatedResult = schema ? validate(schema, data) : data
+      const validatedRequest = validate(reqSchema, data)
 
       const response = await baseQuery(url, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(validatedResult),
+        body: JSON.stringify(validatedRequest),
       })
 
       if (!response.ok) {
@@ -55,8 +59,8 @@ function post(logout: () => void, location: Location) {
       }
 
       const result = await response.json()
-      console.log(result)
-      return result
+      const validatedResult = validate(resSchema, result)
+      return validatedResult
     } catch (error) {
       console.error(error)
       throw error

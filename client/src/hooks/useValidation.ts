@@ -4,11 +4,15 @@ import { z } from 'zod'
 import { useAuth } from 'contexts/auth'
 
 type Query = (logout: () => void, location: Location) => ValidatedQuery
-export type ValidatedQuery = <T extends Record<string, unknown>>(
+export type ValidatedQuery = <
+  T extends Record<string, unknown>,
+  TResponse extends Record<string, unknown>,
+>(
   url: string,
-  schema: z.Schema<T> | null,
-  data: T,
-) => Promise<any>
+  schema: z.Schema<T>,
+  data: unknown,
+  resSchema: z.Schema<TResponse>,
+) => Promise<TResponse>
 
 // Use on AuthProvider
 export function useAuthValidation(query: Query, logout: () => void) {
