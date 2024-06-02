@@ -1,12 +1,25 @@
 import { useState, useEffect, useCallback, ReactNode } from 'react'
 
 import { createContext } from 'lib/context'
+import { doLogIn } from 'actions/auth.action'
+
+import { z } from 'zod'
+
+export const user = z.object({
+  id: z.number(),
+  username: z.string(),
+  email: z.string(),
+  name: z.string().nullable(),
+  reading_preferences: z.array(z.string()),
+  access_token: z.string(),
+})
+export type User = z.infer<typeof user>
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'
 
 type AuthContext = {
-  user: string
+  user: User | null
   login: (email: string, password: string) => void
   logout: () => void
 }
@@ -17,11 +30,11 @@ type AuthProviderProps = {
   children: ReactNode
 }
 function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<string>('')
+  const [user, setUser] = useState<User | null>(null)
   const [timeoutId, setTimeoutId] = useState<TimeoutIdState>(null)
 
   const logout = useCallback(() => {
-    setUser('')
+    setUser(null)
     localStorage.removeItem(USER_LOGIN)
     if (timeoutId) {
       clearTimeout(timeoutId)
@@ -40,14 +53,16 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, [logout, timeoutId])
 
   const login = useCallback(
-    (email: string, password: string) => {
-      if (email === 'user@example.com' && password === 'password') {
-        const user = { email }
-        setUser(JSON.stringify(user))
+    async (username: string, password: string) => {
+      try {
+        const user = (await doLogIn(username, password)) as Awaited<User>
+        console.log(user)
+        setUser(user)
         localStorage.setItem(USER_LOGIN, JSON.stringify(user))
         startAutoLogoutTimer()
-      } else {
-        throw new Error('Invalid email or password')
+      } catch (error) {
+        console.error(error)
+        throw new Error('Invalid username or password')
       }
     },
     [startAutoLogoutTimer],
@@ -55,10 +70,13 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   // Use local storage if there is a user stored
   useEffect(() => {
-    const storedUser = localStorage.getItem(USER_LOGIN)
-    if (storedUser !== null && storedUser !== user) {
-      setUser(storedUser)
-      startAutoLogoutTimer()
+    const storedUser = getUserFromLocalStorage()
+    if (storedUser !== null) {
+      const parsedUser = JSON.parse(storedUser) as User
+      if ((user && parsedUser.id !== user.id) || !user) {
+        setUser(parsedUser)
+        startAutoLogoutTimer()
+      }
     }
   }, [startAutoLogoutTimer, user])
 
@@ -69,4 +87,8 @@ function AuthProvider({ children }: AuthProviderProps) {
   )
 }
 
-export { useAuth, AuthProvider }
+function getUserFromLocalStorage() {
+  return localStorage.getItem(USER_LOGIN)
+}
+
+export { useAuth, AuthProvider, getUserFromLocalStorage }
