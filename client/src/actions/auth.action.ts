@@ -1,6 +1,10 @@
 import { query } from 'lib/query'
+import { LoginResponse } from 'schemas/auth.schema'
 
-export async function doLogIn(username: string, password: string) {
+export async function doLogIn(
+  username: string,
+  password: string,
+): Promise<LoginResponse> {
   try {
     const response = await query('/login', {
       method: 'post',
