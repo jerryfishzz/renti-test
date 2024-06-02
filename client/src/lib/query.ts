@@ -49,10 +49,15 @@ function post(logout: () => void, location: Location) {
           logout()
           console.log(location.pathname)
 
+          const errorMsg =
+            location.pathname === '/sign-in'
+              ? 'Invalid username or password'
+              : 'Please sign in'
+
           const params = new URLSearchParams()
           params.set('from', '')
           redirect('/sign-in?' + params.toString())
-          throw new Error('Invalid username or password')
+          throw new Error(errorMsg)
         }
 
         throw new Error(response.statusText)
