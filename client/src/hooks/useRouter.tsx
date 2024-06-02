@@ -1,5 +1,6 @@
 import {
   LoaderFunctionArgs,
+  Outlet,
   Route,
   createBrowserRouter,
   createRoutesFromElements,
@@ -12,6 +13,7 @@ import Library from '../pages/Library'
 import Clubs from '../pages/Clubs'
 import User from '../pages/User'
 import { useAuth } from 'contexts/auth'
+import Layout from 'pages/components/Layout'
 
 export function useRouter() {
   const { user } = useAuth()
@@ -38,9 +40,22 @@ export function useRouter() {
       createBrowserRouter(
         createRoutesFromElements(
           <Route path="/">
-            <Route index element={<Library />} loader={protectedLoader} />
-            <Route path="clubs" element={<Clubs />} loader={protectedLoader} />
-            <Route path="user" element={<User />} loader={protectedLoader} />
+            <Route
+              element={
+                <Layout>
+                  <Outlet />
+                </Layout>
+              }
+            >
+              <Route index element={<Library />} loader={protectedLoader} />
+              <Route
+                path="clubs"
+                element={<Clubs />}
+                loader={protectedLoader}
+              />
+              <Route path="user" element={<User />} loader={protectedLoader} />
+            </Route>
+
             <Route path="sign-in" element={<SignIn />} loader={loginLoader} />
           </Route>,
         ),
