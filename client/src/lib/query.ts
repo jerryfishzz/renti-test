@@ -1,3 +1,5 @@
+import { getUserFromLocalStorage } from 'contexts/auth'
+
 const { REACT_APP_API_SCHEME, REACT_APP_API_DOMAIN, REACT_APP_API_PORT } =
   process.env
 const API_BASE_URL =
@@ -6,14 +8,13 @@ const API_BASE_URL =
     : 'http://localhost:3001'
 
 const query = (url: string, options: RequestInit = {}) => {
-  // const adminUiLogin = localStorage.getItem('ADMIN-UI-LOGIN')
+  const user = getUserFromLocalStorage()
 
+  // TODO: Add error handling for no user info
   return fetch(`${API_BASE_URL}${url}`, {
     ...options,
     headers: {
-      // Authorization: `Bearer ${
-      //   adminUiLogin ? JSON.parse(adminUiLogin).access_token : ''
-      // }`,
+      Authorization: `Bearer ${user ? user : ''}`,
       ...options.headers,
     },
   })
