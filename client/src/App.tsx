@@ -7,8 +7,6 @@ import {
 } from '@mui/material'
 
 import { ModeProvider } from 'contexts/mode'
-import AppAppBar from 'pages/components/AppAppBar'
-// import { query } from 'lib/query'
 import RouterWrapper from 'pages/components/RouterWrapper'
 import { AuthProvider } from 'contexts/auth'
 import { Toaster } from 'react-hot-toast'
@@ -34,7 +32,6 @@ function App() {
       <CssBaseline />
       <ModeProvider value={{ mode, setMode }}>
         <AuthProvider>
-          <AppAppBar />
           <RouterWrapper />
         </AuthProvider>
         <Toaster />
