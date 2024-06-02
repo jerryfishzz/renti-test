@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, ReactNode } from 'react'
+import toast from 'react-hot-toast'
 
 import { createContext } from 'lib/context'
 import { LoginResponse, loginRequest, loginResponse } from 'schemas/auth.schema'
@@ -47,16 +48,20 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(
     async (username: string, password: string) => {
-      const user = await validatedQuery(
-        '/login',
-        loginRequest,
-        { username, password },
-        loginResponse,
-      )
-      console.log(user)
-      setUser(user)
-      localStorage.setItem(USER_LOGIN, JSON.stringify(user))
-      startAutoLogoutTimer()
+      try {
+        const user = await validatedQuery(
+          '/login',
+          loginRequest,
+          { username, password },
+          loginResponse,
+        )
+        console.log(user)
+        setUser(user)
+        localStorage.setItem(USER_LOGIN, JSON.stringify(user))
+        startAutoLogoutTimer()
+      } catch (error) {
+        toast.error((error as Error).message)
+      }
     },
     [startAutoLogoutTimer, validatedQuery],
   )
