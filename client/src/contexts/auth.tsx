@@ -2,35 +2,25 @@ import { useState, useEffect, useCallback, ReactNode } from 'react'
 
 import { createContext } from 'lib/context'
 import { doLogIn } from 'actions/auth.action'
-
-import { z } from 'zod'
-
-export const user = z.object({
-  id: z.number(),
-  username: z.string(),
-  email: z.string(),
-  name: z.string().nullable(),
-  reading_preferences: z.array(z.string()),
-  access_token: z.string(),
-})
-export type User = z.infer<typeof user>
+import { LoginResponse } from 'schemas/auth.schema'
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'
 
 type AuthContext = {
-  user: User | null
+  user: UserState
   login: (email: string, password: string) => void
   logout: () => void
 }
 const [useAuth, authContext] = createContext<AuthContext>()
 
+type UserState = LoginResponse | null
 type TimeoutIdState = NodeJS.Timeout | null
 type AuthProviderProps = {
   children: ReactNode
 }
 function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserState>(null)
   const [timeoutId, setTimeoutId] = useState<TimeoutIdState>(null)
 
   const logout = useCallback(() => {
@@ -55,7 +45,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(
     async (username: string, password: string) => {
       try {
-        const user = (await doLogIn(username, password)) as Awaited<User>
+        const user = await doLogIn(username, password)
         console.log(user)
         setUser(user)
         localStorage.setItem(USER_LOGIN, JSON.stringify(user))
@@ -72,9 +62,8 @@ function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const storedUser = getUserFromLocalStorage()
     if (storedUser !== null) {
-      const parsedUser = JSON.parse(storedUser) as User
-      if ((user && parsedUser.id !== user.id) || !user) {
-        setUser(parsedUser)
+      if ((user && storedUser.id !== user.id) || !user) {
+        setUser(storedUser)
         startAutoLogoutTimer()
       }
     }
@@ -87,8 +76,9 @@ function AuthProvider({ children }: AuthProviderProps) {
   )
 }
 
-function getUserFromLocalStorage() {
-  return localStorage.getItem(USER_LOGIN)
+function getUserFromLocalStorage(): UserState {
+  const user = localStorage.getItem(USER_LOGIN)
+  return user ? JSON.parse(user) : null
 }
 
 export { useAuth, AuthProvider, getUserFromLocalStorage }
