@@ -2,8 +2,8 @@ import Avatar from '@mui/material/Avatar'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/system'
-import BookCard from './BookCard'
 
+import BookCard from './BookCard'
 import { Book } from 'pages/types'
 
 const userTestimonials = [
