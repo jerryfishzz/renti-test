@@ -90,6 +90,7 @@ router.post(
       exp: addHours(new Date(), 1).getTime() / 1000,
     })
     return res.send({
+      id,
       access_token,
       username,
       name,
