@@ -14,7 +14,7 @@ const query = (url: string, options: RequestInit = {}) => {
   return fetch(`${API_BASE_URL}${url}`, {
     ...options,
     headers: {
-      Authorization: `Bearer ${user ? user : ''}`,
+      Authorization: `Bearer ${user ? user.access_token : ''}`,
       ...options.headers,
     },
   })
