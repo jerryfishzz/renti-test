@@ -53,7 +53,11 @@ export function useRouter() {
                 element={<Clubs />}
                 loader={protectedLoader}
               />
-              <Route path="user" element={<User />} loader={protectedLoader} />
+              <Route
+                path="user/:id"
+                element={<User />}
+                loader={protectedLoader}
+              />
             </Route>
 
             <Route path="sign-in" element={<SignIn />} loader={loginLoader} />
