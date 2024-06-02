@@ -14,17 +14,17 @@ type AuthContext = {
 }
 const [useAuth, authContext] = createContext<AuthContext>()
 
-type UserState = LoginResponse | null
+type UserState = LoginResponse | undefined
 type TimeoutIdState = NodeJS.Timeout | null
 type AuthProviderProps = {
   children: ReactNode
 }
 function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserState>(null)
+  const [user, setUser] = useState<UserState>()
   const [timeoutId, setTimeoutId] = useState<TimeoutIdState>(null)
 
   const logout = useCallback(() => {
-    setUser(null)
+    setUser(undefined)
     localStorage.removeItem(USER_LOGIN)
     if (timeoutId) {
       clearTimeout(timeoutId)
@@ -61,7 +61,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   // Use local storage if there is a user stored
   useEffect(() => {
     const storedUser = getUserFromLocalStorage()
-    if (storedUser !== null) {
+    if (storedUser) {
       if ((user && storedUser.id !== user.id) || !user) {
         setUser(storedUser)
         startAutoLogoutTimer()
@@ -78,7 +78,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
 function getUserFromLocalStorage(): UserState {
   const user = localStorage.getItem(USER_LOGIN)
-  return user ? JSON.parse(user) : null
+  return user ? JSON.parse(user) : undefined
 }
 
 export { useAuth, AuthProvider, getUserFromLocalStorage }
