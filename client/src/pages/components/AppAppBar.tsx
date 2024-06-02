@@ -11,6 +11,8 @@ import Drawer from '@mui/material/Drawer'
 import MenuIcon from '@mui/icons-material/Menu'
 import ToggleColorMode from './ToggleColorMode'
 import PersonIcon from '@mui/icons-material/Person'
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary'
+import Groups2Icon from '@mui/icons-material/Groups2'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 import { useMode } from 'contexts/mode'
@@ -27,10 +29,12 @@ const nav = {
   library: {
     name: 'Library',
     path: '/',
+    icon: <LocalLibraryIcon sx={{ mr: 1 }} />,
   },
   clubs: {
     name: 'Clubs',
     path: '/clubs',
+    icon: <Groups2Icon sx={{ mr: 1 }} />,
   },
 } as const
 type Nav = keyof typeof nav
@@ -252,11 +256,13 @@ function AppAppBar() {
                   <Box
                     sx={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'end',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                       flexGrow: 1,
+                      mb: 3,
                     }}
                   >
+                    <Avatar name={user.name ?? ''} style={{ marginLeft: 16 }} />
                     <ToggleColorMode
                       mode={mode}
                       toggleColorMode={toggleColorMode}
@@ -270,26 +276,19 @@ function AppAppBar() {
                     />
                   ))}
                   <Divider />
-                  <MenuItem>
+                  <MenuItem onClick={() => navigate(`/user/${user.id}`)}>
+                    <PersonIcon sx={{ mr: 1 }} />
+                    Your Profile
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem sx={{ mt: 1 }}>
                     <Button
-                      color="primary"
+                      color="secondary"
                       variant="contained"
                       sx={{ width: '100%' }}
                       onClick={logout}
                     >
-                      Sign up
-                    </Button>
-                  </MenuItem>
-                  <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="outlined"
-                      component="a"
-                      href="/material-ui/getting-started/templates/sign-in/"
-                      target="_blank"
-                      sx={{ width: '100%' }}
-                    >
-                      Sign in
+                      Log out
                     </Button>
                   </MenuItem>
                 </Box>
@@ -321,7 +320,7 @@ function ItemDesktop({ navKey, navigate }: ItemProps) {
 function ItemMobile({ navKey, navigate }: ItemProps) {
   return (
     <MenuItem onClick={() => navigate(nav[navKey].path)}>
-      {nav[navKey].name}
+      {nav[navKey].icon} {nav[navKey].name}
     </MenuItem>
   )
 }
