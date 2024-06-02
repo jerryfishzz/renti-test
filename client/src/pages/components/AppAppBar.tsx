@@ -14,6 +14,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 import { useMode } from 'contexts/mode'
 import { useAuth } from 'contexts/auth'
+import Avatar from './Avatar'
 
 const logoStyle = {
   width: '140px',
@@ -37,7 +38,7 @@ function AppAppBar() {
   const { mode, toggleColorMode } = useMode()
   const [open, setOpen] = React.useState(false)
 
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -126,7 +127,7 @@ function AppAppBar() {
               }}
             >
               <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
-              <Button
+              {/* <Button
                 color="primary"
                 variant="text"
                 size="small"
@@ -143,7 +144,11 @@ function AppAppBar() {
                 onClick={logout}
               >
                 Sign up
-              </Button>
+              </Button> */}
+              <Typography variant="button" color="primary" sx={{ ml: 1 }}>
+                Hello
+              </Typography>
+              <Avatar name={user?.name ?? ''} />
             </Box>
             <Box sx={{ display: { sm: '', md: 'none' } }}>
               <Button
