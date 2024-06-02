@@ -8,7 +8,7 @@ import {
 
 import { ModeProvider } from 'contexts/mode'
 import AppAppBar from 'pages/components/AppAppBar'
-import { query } from 'lib/query'
+// import { query } from 'lib/query'
 import RouterWrapper from 'pages/components/RouterWrapper'
 import { AuthProvider } from 'contexts/auth'
 
@@ -18,15 +18,15 @@ function App() {
 
   console.log(process.env.NODE_ENV)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await query('/accounts/1')
-      console.log(response)
-      const data = await response.json()
-      console.log(data)
-    }
-    fetchData()
-  }, [])
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await query('/accounts/1')
+  //     console.log(response)
+  //     const data = await response.json()
+  //     console.log(data)
+  //   }
+  //   fetchData()
+  // }, [])
 
   return (
     <ThemeProvider theme={theme}>
