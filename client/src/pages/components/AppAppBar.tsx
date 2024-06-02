@@ -37,12 +37,17 @@ type Nav = keyof typeof nav
 function AppAppBar() {
   const { mode, toggleColorMode } = useMode()
   const [open, setOpen] = React.useState(false)
+  const [openDesktop, setOpenDesktop] = React.useState(false)
 
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen)
+  }
+
+  const toggleDrawerDesktop = (newOpen: boolean) => () => {
+    setOpenDesktop(newOpen)
   }
 
   // const scrollToSection = (sectionId: string) => {
@@ -148,8 +153,81 @@ function AppAppBar() {
               <Typography variant="button" color="primary" sx={{ ml: 1 }}>
                 Hello
               </Typography>
-              <Avatar name={user?.name ?? ''} />
+              <Button
+                disableRipple
+                sx={{
+                  '&:hover': {
+                    bgcolor: 'background.default',
+                  },
+                }}
+              >
+                <Avatar
+                  name={user?.name ?? ''}
+                  onClick={toggleDrawerDesktop(true)}
+                />
+              </Button>
             </Box>
+            <Box sx={{ display: { sm: 'none', md: '' } }}>
+              <Drawer
+                anchor="right"
+                open={openDesktop}
+                onClose={toggleDrawerDesktop(false)}
+              >
+                <Box
+                  sx={{
+                    minWidth: '30dvw',
+                    p: 2,
+                    backgroundColor: 'background.paper',
+                    flexGrow: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'end',
+                      flexGrow: 1,
+                    }}
+                  >
+                    <ToggleColorMode
+                      mode={mode}
+                      toggleColorMode={toggleColorMode}
+                    />
+                  </Box>
+                  {Object.keys(nav).map(navKey => (
+                    <ItemMobile
+                      key={navKey}
+                      navKey={navKey as Nav}
+                      navigate={navigate}
+                    />
+                  ))}
+                  <Divider />
+                  <MenuItem>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      sx={{ width: '100%' }}
+                      onClick={logout}
+                    >
+                      Sign up
+                    </Button>
+                  </MenuItem>
+                  <MenuItem>
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      component="a"
+                      href="/material-ui/getting-started/templates/sign-in/"
+                      target="_blank"
+                      sx={{ width: '100%' }}
+                    >
+                      Sign in
+                    </Button>
+                  </MenuItem>
+                </Box>
+              </Drawer>
+            </Box>
+
             <Box sx={{ display: { sm: '', md: 'none' } }}>
               <Button
                 variant="text"

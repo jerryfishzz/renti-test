@@ -1,4 +1,5 @@
 import { Avatar as MUIAvatar } from '@mui/material'
+import { ComponentProps } from 'react'
 
 function stringToColor(string: string) {
   let hash = 0
@@ -27,7 +28,6 @@ function stringAvatar(name: string) {
   return {
     sx: {
       bgcolor: stringToColor(name),
-      ml: 1,
       width: 32,
       height: 32,
       fontSize: 16,
@@ -36,6 +36,8 @@ function stringAvatar(name: string) {
   }
 }
 
-export default function Avatar({ name }: { name: string }) {
-  return <MUIAvatar {...stringAvatar(name)} />
+type MUIAvatarProps = ComponentProps<typeof MUIAvatar>
+type AvatarProps = MUIAvatarProps & { name: string }
+export default function Avatar({ name, ...props }: AvatarProps) {
+  return <MUIAvatar {...props} {...stringAvatar(name)} />
 }
