@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Drawer from '@mui/material/Drawer'
 import MenuIcon from '@mui/icons-material/Menu'
 import ToggleColorMode from './ToggleColorMode'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 import { useMode } from 'contexts/mode'
 import { useAuth } from 'contexts/auth'
@@ -20,29 +21,42 @@ const logoStyle = {
   cursor: 'pointer',
 }
 
+const nav = {
+  library: {
+    name: 'Library',
+    path: '/',
+  },
+  clubs: {
+    name: 'Clubs',
+    path: '/clubs',
+  },
+} as const
+type Nav = keyof typeof nav
+
 function AppAppBar() {
   const { mode, toggleColorMode } = useMode()
   const [open, setOpen] = React.useState(false)
 
   const { logout } = useAuth()
+  const navigate = useNavigate()
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen)
   }
 
-  const scrollToSection = (sectionId: string) => {
-    const sectionElement = document.getElementById(sectionId)
-    const offset = 128
-    if (sectionElement) {
-      const targetScroll = sectionElement.offsetTop - offset
-      sectionElement.scrollIntoView({ behavior: 'smooth' })
-      window.scrollTo({
-        top: targetScroll,
-        behavior: 'smooth',
-      })
-      setOpen(false)
-    }
-  }
+  // const scrollToSection = (sectionId: string) => {
+  //   const sectionElement = document.getElementById(sectionId)
+  //   const offset = 128
+  //   if (sectionElement) {
+  //     const targetScroll = sectionElement.offsetTop - offset
+  //     sectionElement.scrollIntoView({ behavior: 'smooth' })
+  //     window.scrollTo({
+  //       top: targetScroll,
+  //       behavior: 'smooth',
+  //     })
+  //     setOpen(false)
+  //   }
+  // }
 
   return (
     <div>
@@ -95,46 +109,13 @@ function AppAppBar() {
                 alt="logo of sitemark"
               />
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <MenuItem
-                  onClick={() => scrollToSection('features')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Features
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('testimonials')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Testimonials
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('highlights')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Highlights
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('pricing')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Pricing
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('faq')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    FAQ
-                  </Typography>
-                </MenuItem>
+                {Object.keys(nav).map(navKey => (
+                  <ItemDesktop
+                    key={navKey}
+                    navKey={navKey as Nav}
+                    navigate={navigate}
+                  />
+                ))}
               </Box>
             </Box>
             <Box
@@ -196,21 +177,13 @@ function AppAppBar() {
                       toggleColorMode={toggleColorMode}
                     />
                   </Box>
-                  <MenuItem onClick={() => scrollToSection('features')}>
-                    Features
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('testimonials')}>
-                    Testimonials
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('highlights')}>
-                    Highlights
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('pricing')}>
-                    Pricing
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('faq')}>
-                    FAQ
-                  </MenuItem>
+                  {Object.keys(nav).map(navKey => (
+                    <ItemMobile
+                      key={navKey}
+                      navKey={navKey as Nav}
+                      navigate={navigate}
+                    />
+                  ))}
                   <Divider />
                   <MenuItem>
                     <Button
@@ -241,6 +214,30 @@ function AppAppBar() {
         </Container>
       </AppBar>
     </div>
+  )
+}
+
+type ItemProps = {
+  navKey: Nav
+  navigate: NavigateFunction
+}
+function ItemDesktop({ navKey, navigate }: ItemProps) {
+  return (
+    <MenuItem
+      sx={{ py: '6px', px: '12px' }}
+      onClick={() => navigate(nav[navKey].path)}
+    >
+      <Typography variant="body2" color="text.primary">
+        {nav[navKey].name}
+      </Typography>
+    </MenuItem>
+  )
+}
+function ItemMobile({ navKey, navigate }: ItemProps) {
+  return (
+    <MenuItem onClick={() => navigate(nav[navKey].path)}>
+      {nav[navKey].name}
+    </MenuItem>
   )
 }
 
