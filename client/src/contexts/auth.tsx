@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback, ReactNode } from 'react'
 
 import { createContext } from 'lib/context'
-import { doLogIn } from 'actions/auth.action'
-import { LoginResponse } from 'schemas/auth.schema'
+import { LoginResponse, loginRequest, loginResponse } from 'schemas/auth.schema'
 import { useAuthValidation } from 'hooks/useValidation'
 import query from 'lib/query'
 
@@ -48,19 +47,16 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(
     async (username: string, password: string) => {
-      try {
-        const user = await doLogIn({
-          data: { username, password },
-          validatedQuery,
-        })
-        console.log(user)
-        setUser(user)
-        localStorage.setItem(USER_LOGIN, JSON.stringify(user))
-        startAutoLogoutTimer()
-      } catch (error) {
-        console.error(error)
-        throw new Error('Invalid username or password')
-      }
+      const user = await validatedQuery(
+        '/login',
+        loginRequest,
+        { username, password },
+        loginResponse,
+      )
+      console.log(user)
+      setUser(user)
+      localStorage.setItem(USER_LOGIN, JSON.stringify(user))
+      startAutoLogoutTimer()
     },
     [startAutoLogoutTimer, validatedQuery],
   )
