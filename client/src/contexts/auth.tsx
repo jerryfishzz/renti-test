@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback, ReactNode } from 'react'
 import { createContext } from 'lib/context'
 import { doLogIn } from 'actions/auth.action'
 import { LoginResponse } from 'schemas/auth.schema'
+import { useAuthValidation } from 'hooks/useValidation'
+import query from 'lib/query'
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'
@@ -31,6 +33,8 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [timeoutId])
 
+  const validatedQuery = useAuthValidation(query.post, logout)
+
   const startAutoLogoutTimer = useCallback(() => {
     if (timeoutId) {
       clearTimeout(timeoutId)
@@ -45,7 +49,10 @@ function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(
     async (username: string, password: string) => {
       try {
-        const user = await doLogIn(username, password)
+        const user = await doLogIn({
+          data: { username, password },
+          validatedQuery,
+        })
         console.log(user)
         setUser(user)
         localStorage.setItem(USER_LOGIN, JSON.stringify(user))
@@ -55,7 +62,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         throw new Error('Invalid username or password')
       }
     },
-    [startAutoLogoutTimer],
+    [startAutoLogoutTimer, validatedQuery],
   )
 
   // Use local storage if there is a user stored
