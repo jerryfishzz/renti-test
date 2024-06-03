@@ -13,6 +13,7 @@ import ToggleColorMode from './ToggleColorMode'
 import PersonIcon from '@mui/icons-material/Person'
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary'
 import Groups2Icon from '@mui/icons-material/Groups2'
+import ListAltIcon from '@mui/icons-material/ListAlt'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 import { useMode } from 'contexts/mode'
@@ -30,6 +31,11 @@ const nav = {
     name: 'Library',
     path: '/',
     icon: <LocalLibraryIcon sx={{ mr: 1 }} />,
+  },
+  myList: {
+    name: 'My List',
+    path: '/my-list',
+    icon: <ListAltIcon sx={{ mr: 1 }} />,
   },
   clubs: {
     name: 'Clubs',

@@ -14,6 +14,7 @@ import Clubs from '../pages/Clubs'
 import User from '../pages/User'
 import { useAuth } from 'contexts/auth'
 import Layout from 'pages/components/Layout'
+import MyList from 'pages/MyList'
 
 export function useRouter() {
   const { user } = useAuth()
@@ -48,6 +49,11 @@ export function useRouter() {
               }
             >
               <Route index element={<Library />} loader={protectedLoader} />
+              <Route
+                path="my-list"
+                element={<MyList />}
+                loader={protectedLoader}
+              />
               <Route
                 path="clubs"
                 element={<Clubs />}
