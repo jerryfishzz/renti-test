@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, ReactNode } from 'react'
+import { useState, useCallback, ReactNode } from 'react'
 import toast from 'react-hot-toast'
 
 import { createContext } from 'lib/context'
@@ -22,7 +22,7 @@ type AuthProviderProps = {
   children: ReactNode
 }
 function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserState>()
+  const [user, setUser] = useState<UserState>(() => getUserFromLocalStorage())
   const [timeoutId, setTimeoutId] = useState<TimeoutIdState>(null)
 
   const logout = useCallback(() => {
@@ -65,17 +65,6 @@ function AuthProvider({ children }: AuthProviderProps) {
     },
     [startAutoLogoutTimer, validatedQuery],
   )
-
-  // Use local storage if there is a user stored
-  useEffect(() => {
-    const storedUser = getUserFromLocalStorage()
-    if (storedUser) {
-      if ((user && storedUser.id !== user.id) || !user) {
-        setUser(storedUser)
-        startAutoLogoutTimer()
-      }
-    }
-  }, [startAutoLogoutTimer, user])
 
   return (
     <authContext.Provider value={{ user, login, logout }}>
