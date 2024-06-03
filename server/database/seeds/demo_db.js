@@ -132,11 +132,33 @@ const books = [
   },
 ]
 
+const reading_lists = [
+  {
+    account_id: 1,
+    books: [
+      { book_id: 1, status: 'read' },
+      { book_id: 3, status: 'currently reading' },
+    ],
+  },
+  {
+    account_id: 2,
+    books: [{ book_id: 4, status: 'want to read' }],
+  },
+  {
+    account_id: 3,
+    books: [
+      { book_id: 1, status: 'currently reading' },
+      { book_id: 3, status: 'want to read' },
+    ],
+  },
+]
+
 exports.seed = async function (knex) {
   // Deletes ALL existing entries
-  await knex('accounts').del()
-  await knex('genres').del()
+  await knex('reading_lists').del()
   await knex('books').del()
+  await knex('genres').del()
+  await knex('accounts').del()
 
   // Accounts
   for (const account of accounts) {
@@ -185,5 +207,17 @@ exports.seed = async function (knex) {
       genre_id,
       cover_image,
     })
+  }
+
+  // Reading lists
+  for (const reading_list of reading_lists) {
+    const { account_id, books } = reading_list
+    for (const { book_id, status } of books) {
+      await knex('reading_lists').insert({
+        account_id,
+        book_id,
+        status,
+      })
+    }
   }
 }
