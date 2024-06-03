@@ -51,9 +51,25 @@ Reinstalling the services with volumes removed is recommended since the tables h
 
 - You need a postgres database running on your machine. Just download the app from the official website and install it with the default settings. Just remember when it asks for a username and a password, use `postgres` as both.
 
-- Go to the server folder and run: `npm run dev`
+- Go to the server folder and run:
 
-- Go to the client folder and run: `npm start`
+  ```bash
+  nom install
+  npm run dev
+
+  # to create the tables
+  npm run migration:run
+
+  # to populate the tables
+  npm run seed:run
+  ```
+
+- Go to the client folder and run:
+
+  ```bash
+  npm install
+  npm start
+  ```
 
 ### Use The App
 
