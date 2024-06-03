@@ -67,7 +67,6 @@ Reinstalling the services with volumes removed is recommended since the tables h
   username: booklover1
   password: hashedpassword1
 
-
   username: literaturefan
   password: hashedpassword2
 
@@ -95,7 +94,7 @@ Please use the login endpoint (Accounts -> Login) to get the token. The token wi
 
 ### Tests
 
-Tests are only available for the server side. Go to the server folder and run:
+Tests are only available for the server side. Go to the `server` folder and run:
 
 ```bash
 npm run test
