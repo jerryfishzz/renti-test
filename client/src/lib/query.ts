@@ -44,12 +44,9 @@ function createQuery(
   request: (url: string, data: unknown) => Promise<Response>,
 ) {
   return (logout: () => void, location: Location) => {
-    return async <
-      TRequest extends Record<string, unknown>,
-      TResponse extends Record<string, unknown>,
-    >(
+    return async <TRequest extends Record<string, unknown>, TResponse>(
       url: string,
-      reqSchema: z.Schema<TRequest> | null,
+      reqSchema: z.Schema<TRequest> | undefined,
       data: unknown,
       resSchema: z.Schema<TResponse>,
     ) => {

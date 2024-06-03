@@ -6,10 +6,10 @@ import { useAuth } from 'contexts/auth'
 type Query = (logout: () => void, location: Location) => ValidatedQuery
 export type ValidatedQuery = <
   TRequest extends Record<string, unknown>,
-  TResponse extends Record<string, unknown>,
+  TResponse,
 >(
   url: string,
-  schema: z.Schema<TRequest>,
+  schema: z.Schema<TRequest> | undefined,
   data: unknown,
   resSchema: z.Schema<TResponse>,
 ) => Promise<TResponse>
