@@ -3,20 +3,6 @@ import type { Request, Response } from 'express'
 
 import { Account, account } from 'types/db'
 
-// const queryParams = z.object({
-//   id: z.number().optional(),
-//   username: z.string().optional(),
-// })
-
-// export const search = z.object({ params: queryParams })
-// export type SearchRequest = Request<
-//   z.infer<typeof search>['params'],
-//   unknown,
-//   unknown,
-//   Pagination
-// >
-// export type SearchResponse = Response<PaginationResult<Account>>
-
 export const getById = z.object({ params: z.object({ id: z.coerce.number() }) })
 export type GetByIdRequest = Request<z.infer<typeof getById>['params']>
 export type GetByIdResponse = Response<Account>
@@ -38,17 +24,6 @@ export type CreateAccountRequest = Request<
   z.infer<typeof createAccount>['body']
 >
 export type CreateAccountResponse = Response<Account>
-
-// export const Patch = Get.merge(z.object({ body: Account.partial() }))
-// export type PatchRequest = Request<
-//   z.infer<typeof Patch>['params'],
-//   z.infer<typeof Patch>['body']
-// >
-// export type PatchResponse = Response
-
-// export const Delete = Get
-// export type DeleteRequest = Request<z.infer<typeof Delete>['params']>
-// export type DeleteResponse = Response
 
 export const deleteById = z.object({
   params: z.object({ id: z.coerce.number() }),

@@ -6,7 +6,6 @@ import { Account as DBAccount } from 'types/db'
 
 export default class Account {
   private _id: DBAccount['id'] | null
-  // private _username: DBAccount['username'] | null
   private _json: Partial<DBAccount>
   private _agent: TestAgent
 
@@ -16,11 +15,9 @@ export default class Account {
   ) {
     this._id = null
     this._agent = agent
-    // this._username = null
 
     if (json) {
       this._id = json.id
-      // this._username = json.username
       this._json = structuredClone(json)
       if (this._json.hasOwnProperty('id')) {
         delete this._json.id
@@ -39,10 +36,6 @@ export default class Account {
   get id() {
     return this._id
   }
-
-  // get username() {
-  //   return this._username
-  // }
 
   get json() {
     return this._json
@@ -70,27 +63,6 @@ export default class Account {
   async read() {
     return jsonQuery(`/accounts/${this._id}`, {}, this._agent)
   }
-
-  // async readByUsername(username: DBAccount['username']) {
-  //   const result = await jsonQuery(`/accounts/username/${username}`)
-
-  //   this._id = result.id
-  //   this._json = structuredClone(result)
-  //   if (this._json.hasOwnProperty('id')) {
-  //     delete this._json.id
-  //   }
-
-  //   return result
-  // }
-
-  // async update(change: any) {
-  //   merge(change, this._json)
-  //   const req = await query(`/accounts/${this._id}`, {
-  //     method: 'PATCH',
-  //     body: JSON.stringify(change),
-  //   })
-  //   return req
-  // }
 
   async delete() {
     return query(`/accounts/${this._id}`, { method: 'delete' }, this._agent)
