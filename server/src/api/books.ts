@@ -31,9 +31,16 @@ router.get(
       myBooks.push({ ...book, status: list.status, genre: genre.name })
     }
 
-    const notMyBooks = books.filter(book => book.id !== Number(req.params.id))
+    const bookIdSet = new Set<number>()
+    const wantedBooks: GetBooksReturn[] = []
+    const allBooks = [...myBooks, ...books]
+    for (const book of allBooks) {
+      if (bookIdSet.has(book.id)) continue
+      bookIdSet.add(book.id)
+      wantedBooks.push(book)
+    }
 
-    return res.send([...myBooks, ...notMyBooks])
+    return res.send(wantedBooks)
   })
 )
 
