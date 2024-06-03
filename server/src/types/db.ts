@@ -28,3 +28,13 @@ export const book = z.object({
   cover_image: z.string(),
 })
 export type Book = z.infer<typeof book>
+
+export const reading_list = z.object({
+  id: z.number(),
+  account_id: z.number(),
+  book_id: z.number(),
+  status: z.string(),
+  created_at: z.date(),
+  updated_at: z.date(),
+})
+export type Reading_List = z.infer<typeof reading_list>
