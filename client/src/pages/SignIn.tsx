@@ -16,24 +16,6 @@ import ToggleColorMode from './components/ToggleColorMode'
 import { useAuth } from 'contexts/auth'
 import { useMode } from 'contexts/mode'
 
-// function Copyright(props: any) {
-//   return (
-//     <Typography
-//       variant="body2"
-//       color="text.secondary"
-//       align="center"
-//       {...props}
-//     >
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   )
-// }
-
 const logoStyle = {
   width: '140px',
   height: 'auto',
@@ -144,7 +126,7 @@ export default function SignIn() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Username"
               name="email"
               autoComplete="email"
               autoFocus
@@ -171,21 +153,8 @@ export default function SignIn() {
             >
               Sign In
             </Button>
-            {/* <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid> */}
           </Box>
         </Box>
-        {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
       </Container>
     </>
   )
