@@ -21,7 +21,7 @@ export function useRouter() {
 
   const loginLoader = useCallback(() => {
     if (!user) return null
-    return redirect('/')
+    return redirect(user.from || '/')
   }, [user])
 
   const protectedLoader = useCallback(

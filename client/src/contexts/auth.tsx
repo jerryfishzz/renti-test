@@ -11,12 +11,12 @@ const USER_LOGIN = 'USER_LOGIN'
 
 type AuthContext = {
   user: UserState
-  login: (email: string, password: string) => void
+  login: (email: string, password: string, from: string) => void
   logout: () => void
 }
 const [useAuth, authContext] = createContext<AuthContext>()
 
-type UserState = LoginResponse | undefined
+type UserState = (LoginResponse & { from: string }) | undefined
 type TimeoutIdState = NodeJS.Timeout | null
 type AuthProviderProps = {
   children: ReactNode
@@ -47,7 +47,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, [logout, timeoutId])
 
   const login = useCallback(
-    async (username: string, password: string) => {
+    async (username: string, password: string, from: string) => {
       try {
         const user = await doQuery(validatedQuery, {
           url: '/login',
@@ -56,7 +56,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           resSchema: loginResponse,
         })
         console.log(user)
-        setUser(user)
+        setUser({ ...user, from })
         localStorage.setItem(USER_LOGIN, JSON.stringify(user))
         startAutoLogoutTimer()
       } catch (error) {

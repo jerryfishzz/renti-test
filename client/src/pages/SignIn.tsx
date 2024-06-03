@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
+import { useLocation } from 'react-router-dom'
 
 import ToggleColorMode from './components/ToggleColorMode'
 import { useAuth } from 'contexts/auth'
@@ -43,6 +44,10 @@ export default function SignIn() {
   const { login } = useAuth()
   const { mode, toggleColorMode } = useMode()
 
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const from = params.get('from') || '/'
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -50,7 +55,7 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     })
-    login(data.get('email') as string, data.get('password') as string)
+    login(data.get('email') as string, data.get('password') as string, from)
   }
 
   return (
