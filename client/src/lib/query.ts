@@ -23,55 +23,64 @@ const baseQuery = (url: string, options: RequestInit = {}) => {
   })
 }
 
-function post(logout: () => void, location: Location) {
-  return async <
-    TRequest extends Record<string, unknown>,
-    TResponse extends Record<string, unknown>,
-  >(
-    url: string,
-    reqSchema: z.Schema<TRequest> | null,
-    data: unknown,
-    resSchema: z.Schema<TResponse>,
-  ) => {
-    try {
-      const validatedRequest = reqSchema ? validate(reqSchema, data) : data
+function postRequest(url: string, data: unknown) {
+  return baseQuery(url, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+}
 
-      const response = await baseQuery(url, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(validatedRequest),
-      })
+function createQuery(
+  request: (url: string, data: unknown) => Promise<Response>,
+) {
+  return (logout: () => void, location: Location) => {
+    return async <
+      TRequest extends Record<string, unknown>,
+      TResponse extends Record<string, unknown>,
+    >(
+      url: string,
+      reqSchema: z.Schema<TRequest> | null,
+      data: unknown,
+      resSchema: z.Schema<TResponse>,
+    ) => {
+      try {
+        const validatedRequest = reqSchema ? validate(reqSchema, data) : data
+        const response = await request(url, validatedRequest)
 
-      if (!response.ok) {
-        if (response.status === 403) {
-          logout()
-          console.log(location.pathname)
+        if (!response.ok) {
+          if (response.status === 403) {
+            logout()
+            console.log(location.pathname)
 
-          const errorMsg =
-            location.pathname === '/sign-in'
-              ? 'Invalid username or password'
-              : 'Please sign in'
+            const errorMsg =
+              location.pathname === '/sign-in'
+                ? 'Invalid username or password'
+                : 'Please sign in'
 
-          const params = new URLSearchParams()
-          params.set('from', '')
-          redirect('/sign-in?' + params.toString())
-          throw new Error(errorMsg)
+            const params = new URLSearchParams()
+            params.set('from', '')
+            redirect('/sign-in?' + params.toString())
+            throw new Error(errorMsg)
+          }
+
+          throw new Error(response.statusText)
         }
 
-        throw new Error(response.statusText)
+        const result = await response.json()
+        const validatedResult = validate(resSchema, result)
+        return validatedResult
+      } catch (error) {
+        console.error(error)
+        throw error
       }
-
-      const result = await response.json()
-      const validatedResult = validate(resSchema, result)
-      return validatedResult
-    } catch (error) {
-      console.error(error)
-      throw error
     }
   }
 }
+
+const post = createQuery(postRequest)
 
 const query = { post }
 
