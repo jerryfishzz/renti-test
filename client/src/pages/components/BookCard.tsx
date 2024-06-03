@@ -8,10 +8,10 @@ import CardActions from '@mui/material/CardActions'
 import Button from '@mui/material/Button'
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
-import { Book } from 'pages/types'
 import { Chip, useTheme } from '@mui/material'
 
 import StatusMenu from './StatusMenu'
+import { Book } from 'schemas/book.schema'
 
 type StatusValue = {
   text: string
