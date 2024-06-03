@@ -10,6 +10,7 @@ export const book = z.object({
 export type Book = z.infer<typeof book>
 
 const status = z.enum(['currently reading', 'read', 'want to read'])
+export type Status = z.infer<typeof status>
 
 export const getBooksResponse = z.array(
   book.merge(z.object({ status: status.optional() })),
