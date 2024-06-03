@@ -65,7 +65,7 @@ function createQuery(
                 : 'Please sign in'
 
             const params = new URLSearchParams()
-            params.set('from', '')
+            params.set('from', location.pathname)
             redirect('/sign-in?' + params.toString())
             throw new Error(errorMsg)
           }
