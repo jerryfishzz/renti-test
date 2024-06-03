@@ -12,21 +12,32 @@ import { Chip, useTheme } from '@mui/material'
 
 import StatusMenu from './StatusMenu'
 import { BookState } from './BookList'
+import { Status } from 'schemas/book.schema'
 
 type StatusValue = {
   text: string
   color: 'success' | 'error' | 'warning'
+  dbStatus: Status
 }
 export const readingStatus: Record<StatusState, StatusValue> = {
-  completed: { text: 'Read', color: 'success' },
-  reading: { text: 'Currently reading', color: 'warning' },
-  wishlist: { text: 'Want to read', color: 'error' },
+  completed: { text: 'Read', color: 'success', dbStatus: 'read' },
+  reading: {
+    text: 'Currently reading',
+    color: 'warning',
+    dbStatus: 'currently reading',
+  },
+  wishlist: { text: 'Want to read', color: 'error', dbStatus: 'want to read' },
 }
 
 type BookCardProps = {
   book: BookState
 }
 export type StatusState = 'reading' | 'completed' | 'wishlist'
+const dbStatusMapping: Record<Status, StatusState> = {
+  read: 'completed',
+  'currently reading': 'reading',
+  'want to read': 'wishlist',
+}
 
 export default function BookCard({
   book: { id, author, title, cover_image, status: dbStatus, genre },
@@ -46,6 +57,13 @@ export default function BookCard({
     const { width, height } = containerRef.current.getBoundingClientRect()
     setContainerSize({ width, height })
   }, [])
+
+  useEffect(() => {
+    if (dbStatus) {
+      setStatus(dbStatusMapping[dbStatus])
+      setIsAdded(true)
+    }
+  }, [dbStatus])
 
   return (
     <Grid item xs={12} sm={6} md={3} key={id} sx={{ display: 'flex' }}>
