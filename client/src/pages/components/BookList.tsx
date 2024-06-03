@@ -176,23 +176,10 @@ export default function BookList() {
   const logos = theme.palette.mode === 'light' ? darkLogos : whiteLogos
 
   return (
-    <Container
-      id="Library"
-      sx={{
-        pt: { xs: 4, sm: 12 },
-        pb: { xs: 8, sm: 16 },
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: { xs: 3, sm: 6 },
-      }}
-    >
-      <Grid container spacing={2}>
-        {bookList.map(book => (
-          <BookCard book={book} key={book.id} />
-        ))}
-      </Grid>
-    </Container>
+    <Grid container spacing={2}>
+      {bookList.map(book => (
+        <BookCard book={book} key={book.id} />
+      ))}
+    </Grid>
   )
 }
