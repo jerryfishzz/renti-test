@@ -14,7 +14,7 @@ export default function Layout({ children }: LayoutProps) {
       <Box sx={{ bgcolor: 'background.default' }}>
         <Container
           sx={{
-            pt: { xs: 14, sm: 20 },
+            pt: { xs: 14, sm: 14 },
             pb: { xs: 8, sm: 12 },
             position: 'relative',
             display: 'flex',
