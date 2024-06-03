@@ -4,8 +4,7 @@ import toast from 'react-hot-toast'
 import { createContext } from 'lib/context'
 import { LoginResponse, loginRequest, loginResponse } from 'schemas/auth.schema'
 import { useAuthValidation } from 'hooks/useValidation'
-import query from 'lib/query'
-import { doLogin } from 'actions/auth.action'
+import { post, doQuery } from 'lib/query'
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'
@@ -34,7 +33,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [timeoutId])
 
-  const validatedQuery = useAuthValidation(query.post, logout)
+  const validatedQuery = useAuthValidation(post, logout)
 
   const startAutoLogoutTimer = useCallback(() => {
     if (timeoutId) {
@@ -50,7 +49,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(
     async (username: string, password: string) => {
       try {
-        const user = await doLogin(validatedQuery, {
+        const user = await doQuery(validatedQuery, {
           url: '/login',
           schema: loginRequest,
           data: { username, password },

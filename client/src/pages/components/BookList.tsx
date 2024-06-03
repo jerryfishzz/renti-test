@@ -5,15 +5,14 @@ import toast from 'react-hot-toast'
 import BookCard from './BookCard'
 import { Book, getBooksResponse } from 'schemas/book.schema'
 import { useValidation } from 'hooks/useValidation'
-import query from 'lib/query'
-import { getBooks } from 'actions/book.action'
+import { get, doQuery } from 'lib/query'
 
 export default function BookList() {
   const [books, setBooks] = useState<Book[]>([])
-  const fullProcessQuery = useValidation(query.get)
+  const fullProcessQuery = useValidation(get)
 
   useEffect(() => {
-    getBooks(fullProcessQuery, {
+    doQuery(fullProcessQuery, {
       url: '/books',
       resSchema: getBooksResponse,
     })

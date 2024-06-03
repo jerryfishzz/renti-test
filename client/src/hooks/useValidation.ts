@@ -1,18 +1,9 @@
 import { useMemo } from 'react'
-import { z } from 'zod'
 
 import { useAuth } from 'contexts/auth'
+import { ValidatedQuery } from 'lib/query'
 
 type Query = (logout: () => void, location: Location) => ValidatedQuery
-export type ValidatedQuery = <
-  TRequest extends Record<string, unknown>,
-  TResponse,
->(
-  url: string,
-  schema: z.Schema<TRequest> | undefined,
-  data: unknown,
-  resSchema: z.Schema<TResponse>,
-) => Promise<TResponse>
 
 // Use on AuthProvider
 export function useAuthValidation(query: Query, logout: () => void) {

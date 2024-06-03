@@ -87,6 +87,25 @@ function createQuery(
 const get = createQuery(getRequest)
 const post = createQuery(postRequest)
 
-const query = { get, post }
+type ValidatedQuery = <TRequest extends Record<string, unknown>, TResponse>(
+  url: string,
+  schema: z.Schema<TRequest> | undefined,
+  data: unknown,
+  resSchema: z.Schema<TResponse>,
+) => Promise<TResponse>
+type Options<TRequest extends Record<string, unknown>, TResponse> = {
+  url: string
+  schema?: z.Schema<TRequest>
+  data?: unknown
+  resSchema: z.Schema<TResponse>
+}
+function doQuery<TRequest extends Record<string, unknown>, TResponse>(
+  query: ValidatedQuery,
+  options: Options<TRequest, TResponse>,
+) {
+  const { url, schema, data, resSchema } = options
+  return query(url, schema, data, resSchema)
+}
 
-export default query
+export { get, post, doQuery }
+export type { ValidatedQuery }
