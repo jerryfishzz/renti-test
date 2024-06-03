@@ -23,6 +23,13 @@ const baseQuery = (url: string, options: RequestInit = {}) => {
   })
 }
 
+function getRequest(url: string) {
+  return baseQuery(url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
 function postRequest(url: string, data: unknown) {
   return baseQuery(url, {
     method: 'post',
@@ -80,8 +87,9 @@ function createQuery(
   }
 }
 
+const get = createQuery(getRequest)
 const post = createQuery(postRequest)
 
-const query = { post }
+const query = { get, post }
 
 export default query
