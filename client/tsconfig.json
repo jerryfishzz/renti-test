@@ -17,6 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
+      "actions/*": ["actions/*"],
       "contexts/*": ["contexts/*"],
       "hooks/*": ["hooks/*"],
       "lib/*": ["lib/*"],
