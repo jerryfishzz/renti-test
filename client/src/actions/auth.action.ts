@@ -1,16 +1,6 @@
-import { z } from 'zod'
-
 import { ValidatedQuery } from 'hooks/useValidation'
+import { Options } from './types'
 
-type Options<
-  TRequest extends Record<string, unknown>,
-  TResponse extends Record<string, unknown>,
-> = {
-  url: string
-  schema: z.Schema<TRequest>
-  data: unknown
-  resSchema: z.Schema<TResponse>
-}
 export function doLogin<
   TRequest extends Record<string, unknown>,
   TResponse extends Record<string, unknown>,
