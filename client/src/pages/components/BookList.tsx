@@ -3,12 +3,17 @@ import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import BookCard from './BookCard'
-import { Book, getBooksResponse, getMyBooksResponse } from 'schemas/book.schema'
+import {
+  Book,
+  Status,
+  getBooksResponse,
+  getMyBooksResponse,
+} from 'schemas/book.schema'
 import { useValidation } from 'hooks/useValidation'
 import { get, doQuery } from 'lib/query'
 import { useAuth } from 'contexts/auth'
 
-export type BookState = Book & { status?: string }
+export type BookState = Book & { status?: Status }
 type BookListProps = {
   type?: 'library' | 'my-list'
 }
