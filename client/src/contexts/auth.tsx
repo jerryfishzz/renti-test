@@ -5,6 +5,7 @@ import { createContext } from 'lib/context'
 import { LoginResponse, loginRequest, loginResponse } from 'schemas/auth.schema'
 import { useAuthValidation } from 'hooks/useValidation'
 import query from 'lib/query'
+import { doLogin } from 'actions/auth.action'
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'
@@ -49,12 +50,12 @@ function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(
     async (username: string, password: string) => {
       try {
-        const user = await validatedQuery(
-          '/login',
-          loginRequest,
-          { username, password },
-          loginResponse,
-        )
+        const user = await doLogin(validatedQuery, {
+          url: '/login',
+          schema: loginRequest,
+          data: { username, password },
+          resSchema: loginResponse,
+        })
         console.log(user)
         setUser(user)
         localStorage.setItem(USER_LOGIN, JSON.stringify(user))
