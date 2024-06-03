@@ -8,7 +8,7 @@ import { useValidation } from 'hooks/useValidation'
 import { get, doQuery } from 'lib/query'
 import { useAuth } from 'contexts/auth'
 
-type BookState = Book & { status?: string }
+export type BookState = Book & { status?: string }
 type BookListProps = {
   type?: 'library' | 'my-list'
 }
@@ -25,7 +25,7 @@ export default function BookList({ type = 'library' }: BookListProps) {
           const books =
             type === 'library'
               ? await doQuery(fullProcessQuery, {
-                  url: '/books',
+                  url: `/books/account/${user.id}`,
                   resSchema: getBooksResponse,
                 })
               : await doQuery(fullProcessQuery, {
