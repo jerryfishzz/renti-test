@@ -23,7 +23,7 @@ export const book = z.object({
   id: z.number(),
   title: z.string(),
   author: z.string(),
-  genre: z.number(),
+  genre_id: z.number(),
   created_at: z.date(),
   cover_image: z.string(),
 })
