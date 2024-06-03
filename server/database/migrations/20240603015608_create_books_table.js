@@ -4,7 +4,7 @@ exports.up = function (knex) {
     table.string('title').notNullable()
     table.string('author').notNullable()
     table
-      .integer('genre')
+      .integer('genre_id')
       .notNullable()
       .unsigned()
       .references('id')
