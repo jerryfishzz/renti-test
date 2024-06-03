@@ -14,12 +14,12 @@ export default function Layout({ children }: LayoutProps) {
       <Box sx={{ bgcolor: 'background.default' }}>
         <Container
           sx={{
-            pt: { xs: 4, sm: 12 },
-            pb: { xs: 8, sm: 16 },
+            pt: { xs: 14, sm: 20 },
+            pb: { xs: 8, sm: 12 },
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'stretch',
             gap: { xs: 3, sm: 6 },
           }}
         >

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { PaletteMode } from '@mui/material'
+import { Box, PaletteMode, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 // import Box from '@mui/material/Box'
 // import Divider from '@mui/material/Divider'
@@ -80,6 +80,13 @@ export default function Library() {
     <>
       {/* <AppAppBar mode={mode} toggleColorMode={toggleColorMode} /> */}
       {/* <Hero /> */}
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+        <Typography variant="h2" component="h1">
+          Library
+        </Typography>
+      </Box>
+
       <BookList />
       {/* <Box sx={{ bgcolor: 'background.default' }}>
         <LogoCollection />
