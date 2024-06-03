@@ -18,3 +18,13 @@ export type Genre = {
   created_at: Date
   updated_at: Date
 }
+
+export const book = z.object({
+  id: z.number(),
+  title: z.string(),
+  author: z.string(),
+  genre: z.number(),
+  created_at: z.date(),
+  cover_image: z.string(),
+})
+export type Book = z.infer<typeof book>
