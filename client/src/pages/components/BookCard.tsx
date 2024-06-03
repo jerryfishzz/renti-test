@@ -28,7 +28,9 @@ type BookCardProps = {
 }
 export type StatusState = 'reading' | 'completed' | 'wishlist'
 
-export default function BookCard({ book }: BookCardProps) {
+export default function BookCard({
+  book: { id, author, title, cover_image, status: dbStatus, genre },
+}: BookCardProps) {
   const theme = useTheme()
   const containerRef = useRef<HTMLDivElement>(null!)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
@@ -46,7 +48,7 @@ export default function BookCard({ book }: BookCardProps) {
   }, [])
 
   return (
-    <Grid item xs={12} sm={6} md={3} key={book.id} sx={{ display: 'flex' }}>
+    <Grid item xs={12} sm={6} md={3} key={id} sx={{ display: 'flex' }}>
       <Card
         sx={{
           display: 'flex',
@@ -60,20 +62,20 @@ export default function BookCard({ book }: BookCardProps) {
         <CardMedia
           ref={containerRef}
           sx={{ height: containerSize.width * 1.6 }}
-          image={book.cover_image}
+          image={cover_image}
           title="green iguana"
         />
         {isAdded && <StatusMenu status={status} setStatus={setStatus} />}
         <CardContent>
           <Typography component="h2" variant="h4" color="text.primary">
-            {book.title}
+            {title}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            {book.author}
+            {author}
           </Typography>
           <Chip
             sx={{ mt: 1 }}
-            label={book.genre}
+            label={genre}
             variant="outlined"
             size="small"
             color="info"
