@@ -11,7 +11,7 @@ import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
 import { Chip, useTheme } from '@mui/material'
 
 import StatusMenu from './StatusMenu'
-import { Book } from 'schemas/book.schema'
+import { BookState } from './BookList'
 
 type StatusValue = {
   text: string
@@ -24,7 +24,7 @@ export const readingStatus: Record<StatusState, StatusValue> = {
 }
 
 type BookCardProps = {
-  book: Book
+  book: BookState
 }
 export type StatusState = 'reading' | 'completed' | 'wishlist'
 
