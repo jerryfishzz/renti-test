@@ -35,6 +35,103 @@ const accounts = [
   },
 ]
 
+const books = [
+  {
+    id: 1,
+    title: 'The Great Gatsby',
+    author: 'F. Scott Fitzgerald',
+    genre: 7,
+    cover_image:
+      'https://m.media-amazon.com/images/I/81QuEGw8VPL._AC_UF1000,1000_QL80_.jpg',
+  },
+  {
+    id: 2,
+    title: 'Becoming',
+    author: 'Michelle Obama',
+    genre: 3,
+    cover_image:
+      'https://cdn2.penguin.com.au/covers/original/9780241982976.jpg',
+  },
+  {
+    id: 3,
+    title: 'Dune',
+    author: 'Frank Herbert',
+    genre: 13,
+    cover_image: 'https://d3fa68hw0m2vcc.cloudfront.net/875/277085392.jpeg',
+  },
+  {
+    id: 4,
+    title: 'Life of Pi',
+    author: 'Yann Martel',
+    genre: 2,
+    cover_image:
+      'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQS_pafFWoUZXoaQvYl6CEP9h51XJ4hsqK6DF66qc3wfs7ViMZq',
+  },
+  {
+    id: 5,
+    title: 'Jane Eyre',
+    author: 'Charlotte Brontë',
+    genre: 12,
+    cover_image:
+      'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSSYdk6Rh5OTsGdysNIEvx39vPpNL-xhWcmCYp1G1TYbd5fY3YB',
+  },
+  {
+    id: 6,
+    title: 'Frankenstein',
+    author: 'Mary Shelley',
+    genre: 9,
+    cover_image:
+      'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTWOvWV-UtYvY2Qu57SAEGFDMsvxmxU3JjUgPh2_6GgS_6rGUyU',
+  },
+  {
+    id: 7,
+    title: 'Three-Body Problem',
+    author: 'Liu Cixin',
+    genre: 13,
+    cover_image: 'https://d3fa68hw0m2vcc.cloudfront.net/15b/313930051.jpeg',
+  },
+  {
+    id: 8,
+    title: 'The Hobbit',
+    author: 'J. R. R. Tolkien',
+    genre: 2,
+    cover_image:
+      'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRRxdD7tWquroN4RfhCCpDQeOD7q4DnTHqUpp8gdAW9hzhoSftn',
+  },
+  {
+    id: 9,
+    title: 'I Am Legend',
+    author: 'Richard Matheson',
+    genre: 9,
+    cover_image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn2Kg7mIntkbIbwkzEIlVRXSIu-QE4jAhBHJDBZl241_LhaVgG',
+  },
+  {
+    id: 10,
+    title: 'Twilight',
+    author: 'Stephenie Meyer',
+    genre: 12,
+    cover_image:
+      'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTwp7r8tHEhRtCYQtVwjgot9cUNrUGdvszZLInDXwdc94pwVdx6',
+  },
+  {
+    id: 11,
+    title: 'Nineteen Eighty-Four',
+    author: 'George Orwell',
+    genre: 7,
+    cover_image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeglXlBmm240qQ70HEi6CpdgjyevAGT78Vo8iOVtsLnkiDw5pb',
+  },
+  {
+    id: 12,
+    title: 'Steve Jobs',
+    author: 'Walter Isaacson',
+    genre: 3,
+    cover_image:
+      'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR2k4P1Mk2oKRRWcncYAbDL6q3mAwbc7hxikLYOF5mgkz1-QwaK',
+  },
+]
+
 exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex('accounts').del()
@@ -77,4 +174,15 @@ exports.seed = async function (knex) {
     { name: 'Thriller' },
     { name: 'Young Adult' },
   ])
+
+  // Books
+  for (const book of books) {
+    const { title, author, genre, cover_image } = book
+    await knex('books').insert({
+      title,
+      author,
+      genre,
+      cover_image,
+    })
+  }
 }
