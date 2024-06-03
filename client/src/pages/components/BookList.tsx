@@ -3,26 +3,48 @@ import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import BookCard from './BookCard'
-import { Book, getBooksResponse } from 'schemas/book.schema'
+import { Book, getBooksResponse, getMyBooksResponse } from 'schemas/book.schema'
 import { useValidation } from 'hooks/useValidation'
 import { get, doQuery } from 'lib/query'
+import { useAuth } from 'contexts/auth'
 
-export default function BookList() {
-  const [books, setBooks] = useState<Book[]>([])
+type BookState = Book & { status?: string }
+type BookListProps = {
+  type?: 'library' | 'my-list'
+}
+export default function BookList({ type = 'library' }: BookListProps) {
+  const [books, setBooks] = useState<BookState[]>([])
   const fullProcessQuery = useValidation(get)
+  const { user } = useAuth()
 
   useEffect(() => {
-    doQuery(fullProcessQuery, {
-      url: '/books',
-      resSchema: getBooksResponse,
-    })
-      .then(books => {
-        setBooks(books)
-      })
-      .catch(err => {
-        toast.error(err.message)
-      })
-  }, [fullProcessQuery])
+    let isMounted = true
+    async function getList() {
+      try {
+        if (user?.id) {
+          const books =
+            type === 'library'
+              ? await doQuery(fullProcessQuery, {
+                  url: '/books',
+                  resSchema: getBooksResponse,
+                })
+              : await doQuery(fullProcessQuery, {
+                  url: `/lists/account/${user.id}`,
+                  resSchema: getMyBooksResponse,
+                })
+          isMounted && setBooks(books)
+        }
+      } catch (err) {
+        toast.error((err as Error).message)
+      }
+    }
+
+    getList()
+
+    return () => {
+      isMounted = false
+    }
+  }, [fullProcessQuery, type, user?.id])
 
   if (books.length === 0) return null
 

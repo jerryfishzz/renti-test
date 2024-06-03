@@ -10,7 +10,7 @@ export default function MyList() {
           My List
         </Typography>
       </Box>
-      <BookList />
+      <BookList type="my-list" />
     </>
   )
 }
