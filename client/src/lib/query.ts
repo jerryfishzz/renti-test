@@ -29,12 +29,12 @@ function post(logout: () => void, location: Location) {
     TResponse extends Record<string, unknown>,
   >(
     url: string,
-    reqSchema: z.Schema<TRequest>,
+    reqSchema: z.Schema<TRequest> | null,
     data: unknown,
     resSchema: z.Schema<TResponse>,
   ) => {
     try {
-      const validatedRequest = validate(reqSchema, data)
+      const validatedRequest = reqSchema ? validate(reqSchema, data) : data
 
       const response = await baseQuery(url, {
         method: 'post',
