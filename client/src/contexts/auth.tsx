@@ -55,7 +55,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           data: { username, password },
           resSchema: loginResponse,
         })
-        console.log(user)
+
         setUser({ ...user, from })
         localStorage.setItem(USER_LOGIN, JSON.stringify(user))
         startAutoLogoutTimer()

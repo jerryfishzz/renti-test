@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   CssBaseline,
   PaletteMode,
@@ -14,18 +14,6 @@ import { Toaster } from 'react-hot-toast'
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light')
   const theme = createTheme({ palette: { mode } })
-
-  console.log(process.env.NODE_ENV)
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await query('/accounts/1')
-  //     console.log(response)
-  //     const data = await response.json()
-  //     console.log(data)
-  //   }
-  //   fetchData()
-  // }, [])
 
   return (
     <ThemeProvider theme={theme}>

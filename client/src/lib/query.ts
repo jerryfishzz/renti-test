@@ -57,7 +57,6 @@ function createQuery(
         if (!response.ok) {
           if (response.status === 403) {
             logout()
-            console.log(location.pathname)
 
             const errorMsg =
               location.pathname === '/sign-in'

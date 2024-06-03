@@ -74,7 +74,6 @@ router.post(
       })
       .first()
     if (!account) return res.sendStatus(403)
-    console.log(account)
 
     const checkPassword = await bcrypt.compare(
       req.body.password || '',
