@@ -96,6 +96,7 @@ router.post(
 
 router.delete(
   '/accounts/:id',
+  auth(),
   validate(deleteById),
   guard(async (req: DeleteByIdRequest, res: Response) => {
     const rowsDeleted = await db('accounts').where('id', req.params.id).del()

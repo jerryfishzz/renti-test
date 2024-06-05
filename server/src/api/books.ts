@@ -4,13 +4,16 @@ import {
   GetBooksByAccountIdRequest,
   GetBooksByAccountIdResponse,
   GetBooksByAccountIdReturn,
+  getBooksByAccountId,
 } from 'schemas/book.schema'
 import { auth } from 'lib/jwt'
 import { Book, Genre } from 'types/db'
+import validate from 'lib/validate'
 
 router.get(
   '/books/account/:id',
   auth(),
+  validate(getBooksByAccountId),
   guard(
     async (
       req: GetBooksByAccountIdRequest,

@@ -5,11 +5,14 @@ import {
   GetByUserIdResponse,
   GetByUserIdRequest,
   GetByUserIdReturn,
+  getByUserId,
 } from 'schemas/reading_list.schema'
+import validate from 'lib/validate'
 
 router.get(
   '/lists/account/:id',
   auth(),
+  validate(getByUserId),
   guard(async (req: GetByUserIdRequest, res: GetByUserIdResponse) => {
     const lists = await db('reading_lists').where('account_id', req.params.id)
     if (!lists) return res.sendStatus(404)
