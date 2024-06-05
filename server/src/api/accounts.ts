@@ -1,5 +1,6 @@
 import { addHours } from 'date-fns'
 import bcrypt from 'bcryptjs'
+import { Response } from 'express'
 
 import { db } from 'lib/db'
 import { auth, sign } from 'lib/jwt'
@@ -9,7 +10,6 @@ import {
   CreateAccountRequest,
   CreateAccountResponse,
   DeleteByIdRequest,
-  DeleteByIdResponse,
   GetByIdRequest,
   GetByIdResponse,
   GetByUsernameRequest,
@@ -81,20 +81,15 @@ router.post(
     )
     if (!checkPassword) return res.sendStatus(403)
 
-    const { id, username, name, email, reading_preferences } = account
     const access_token = sign({
-      id,
+      id: account.id,
       isAuthenticated: true,
       iat: new Date().getTime() / 1000,
       exp: addHours(new Date(), 1).getTime() / 1000,
     })
     return res.send({
-      id,
+      ...account,
       access_token,
-      username,
-      name,
-      email,
-      reading_preferences,
     })
   })
 )
@@ -102,7 +97,7 @@ router.post(
 router.delete(
   '/accounts/:id',
   validate(deleteById),
-  guard(async (req: DeleteByIdRequest, res: DeleteByIdResponse) => {
+  guard(async (req: DeleteByIdRequest, res: Response) => {
     const rowsDeleted = await db('accounts').where('id', req.params.id).del()
     if (!rowsDeleted) return res.sendStatus(404)
 
