@@ -51,7 +51,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       try {
         const user = await doQuery(validatedQuery, {
           url: '/login',
-          schema: loginRequest,
+          reqSchema: loginRequest,
           data: { username, password },
           resSchema: loginResponse,
         })
