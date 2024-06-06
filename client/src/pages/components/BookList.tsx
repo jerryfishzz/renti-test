@@ -9,7 +9,7 @@ import {
   getBooksResponse,
   getMyBooksResponse,
 } from 'schemas/book.schema'
-import { useValidation } from 'hooks/useValidation'
+import { useSuperQuery } from 'hooks/useSuperQuery'
 import { get, doQuery } from 'lib/query'
 import { useAuth } from 'contexts/auth'
 
@@ -19,7 +19,7 @@ type BookListProps = {
 }
 export default function BookList({ type = 'library' }: BookListProps) {
   const [books, setBooks] = useState<BookState[]>([])
-  const fullProcessQuery = useValidation(get)
+  const fullProcessQuery = useSuperQuery(get)
   const { user } = useAuth()
 
   useEffect(() => {

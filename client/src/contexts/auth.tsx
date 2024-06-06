@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 
 import { createContext } from 'lib/context'
 import { LoginResponse, loginRequest, loginResponse } from 'schemas/auth.schema'
-import { useAuthValidation } from 'hooks/useValidation'
+import { useAuthSuperQuery } from 'hooks/useSuperQuery'
 import { post, doQuery } from 'lib/query'
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
@@ -33,7 +33,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [timeoutId])
 
-  const validatedQuery = useAuthValidation(post, logout)
+  const validatedQuery = useAuthSuperQuery(post, logout)
 
   const startAutoLogoutTimer = useCallback(() => {
     if (timeoutId) {

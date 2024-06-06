@@ -6,26 +6,26 @@ import { ValidatedQuery } from 'lib/query'
 type Query = (logout: () => void, location: Location) => ValidatedQuery
 
 // Use on AuthProvider
-export function useAuthValidation(query: Query, logout: () => void) {
+export function useAuthSuperQuery(query: Query, logout: () => void) {
   const location = window.location
 
-  const validatedQuery = useMemo(
+  const superQuery = useMemo(
     () => query(logout, location),
     [location, logout, query],
   )
 
-  return validatedQuery
+  return superQuery
 }
 
 // Use inside AuthProvider
-export function useValidation(query: Query) {
+export function useSuperQuery(query: Query) {
   const location = window.location
   const { logout } = useAuth()
 
-  const validatedQuery = useMemo(
+  const superQuery = useMemo(
     () => query(logout, location),
     [location, logout, query],
   )
 
-  return validatedQuery
+  return superQuery
 }
