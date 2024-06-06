@@ -29,12 +29,10 @@ export default function BookList({ type = 'library' }: BookListProps) {
         if (user?.id) {
           const books =
             type === 'library'
-              ? await doQuery(fullProcessQuery, {
-                  url: `/books/account/${user.id}`,
+              ? await doQuery(fullProcessQuery, `/books/account/${user.id}`, {
                   resSchema: getBooksResponse,
                 })
-              : await doQuery(fullProcessQuery, {
-                  url: `/lists/account/${user.id}`,
+              : await doQuery(fullProcessQuery, `/lists/account/${user.id}`, {
                   resSchema: getMyBooksResponse,
                 })
           isMounted && setBooks(books)

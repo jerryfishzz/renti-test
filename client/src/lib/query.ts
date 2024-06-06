@@ -44,12 +44,10 @@ function createQuery(
   request: (url: string, data: unknown) => Promise<Response>,
 ) {
   return (logout: () => void, location: Location) => {
-    return async <TRequest extends Record<string, unknown>, TResponse>({
-      url,
-      reqSchema,
-      data,
-      resSchema,
-    }: Options<TRequest, TResponse>) => {
+    return async <TRequest extends Record<string, unknown>, TResponse>(
+      url: string,
+      { reqSchema, data, resSchema }: Options<TRequest, TResponse>,
+    ) => {
       try {
         const validatedRequest = reqSchema ? validate(reqSchema, data) : data
         const response = await request(url, validatedRequest)
@@ -87,20 +85,21 @@ const get = createQuery(getRequest)
 const post = createQuery(postRequest)
 
 type Options<TRequest extends Record<string, unknown>, TResponse> = {
-  url: string
   reqSchema?: z.Schema<TRequest>
   data?: unknown
   resSchema: z.Schema<TResponse>
 }
 type ValidatedQuery = <TRequest extends Record<string, unknown>, TResponse>(
+  url: string,
   options: Options<TRequest, TResponse>,
 ) => Promise<TResponse>
 function doQuery<TRequest extends Record<string, unknown>, TResponse>(
   query: ValidatedQuery,
+  url: string,
   options: Options<TRequest, TResponse>,
 ) {
-  const { url, reqSchema, data, resSchema } = options
-  return query({ url, reqSchema, data, resSchema })
+  const { reqSchema, data, resSchema } = options
+  return query(url, { reqSchema, data, resSchema })
 }
 
 export { get, post, doQuery }

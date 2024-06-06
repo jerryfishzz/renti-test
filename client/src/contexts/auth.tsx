@@ -49,8 +49,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(
     async (username: string, password: string, from: string) => {
       try {
-        const user = await doQuery(validatedQuery, {
-          url: '/login',
+        const user = await doQuery(validatedQuery, '/login', {
           reqSchema: loginRequest,
           data: { username, password },
           resSchema: loginResponse,
