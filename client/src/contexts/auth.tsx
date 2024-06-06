@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 
 import { createContext } from 'lib/context'
 import { LoginResponse, loginRequest, loginResponse } from 'schemas/auth.schema'
-import { useAuthQuery } from 'hooks/useSuperQuery'
+import { useAuthQuery } from 'hooks/useQuery'
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'

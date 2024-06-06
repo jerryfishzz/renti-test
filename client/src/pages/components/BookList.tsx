@@ -9,7 +9,7 @@ import {
   getBooksResponse,
   getMyBooksResponse,
 } from 'schemas/book.schema'
-import { useQuery } from 'hooks/useSuperQuery'
+import { useQuery } from 'hooks/useQuery'
 import { useAuth } from 'contexts/auth'
 
 export type BookState = Book & { status?: Status }
