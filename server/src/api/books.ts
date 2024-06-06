@@ -1,9 +1,12 @@
 import { db } from 'lib/db'
 import { guard, router } from './utils'
 import {
+  CreateBookRequest,
+  CreateBookResponse,
   GetBooksByAccountIdRequest,
   GetBooksByAccountIdResponse,
   GetBooksByAccountIdReturn,
+  createBook,
   getBooksByAccountId,
 } from 'schemas/book.schema'
 import { auth } from 'lib/jwt'
@@ -52,6 +55,16 @@ router.get(
       return res.send(wantedBooks)
     }
   )
+)
+
+router.post(
+  '/books',
+  auth(),
+  validate(createBook),
+  guard(async (req: CreateBookRequest, res: CreateBookResponse) => {
+    const [book] = await db('books').insert(req.body).returning('*')
+    return res.send(book)
+  })
 )
 
 export { router as books }
