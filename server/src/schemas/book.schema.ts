@@ -20,3 +20,8 @@ export const createBook = z.object({
 })
 export type CreateBookRequest = Request<z.infer<typeof createBook>['body']>
 export type CreateBookResponse = Response<Book>
+
+export const createBooks = z.object({
+  body: book.omit({ id: true, created_at: true }).array(),
+})
+export type CreateBooksRequest = Request<z.infer<typeof createBooks>['body']>

@@ -1,12 +1,16 @@
+import type { Response } from 'express'
+
 import { db } from 'lib/db'
 import { guard, router } from './utils'
 import {
   CreateBookRequest,
   CreateBookResponse,
+  CreateBooksRequest,
   GetBooksByAccountIdRequest,
   GetBooksByAccountIdResponse,
   GetBooksByAccountIdReturn,
   createBook,
+  createBooks,
   getBooksByAccountId,
 } from 'schemas/book.schema'
 import { auth } from 'lib/jwt'
@@ -64,6 +68,16 @@ router.post(
   guard(async (req: CreateBookRequest, res: CreateBookResponse) => {
     const [book] = await db('books').insert(req.body).returning('*')
     return res.send(book)
+  })
+)
+
+router.post(
+  '/books/bulk',
+  auth(),
+  validate(createBooks),
+  guard(async (req: CreateBooksRequest, res: Response) => {
+    await db('books').insert(req.body)
+    return res.sendStatus(200)
   })
 )
 
