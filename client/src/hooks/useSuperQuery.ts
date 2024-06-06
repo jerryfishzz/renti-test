@@ -1,31 +1,23 @@
 import { useMemo } from 'react'
 
 import { useAuth } from 'contexts/auth'
-import { ValidatedQuery } from 'lib/query'
+import { get, post } from 'lib/query'
 
-type Query = (logout: () => void, location: Location) => ValidatedQuery
+type Type = 'get' | 'post'
 
 // Use on AuthProvider
-export function useAuthSuperQuery(query: Query, logout: () => void) {
+export function useAuthQuery(type: Type, logout: () => void) {
   const location = window.location
+  const query = type === 'get' ? get : post
 
-  const superQuery = useMemo(
-    () => query(logout, location),
-    [location, logout, query],
-  )
-
-  return superQuery
+  return useMemo(() => query(logout, location), [location, logout, query])
 }
 
 // Use inside AuthProvider
-export function useSuperQuery(query: Query) {
+export function useQuery(type: Type = 'get') {
   const location = window.location
   const { logout } = useAuth()
+  const query = type === 'get' ? get : post
 
-  const superQuery = useMemo(
-    () => query(logout, location),
-    [location, logout, query],
-  )
-
-  return superQuery
+  return useMemo(() => query(logout, location), [location, logout, query])
 }

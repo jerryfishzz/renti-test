@@ -9,8 +9,7 @@ import {
   getBooksResponse,
   getMyBooksResponse,
 } from 'schemas/book.schema'
-import { useSuperQuery } from 'hooks/useSuperQuery'
-import { get, doQuery } from 'lib/query'
+import { useQuery } from 'hooks/useSuperQuery'
 import { useAuth } from 'contexts/auth'
 
 export type BookState = Book & { status?: Status }
@@ -19,7 +18,7 @@ type BookListProps = {
 }
 export default function BookList({ type = 'library' }: BookListProps) {
   const [books, setBooks] = useState<BookState[]>([])
-  const fullProcessQuery = useSuperQuery(get)
+  const get = useQuery()
   const { user } = useAuth()
 
   useEffect(() => {
@@ -29,10 +28,10 @@ export default function BookList({ type = 'library' }: BookListProps) {
         if (user?.id) {
           const books =
             type === 'library'
-              ? await doQuery(fullProcessQuery, `/books/account/${user.id}`, {
+              ? await get(`/books/account/${user.id}`, {
                   resSchema: getBooksResponse,
                 })
-              : await doQuery(fullProcessQuery, `/lists/account/${user.id}`, {
+              : await get(`/lists/account/${user.id}`, {
                   resSchema: getMyBooksResponse,
                 })
           isMounted && setBooks(books)
@@ -47,7 +46,7 @@ export default function BookList({ type = 'library' }: BookListProps) {
     return () => {
       isMounted = false
     }
-  }, [fullProcessQuery, type, user?.id])
+  }, [get, type, user?.id])
 
   if (books.length === 0) return null
 

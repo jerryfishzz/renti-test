@@ -3,8 +3,7 @@ import toast from 'react-hot-toast'
 
 import { createContext } from 'lib/context'
 import { LoginResponse, loginRequest, loginResponse } from 'schemas/auth.schema'
-import { useAuthSuperQuery } from 'hooks/useSuperQuery'
-import { post, doQuery } from 'lib/query'
+import { useAuthQuery } from 'hooks/useSuperQuery'
 
 const TIME_OUT = 10 * 60 * 1000 // 10 minutes
 const USER_LOGIN = 'USER_LOGIN'
@@ -33,7 +32,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [timeoutId])
 
-  const validatedQuery = useAuthSuperQuery(post, logout)
+  const post = useAuthQuery('post', logout)
 
   const startAutoLogoutTimer = useCallback(() => {
     if (timeoutId) {
@@ -49,7 +48,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(
     async (username: string, password: string, from: string) => {
       try {
-        const user = await doQuery(validatedQuery, '/login', {
+        const user = await post('/login', {
           reqSchema: loginRequest,
           data: { username, password },
           resSchema: loginResponse,
@@ -62,7 +61,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         toast.error((error as Error).message)
       }
     },
-    [startAutoLogoutTimer, validatedQuery],
+    [post, startAutoLogoutTimer],
   )
 
   return (

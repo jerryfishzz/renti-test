@@ -40,6 +40,11 @@ function postRequest(url: string, data: unknown) {
   })
 }
 
+type Options<TRequest extends Record<string, unknown>, TResponse> = {
+  reqSchema?: z.Schema<TRequest>
+  data?: unknown
+  resSchema: z.Schema<TResponse>
+}
 function createQuery(
   request: (url: string, data: unknown) => Promise<Response>,
 ) {
@@ -84,23 +89,4 @@ function createQuery(
 const get = createQuery(getRequest)
 const post = createQuery(postRequest)
 
-type Options<TRequest extends Record<string, unknown>, TResponse> = {
-  reqSchema?: z.Schema<TRequest>
-  data?: unknown
-  resSchema: z.Schema<TResponse>
-}
-type ValidatedQuery = <TRequest extends Record<string, unknown>, TResponse>(
-  url: string,
-  options: Options<TRequest, TResponse>,
-) => Promise<TResponse>
-function doQuery<TRequest extends Record<string, unknown>, TResponse>(
-  query: ValidatedQuery,
-  url: string,
-  options: Options<TRequest, TResponse>,
-) {
-  const { reqSchema, data, resSchema } = options
-  return query(url, { reqSchema, data, resSchema })
-}
-
-export { get, post, doQuery }
-export type { ValidatedQuery }
+export { get, post }
