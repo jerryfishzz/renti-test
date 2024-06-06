@@ -78,10 +78,10 @@ export default function BookCard({
         }}
       >
         <CardMedia
+          title={title}
           ref={containerRef}
           sx={{ height: containerSize.width * 1.6 }}
           image={cover_image}
-          title="green iguana"
         />
         {isAdded && <StatusMenu status={status} setStatus={setStatus} />}
         <CardContent>
