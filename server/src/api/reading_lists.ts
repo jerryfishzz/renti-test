@@ -2,19 +2,22 @@ import { db } from 'lib/db'
 import { guard, router } from './utils'
 import { auth } from 'lib/jwt'
 import {
-  GetByIdResponse,
+  GetByUserIdResponse,
   GetByUserIdRequest,
-  GetByIdReturn,
+  GetByUserIdReturn,
+  getByUserId,
 } from 'schemas/reading_list.schema'
+import validate from 'lib/validate'
 
 router.get(
   '/lists/account/:id',
   auth(),
-  guard(async (req: GetByUserIdRequest, res: GetByIdResponse) => {
+  validate(getByUserId),
+  guard(async (req: GetByUserIdRequest, res: GetByUserIdResponse) => {
     const lists = await db('reading_lists').where('account_id', req.params.id)
     if (!lists) return res.sendStatus(404)
 
-    const listedBooks: GetByIdReturn[] = []
+    const listedBooks: GetByUserIdReturn[] = []
     for (const list of lists) {
       const book = await db('books').where('id', list.book_id).first()
       if (!book) return res.sendStatus(500)

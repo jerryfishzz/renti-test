@@ -33,7 +33,7 @@ export const reading_list = z.object({
   id: z.number(),
   account_id: z.number(),
   book_id: z.number(),
-  status: z.string(),
+  status: z.enum(['currently reading', 'read', 'want to read']),
   created_at: z.date(),
   updated_at: z.date(),
 })

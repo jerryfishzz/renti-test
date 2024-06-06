@@ -29,7 +29,6 @@ export const deleteById = z.object({
   params: z.object({ id: z.coerce.number() }),
 })
 export type DeleteByIdRequest = Request<z.infer<typeof deleteById>['params']>
-export type DeleteByIdResponse = Response
 
 export const login = z.object({
   body: account.pick({ username: true, password: true }),
@@ -39,4 +38,4 @@ export type LoginRequest = Request<
   unknown,
   z.infer<typeof login>['body']
 >
-export type LoginResponse = Response
+export type LoginResponse = Response<Account & { access_token: string }>
