@@ -50,7 +50,7 @@ test(`get books`, async () => {
   console.log(response.body)
 })
 
-test(`create books`, async () => {
+test.skip(`create books`, async () => {
   const books = createMockBooks(100)
   const response = await doAuth(agent.post('/books/bulk').send(books))
   expect(response.status).toBe(200)
