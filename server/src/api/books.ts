@@ -81,4 +81,32 @@ router.post(
   })
 )
 
+router.get(
+  '/books/get-all',
+  auth(),
+  guard(async (req, res) => {
+    const books = await db('books').select('*')
+    const genres = await db('genres').select('*')
+    const genreMap = new Map(genres.map(genre => [genre.id, genre.name]))
+    const booksWithGenres = books.map(book => ({
+      ...book,
+      genre: genreMap.get(book.genre_id),
+    }))
+    return res.send(booksWithGenres)
+  })
+)
+
+router.get(
+  '/books/get-all-join',
+  auth(),
+  guard(async (req, res) => {
+    const books = (await db('books')
+      .select('books.*', 'genres.name as genre')
+      .join('genres', 'books.genre_id', 'genres.id')) as Awaited<
+      (Book & { genre: Genre['name'] })[]
+    >
+    return res.send(books)
+  })
+)
+
 export { router as books }

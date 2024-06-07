@@ -41,17 +41,45 @@ beforeAll(async () => {
   }
 })
 
+// beforeEach(async () => {
+//   await db.initialize()
+// })
+
 afterEach(async () => {
   await db.destroy()
 })
 
-test(`get books`, async () => {
+test.skip(`get books`, async () => {
   const response = await doAuth(agent.get('/books/account/1'))
   console.log(response.body)
 })
 
-test.skip(`create books`, async () => {
-  const books = createMockBooks(100)
+test.skip('create books', async () => {
+  const books = createMockBooks(500)
   const response = await doAuth(agent.post('/books/bulk').send(books))
   expect(response.status).toBe(200)
 })
+
+test('check which one is slower', async () => {
+  let combineWin = 0
+  let joinWin = 0
+
+  for (let i = 0; i < 100; i++) {
+    const combineStart = Date.now()
+    await doAuth(agent.get('/books/get-all'))
+    const combineEnd = Date.now()
+    const combineTime = combineEnd - combineStart
+
+    const joinStart = Date.now()
+    await doAuth(agent.get('/books/get-all-join'))
+    const joinEnd = Date.now()
+    const joinTime = joinEnd - joinStart
+
+    if (combineTime < joinTime) {
+      combineWin++
+    } else {
+      joinWin++
+    }
+  }
+  console.log(`combineWin: ${combineWin}, joinWin: ${joinWin}`)
+}, 100000)
