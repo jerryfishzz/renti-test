@@ -41,17 +41,12 @@ beforeAll(async () => {
   }
 })
 
-// beforeEach(async () => {
-//   await db.initialize()
-// })
-
-afterEach(async () => {
+afterAll(async () => {
   await db.destroy()
 })
 
-test.skip(`get books`, async () => {
+test('get books', async () => {
   const response = await doAuth(agent.get('/books/account/1'))
-  console.log(response.body)
 })
 
 test.skip('create books', async () => {
