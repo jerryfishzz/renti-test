@@ -18,7 +18,8 @@ export type GetBooksByAccountIdResponse = Response<GetBooksByAccountIdReturn[]>
 export const createBook = z.object({
   body: book.omit({ id: true, created_at: true }),
 })
-export type CreateBookRequest = Request<z.infer<typeof createBook>['body']>
+export type CreateBook = z.infer<typeof createBook>['body']
+export type CreateBookRequest = Request<CreateBook>
 export type CreateBookResponse = Response<Book>
 
 export const createBooks = z.object({
