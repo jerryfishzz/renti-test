@@ -41,7 +41,7 @@ beforeAll(async () => {
   }
 })
 
-afterAll(async () => {
+afterEach(async () => {
   await db.destroy()
 })
 
