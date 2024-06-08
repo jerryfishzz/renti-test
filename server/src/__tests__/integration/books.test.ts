@@ -6,13 +6,11 @@ import { accounts } from 'api/accounts'
 import { books } from 'api/books'
 import { db } from 'lib/db'
 import { CreateBook } from 'schemas/book.schema'
-
-const { API_USER, API_PASS } = process.env
+import { createDoAuth, logIn } from './utils'
 
 app.use(accounts)
 app.use(books)
 const agent = request(app)
-let access_token = ''
 let doAuth: (test: Test) => Test
 
 function createMockBooks(counts: number) {
@@ -30,15 +28,8 @@ function createMockBooks(counts: number) {
 }
 
 beforeAll(async () => {
-  const login = await agent
-    .post('/login')
-    .send({ username: API_USER, password: API_PASS })
-  access_token = login.body.access_token
-  doAuth = (test: Test) => {
-    return test
-      .set('Authorization', `Bearer ${access_token}`)
-      .set('Accept', 'application/json')
-  }
+  const login = await logIn(agent)
+  doAuth = createDoAuth(login)
 })
 
 afterAll(async () => {

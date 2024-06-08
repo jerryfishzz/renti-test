@@ -2,7 +2,10 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  modulePathIgnorePatterns: ['/__tests__/integration/models/'],
+  modulePathIgnorePatterns: [
+    '/__tests__/integration/models/',
+    '/__tests__/integration/utils.ts',
+  ],
   setupFiles: ['dotenv/config'],
   moduleNameMapper: {
     '^api/(.*)$': '<rootDir>/src/api/$1',
