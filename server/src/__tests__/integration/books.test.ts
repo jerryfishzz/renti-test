@@ -13,7 +13,7 @@ app.use(books)
 const agent = request(app)
 let doAuth: (test: Test) => Test
 
-function createMockBooks(counts: number) {
+function createMockBooks(counts: number = 1) {
   const books: CreateBook[] = []
   for (let i = 0; i < counts; i++) {
     const book: CreateBook = {
@@ -41,8 +41,20 @@ test('get books', async () => {
 })
 
 test.skip('create books', async () => {
-  const books = createMockBooks(500)
+  const books = createMockBooks(10)
   const response = await doAuth(agent.post('/books/bulk').send(books))
+  expect(response.status).toBe(200)
+})
+
+test.skip('create books xx', async () => {
+  const books = createMockBooks(2)
+  const errorBook = { ...createMockBooks()[0], genre_id: 'jerry' }
+  const response = await doAuth(
+    agent.post('/books/bulk').send([...books, errorBook])
+  )
+  // console.log(response.error)
+  console.log(response.text)
+  // const response = await doAuth(agent.post('/books/bulk').send(books))
   expect(response.status).toBe(200)
 })
 
