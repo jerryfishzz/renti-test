@@ -81,6 +81,7 @@ router.post(
   })
 )
 
+// For POC test only
 router.get(
   '/books/get-all',
   auth(),
@@ -96,6 +97,7 @@ router.get(
   })
 )
 
+// For POC test only
 router.get(
   '/books/get-all-join',
   auth(),
