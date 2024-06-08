@@ -13,7 +13,7 @@ app.use(accounts)
 app.use(books)
 const agent = request(app)
 let access_token = ''
-let doAuth: any
+let doAuth: (test: Test) => Test
 
 function createMockBooks(counts: number) {
   const books: CreateBook[] = []
@@ -30,9 +30,9 @@ function createMockBooks(counts: number) {
 }
 
 beforeAll(async () => {
-  const login = (await agent
+  const login = await agent
     .post('/login')
-    .send({ username: API_USER, password: API_PASS })) as any
+    .send({ username: API_USER, password: API_PASS })
   access_token = login.body.access_token
   doAuth = (test: Test) => {
     return test
