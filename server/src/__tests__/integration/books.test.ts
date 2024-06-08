@@ -58,7 +58,8 @@ test.skip('create books xx', async () => {
   expect(response.status).toBe(200)
 })
 
-test('check which one is slower', async () => {
+// For POC test only. Should be skipped.
+test.skip('check which one is slower', async () => {
   let combineWin = 0
   let joinWin = 0
 
