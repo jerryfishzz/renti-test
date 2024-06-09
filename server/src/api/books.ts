@@ -4,19 +4,17 @@ import { db } from 'lib/db'
 import { guard, router } from './utils'
 import {
   CreateBookRequest,
-  CreateBookResponse,
   CreateBooksRequest,
-  DeleteBookByIdResponse,
   GetBooksByAccountIdResponse,
   GetBooksByAccountIdReturn,
-  GetParamsIdRequest,
+  ResponseBook,
   createBook,
   createBooks,
-  getParamsId,
 } from 'schemas/book.schema'
 import { auth } from 'lib/jwt'
 import { Book, Genre } from 'types/db'
 import validate from 'lib/validate'
+import { GetParamsIdRequest, getParamsId } from 'schemas/shared.schema'
 
 router.get(
   '/books/account/:id',
@@ -61,7 +59,7 @@ router.post(
   '/books',
   auth(),
   validate(createBook),
-  guard(async (req: CreateBookRequest, res: CreateBookResponse) => {
+  guard(async (req: CreateBookRequest, res: ResponseBook) => {
     const [book] = await db('books').insert(req.body).returning('*')
     return res.send(book)
   })
@@ -81,7 +79,7 @@ router.delete(
   '/books/:id',
   auth(),
   validate(getParamsId),
-  guard(async (req: GetParamsIdRequest, res: DeleteBookByIdResponse) => {
+  guard(async (req: GetParamsIdRequest, res: ResponseBook) => {
     const [deleted] = await db('books')
       .where('id', req.params.id)
       .delete()

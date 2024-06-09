@@ -3,10 +3,7 @@ import { z } from 'zod'
 
 import { Book, Genre, Reading_List, book } from 'types/db'
 
-export const getParamsId = z.object({
-  params: z.object({ id: z.coerce.number() }),
-})
-export type GetParamsIdRequest = Request<z.infer<typeof getParamsId>['params']>
+export type ResponseBook = Response<Book>
 
 export type GetBooksByAccountIdReturn = Book & {
   genre: Genre['name']
@@ -19,11 +16,8 @@ export const createBook = z.object({
 })
 export type CreateBook = z.infer<typeof createBook>['body']
 export type CreateBookRequest = Request<CreateBook>
-export type CreateBookResponse = Response<Book>
 
 export const createBooks = z.object({
   body: book.omit({ id: true, created_at: true }).array(),
 })
 export type CreateBooksRequest = Request<z.infer<typeof createBooks>['body']>
-
-export type DeleteBookByIdResponse = Response<Book>
