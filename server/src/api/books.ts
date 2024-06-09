@@ -6,11 +6,14 @@ import {
   CreateBookRequest,
   CreateBookResponse,
   CreateBooksRequest,
+  DeleteBookByIdRequest,
+  DeleteBookByIdResponse,
   GetBooksByAccountIdRequest,
   GetBooksByAccountIdResponse,
   GetBooksByAccountIdReturn,
   createBook,
   createBooks,
+  deleteBookById,
   getBooksByAccountId,
 } from 'schemas/book.schema'
 import { auth } from 'lib/jwt'
@@ -78,6 +81,19 @@ router.post(
   guard(async (req: CreateBooksRequest, res: Response) => {
     await db('books').insert(req.body)
     return res.sendStatus(200)
+  })
+)
+
+router.delete(
+  '/books/:id',
+  auth(),
+  validate(deleteBookById),
+  guard(async (req: DeleteBookByIdRequest, res: DeleteBookByIdResponse) => {
+    const [deleted] = await db('books')
+      .where('id', req.params.id)
+      .delete()
+      .returning('*') // Retune the deleted record
+    return res.send(deleted)
   })
 )
 

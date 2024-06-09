@@ -26,3 +26,11 @@ export const createBooks = z.object({
   body: book.omit({ id: true, created_at: true }).array(),
 })
 export type CreateBooksRequest = Request<z.infer<typeof createBooks>['body']>
+
+export const deleteBookById = z.object({
+  params: z.object({ id: z.coerce.number() }),
+})
+export type DeleteBookByIdRequest = Request<
+  z.infer<typeof deleteBookById>['params']
+>
+export type DeleteBookByIdResponse = Response<Book>
