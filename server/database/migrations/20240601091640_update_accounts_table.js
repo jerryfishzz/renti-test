@@ -6,6 +6,6 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
   return knex.schema.table('accounts', function (table) {
-    table.string('username').notNullable()
+    table.dropUnique('username')
   })
 }
