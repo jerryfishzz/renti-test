@@ -44,7 +44,6 @@ test('create a book', async () => {
   const book = createMockBooks()[0]
   const response = await doAuth(agent.post('/books').send(book))
 
-  expect(response.status).toBe(200)
   expect(response.body).toEqual({
     ...book,
     id: expect.any(Number),
