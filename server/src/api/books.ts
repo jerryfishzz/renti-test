@@ -84,6 +84,8 @@ router.delete(
       .where('id', req.params.id)
       .delete()
       .returning('*') // Retune the deleted record
+    if (!deleted) return res.sendStatus(404)
+
     return res.send(deleted)
   })
 )
