@@ -36,27 +36,32 @@ afterAll(async () => {
   await db.destroy()
 })
 
-test('get books', async () => {
-  const response = await doAuth(agent.get('/books/account/1'))
-})
-
-test('create a book', async () => {
-  const book = createMockBooks()[0]
-  const response = await doAuth(agent.post('/books').send(book))
-
-  expect(response.body).toEqual({
-    ...book,
-    id: expect.any(Number),
-    created_at: expect.any(String),
+describe('books', () => {
+  test('get books', async () => {
+    const response = await doAuth(agent.get('/books/account/1'))
   })
-})
 
-test('create books', async () => {
-  const books = createMockBooks(10)
-  const response = await doAuth(agent.post('/books/bulk').send(books))
+  describe('test single create and delete', () => {
+    const book = createMockBooks()[0]
 
-  expect(response.body.length).toEqual(10)
-  expect(typeof response.body[0]).toEqual('number')
+    test('create a book', async () => {
+      const response = await doAuth(agent.post('/books').send(book))
+
+      expect(response.body).toEqual({
+        ...book,
+        id: expect.any(Number),
+        created_at: expect.any(String),
+      })
+    })
+  })
+
+  test('create books', async () => {
+    const books = createMockBooks(10)
+    const response = await doAuth(agent.post('/books/bulk').send(books))
+
+    expect(response.body.length).toEqual(10)
+    expect(typeof response.body[0]).toEqual('number')
+  })
 })
 
 test.skip('create books xx', async () => {
