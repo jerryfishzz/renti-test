@@ -41,17 +41,24 @@ describe('books', () => {
     const response = await doAuth(agent.get('/books/account/1'))
   })
 
-  describe('test single create and delete', () => {
+  describe('test create a book then delete it', () => {
     const book = createMockBooks()[0]
+    let bookId: string
 
     test('create a book', async () => {
       const response = await doAuth(agent.post('/books').send(book))
+      bookId = response.body.id.toString()
 
       expect(response.body).toEqual({
         ...book,
         id: expect.any(Number),
         created_at: expect.any(String),
       })
+    })
+
+    test('delete the book', async () => {
+      const response = await doAuth(agent.delete(`/books/${bookId}`))
+      expect(response.status).toBe(200)
     })
   })
 
