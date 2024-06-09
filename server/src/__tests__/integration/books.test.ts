@@ -40,7 +40,7 @@ test('get books', async () => {
   const response = await doAuth(agent.get('/books/account/1'))
 })
 
-test('create book', async () => {
+test('create a book', async () => {
   const book = createMockBooks()[0]
   const response = await doAuth(agent.post('/books').send(book))
 
