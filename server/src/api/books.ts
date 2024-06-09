@@ -91,7 +91,7 @@ router.delete(
       .returning('*') // Return the deleted record
     if (!deleted) return res.sendStatus(404)
 
-    return res.send(deleted)
+    return res.sendStatus(200)
   })
 )
 
