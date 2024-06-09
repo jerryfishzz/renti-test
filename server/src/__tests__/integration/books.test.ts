@@ -52,10 +52,11 @@ test('create a book', async () => {
   })
 })
 
-test.skip('create books', async () => {
+test('create books', async () => {
   const books = createMockBooks(10)
   const response = await doAuth(agent.post('/books/bulk').send(books))
-  expect(response.status).toBe(200)
+
+  expect(response.body.length).toEqual(10)
 })
 
 test.skip('create books xx', async () => {
