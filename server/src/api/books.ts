@@ -5,11 +5,13 @@ import { guard, router } from './utils'
 import {
   CreateBookRequest,
   CreateBooksRequest,
+  DeleteBooksByIdsRequest,
   GetBooksByAccountIdResponse,
   GetBooksByAccountIdReturn,
   ResponseBook,
   createBook,
   createBooks,
+  deleteBooksByIds,
 } from 'schemas/book.schema'
 import { auth } from 'lib/jwt'
 import { Book, Genre } from 'types/db'
@@ -83,10 +85,25 @@ router.delete(
     const [deleted] = await db('books')
       .where('id', req.params.id)
       .delete()
-      .returning('*') // Retune the deleted record
+      .returning('*') // Return the deleted record
     if (!deleted) return res.sendStatus(404)
 
     return res.send(deleted)
+  })
+)
+
+router.delete(
+  '/books/delete/ids',
+  auth(),
+  validate(deleteBooksByIds),
+  guard(async (req: DeleteBooksByIdsRequest, res: Response) => {
+    const deleted = await db('books')
+      .whereIn('id', req.body)
+      .delete()
+      .returning('*') // Return only deleted records. If nothing found, return empty array.
+    if (!deleted.length) return res.sendStatus(404)
+
+    return res.sendStatus(200)
   })
 )
 
