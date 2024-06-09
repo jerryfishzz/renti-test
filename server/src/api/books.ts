@@ -73,7 +73,9 @@ router.post(
   auth(),
   validate(createBooks),
   guard(async (req: CreateBooksRequest, res: CreateBooksResponse) => {
-    const ids = await db('books').insert(req.body).returning('id')
+    const ids = (await db('books').insert(req.body).returning('id')).map(
+      obj => obj.id
+    )
     return res.send(ids)
   })
 )

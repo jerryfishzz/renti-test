@@ -56,6 +56,7 @@ test('create books', async () => {
   const response = await doAuth(agent.post('/books/bulk').send(books))
 
   expect(response.body.length).toEqual(10)
+  expect(typeof response.body[0]).toEqual('number')
 })
 
 test.skip('create books xx', async () => {
