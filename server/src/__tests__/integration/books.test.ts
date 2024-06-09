@@ -7,29 +7,48 @@ import { books } from 'api/books'
 import { db } from 'lib/db'
 import { CreateBook } from 'schemas/book.schema'
 import { createDoAuth, logIn } from './utils'
+import { genres } from 'api/genres'
+import { Book, Genre } from 'types/db'
 
 app.use(accounts)
 app.use(books)
+app.use(genres)
 const agent = request(app)
+
 let doAuth: (test: Test) => Test
 
-function createMockBooks(counts: number = 1) {
-  const books: CreateBook[] = []
-  for (let i = 0; i < counts; i++) {
-    const book: CreateBook = {
-      title: faker.lorem.words({ min: 1, max: 4 }),
-      author: faker.person.fullName(),
-      genre_id: faker.number.int({ min: 1, max: 15 }),
-      cover_image: faker.image.url(),
+type CreateMockBooks = (counts?: number) => Omit<Book, 'id' | 'created_at'>[]
+let createMockBooks: CreateMockBooks
+
+function getCreateMockBooks(min: number, max: number) {
+  return (counts: number = 1) => {
+    const books: CreateBook[] = []
+    for (let i = 0; i < counts; i++) {
+      const book: CreateBook = {
+        title: faker.lorem.words({ min: 1, max: 4 }),
+        author: faker.person.fullName(),
+        genre_id: faker.number.int({ min, max }),
+        cover_image: faker.image.url(),
+      }
+      books.push(book)
     }
-    books.push(book)
+    return books
   }
-  return books
 }
 
 beforeAll(async () => {
   const login = await logIn(agent)
   doAuth = createDoAuth(login)
+
+  const response = await doAuth(agent.get('/genres'))
+  const orderedGenreIds = response.body
+    .map((genre: Genre) => genre.id)
+    .sort((a: number, b: number) => a - b)
+
+  createMockBooks = getCreateMockBooks(
+    orderedGenreIds[0],
+    orderedGenreIds[orderedGenreIds.length - 1]
+  )
 })
 
 afterAll(async () => {
@@ -42,10 +61,10 @@ describe('books', () => {
   })
 
   describe('test create a book then delete it', () => {
-    const book = createMockBooks()[0]
     let bookId: string
 
     test('create a book', async () => {
+      const book = createMockBooks()[0]
       const response = await doAuth(agent.post('/books').send(book))
       bookId = response.body.id.toString()
 
