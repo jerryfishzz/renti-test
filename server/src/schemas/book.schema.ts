@@ -21,6 +21,7 @@ export const createBooks = z.object({
   body: book.omit({ id: true, created_at: true }).array(),
 })
 export type CreateBooksRequest = Request<z.infer<typeof createBooks>['body']>
+export type CreateBooksResponse = Response<Pick<Book, 'id'>[]>
 
 export const deleteBooksByIds = z.object({
   body: z.array(z.number()),

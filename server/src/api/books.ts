@@ -5,6 +5,7 @@ import { guard, router } from './utils'
 import {
   CreateBookRequest,
   CreateBooksRequest,
+  CreateBooksResponse,
   DeleteBooksByIdsRequest,
   GetBooksByAccountIdResponse,
   GetBooksByAccountIdReturn,
@@ -71,9 +72,9 @@ router.post(
   '/books/bulk',
   auth(),
   validate(createBooks),
-  guard(async (req: CreateBooksRequest, res: Response) => {
-    await db('books').insert(req.body)
-    return res.sendStatus(200)
+  guard(async (req: CreateBooksRequest, res: CreateBooksResponse) => {
+    const ids = await db('books').insert(req.body).returning('id')
+    return res.send(ids)
   })
 )
 
