@@ -2,19 +2,38 @@ import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import { Request, Response, NextFunction } from 'express'
 
-const { JWT_PRIVATE_KEY_PATH, JWT_PRIVATE_KEY_MATERIAL } = process.env
+const {
+  JWT_PRIVATE_KEY_PATH,
+  JWT_PRIVATE_KEY_MATERIAL,
+  JWT_PUBLIC_KEY_PATH,
+  JWT_PUBLIC_KEY_MATERIAL,
+} = process.env
 
-function getJwtMaterial() {
+function getJwtMaterial(type: 'public' | 'private' = 'private') {
   let jwtMaterialBuffer: Buffer
-  if (JWT_PRIVATE_KEY_MATERIAL) {
-    jwtMaterialBuffer = Buffer.from(JWT_PRIVATE_KEY_MATERIAL)
-  } else if (JWT_PRIVATE_KEY_PATH) {
-    jwtMaterialBuffer = fs.readFileSync(JWT_PRIVATE_KEY_PATH)
+
+  if (type === 'private') {
+    if (JWT_PRIVATE_KEY_MATERIAL) {
+      jwtMaterialBuffer = Buffer.from(JWT_PRIVATE_KEY_MATERIAL)
+    } else if (JWT_PRIVATE_KEY_PATH) {
+      jwtMaterialBuffer = fs.readFileSync(JWT_PRIVATE_KEY_PATH)
+    } else {
+      throw new Error(
+        'Either JWT_PRIVATE_KEY_PATH or JWT_PRIVATE_KEY_MATERIAL must be set'
+      )
+    }
   } else {
-    throw new Error(
-      'Either JWT_PRIVATE_KEY_PATH or JWT_PRIVATE_KEY_MATERIAL must be set'
-    )
+    if (JWT_PUBLIC_KEY_MATERIAL) {
+      jwtMaterialBuffer = Buffer.from(JWT_PUBLIC_KEY_MATERIAL)
+    } else if (JWT_PUBLIC_KEY_PATH) {
+      jwtMaterialBuffer = fs.readFileSync(JWT_PUBLIC_KEY_PATH)
+    } else {
+      throw new Error(
+        'Either JWT_PUBLIC_KEY_PATH or JWT_PUBLIC_KEY_MATERIAL must be set'
+      )
+    }
   }
+
   return jwtMaterialBuffer
 }
 
