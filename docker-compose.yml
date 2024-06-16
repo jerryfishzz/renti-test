@@ -59,8 +59,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    env_file:
-      - ./server/.env
+    # env_file:
+    #   - ./server/.env
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
       DB_HOST: db
@@ -86,8 +86,8 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    env_file:
-      - ./client/.env
+    # env_file:
+    #   - ./client/.env
     volumes:
       - ./client:/usr/src/renti
       - node_modules_client:/usr/src/renti/node_modules
