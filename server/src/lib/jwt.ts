@@ -22,7 +22,7 @@ type Payload = {
   id: number
   isAuthenticated: boolean
   iat: number
-  exp: number
+  exp: number // Must be the name 'exp' for token expiration
 }
 export const sign = (payload: Payload) => {
   const jwtMaterial = getJwtMaterial()

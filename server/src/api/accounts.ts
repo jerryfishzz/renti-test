@@ -84,8 +84,8 @@ router.post(
     const access_token = sign({
       id: account.id,
       isAuthenticated: true,
-      iat: new Date().getTime() / 1000,
-      exp: addHours(new Date(), 1).getTime() / 1000,
+      iat: new Date().getTime() / 1000, // Current time
+      exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
     })
     return res.send({
       ...account,
