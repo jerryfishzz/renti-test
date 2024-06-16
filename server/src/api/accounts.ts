@@ -1,4 +1,4 @@
-import { addHours } from 'date-fns'
+import { addDays, addHours } from 'date-fns'
 import bcrypt from 'bcryptjs'
 import { Response } from 'express'
 
@@ -22,6 +22,9 @@ import {
   getByUsername,
   login,
 } from 'schemas/account.schema'
+import { Session } from 'types/db'
+
+const isProduction = process.env.NODE_ENV === 'production'
 
 router.get(
   '/accounts/:id',
@@ -80,6 +83,38 @@ router.post(
       account.password
     )
     if (!checkPassword) return res.sendStatus(403)
+
+    console.log(req.cookies)
+    console.log(req.cookies?.sessionId)
+
+    // First time login or session expired
+    if (!req.cookies?.sessionId) {
+      const refresh_token = sign({
+        id: account.id,
+        isAuthenticated: true,
+        iat: new Date().getTime() / 1000,
+        exp: addDays(new Date(), 15).getTime() / 1000, // Expiring time = current time + 15 days
+      })
+
+      const [session] = await db('sessions')
+        .insert({
+          account_id: account.id,
+          user_agent: req.headers['user-agent'],
+          refresh_token,
+        })
+        .returning('*')
+      const sessionId = (session as Session).id.toString()
+
+      // Set the cookie with the session ID
+      res.cookie('sessionId', sessionId, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000 * 15, // 15 days in milliseconds
+      })
+    }
+
+    // TODO: create a new session if the current session from the cookie cannot be found in the database
 
     const access_token = sign({
       id: account.id,
