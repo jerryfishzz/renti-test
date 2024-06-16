@@ -42,7 +42,7 @@ export type Reading_List = z.infer<typeof reading_list>
 export const session = z.object({
   id: z.number(),
   account_id: z.number(),
-  is_valid: z.boolean(),
+  is_valid: z.boolean().optional(),
   user_agent: z.string(),
   refresh_token: z.string(),
   created_at: z.date(),
