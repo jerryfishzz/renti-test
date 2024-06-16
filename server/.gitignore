@@ -19,3 +19,4 @@ dist/
 # jwt
 *.key
 *.key.pub
+*.key.pub.pem
