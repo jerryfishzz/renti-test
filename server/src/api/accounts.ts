@@ -110,7 +110,7 @@ router.post(
         httpOnly: true,
         secure: isProduction,
         sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000 * 15, // 15 days in milliseconds
+        maxAge: 24 * 60 * 60 * 1000 * 14, // 14 days in milliseconds
       })
     }
 
