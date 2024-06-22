@@ -99,7 +99,6 @@ router.post(
       const [session] = await db('sessions')
         .insert({
           account_id: account.id,
-          user_agent: req.headers['user-agent'],
           refresh_token,
         })
         .returning('*')
