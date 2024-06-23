@@ -71,6 +71,7 @@ router.post(
   '/login',
   validate(login),
   guard(async (req: LoginRequest, res: LoginResponse) => {
+    // Validate username and password
     const account = await db('accounts')
       .where({
         username: req.body.username,
