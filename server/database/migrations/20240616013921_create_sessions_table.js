@@ -7,7 +7,6 @@ exports.up = function (knex) {
       .unsigned()
       .references('id')
       .inTable('accounts')
-    table.boolean('is_valid').defaultTo(true)
     table.text('refresh_token').notNullable()
     table.timestamp('created_at').defaultTo(knex.fn.now())
     table.timestamp('updated_at').defaultTo(knex.fn.now())
