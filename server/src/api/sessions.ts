@@ -1,12 +1,13 @@
-import { auth } from 'lib/jwt'
 import { guard, router } from './utils'
 import validate from 'lib/validate'
 import { db } from 'lib/db'
 import {
   CreateSessionRequest,
   CreateSessionResponse,
+  GetSessionsByAccountIdResponse,
   createSession,
 } from 'schemas/session.schema'
+import { GetParamsIdRequest, getParamsId } from 'schemas/shared.schema'
 
 router.post(
   '/sessions',
@@ -16,6 +17,20 @@ router.post(
 
     return res.send(session)
   })
+)
+
+router.get(
+  '/sessions/account/:id',
+  validate(getParamsId),
+  guard(
+    async (req: GetParamsIdRequest, res: GetSessionsByAccountIdResponse) => {
+      const sessions = await db('sessions')
+        .where('account_id', req.params.id)
+        .returning('*')
+
+      return res.send(sessions)
+    }
+  )
 )
 
 export { router as sessions }

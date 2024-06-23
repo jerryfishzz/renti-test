@@ -3,9 +3,7 @@ import type { Request, Response } from 'express'
 
 import { Session, session } from 'types/db'
 
-// export const getById = z.object({ params: z.object({ id: z.coerce.number() }) })
-// export type GetByIdRequest = Request<z.infer<typeof getById>['params']>
-// export type GetByIdResponse = Response<Account>
+export type GetSessionsByAccountIdResponse = Response<Session[]>
 
 // export const getByUsername = z.object({
 //   params: account.pick({ username: true }),
