@@ -92,7 +92,6 @@ router.post(
     if (!req.cookies?.sessionId) {
       const refresh_token = sign({
         id: account.id,
-        isAuthenticated: true,
         iat: new Date().getTime() / 1000,
         exp: addDays(new Date(), 14).getTime() / 1000, // Expiring time = current time + 14 days
       })
@@ -118,7 +117,6 @@ router.post(
 
     const access_token = sign({
       id: account.id,
-      isAuthenticated: true,
       iat: new Date().getTime() / 1000, // Current time
       exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
     })

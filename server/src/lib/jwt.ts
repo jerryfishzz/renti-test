@@ -41,7 +41,6 @@ function getJwtMaterial(key: Key = 'private') {
 
 type Payload = {
   id: number
-  isAuthenticated: boolean
   iat: number
   exp: number // Must be the name 'exp' for token expiration
 }
@@ -63,7 +62,8 @@ export const auth = () => (req: Request, res: Response, next: NextFunction) => {
   try {
     // Token valid and correct role
     const sub = verify(access_token.replace('Bearer ', ''))
-    if (!sub.isAuthenticated) return res.sendStatus(403)
+
+    // TODO: sub can be used for role-based authorization
 
     next()
   } catch (e) {
