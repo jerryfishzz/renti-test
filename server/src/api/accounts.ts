@@ -93,7 +93,7 @@ router.post(
         id: account.id,
         isAuthenticated: true,
         iat: new Date().getTime() / 1000,
-        exp: addDays(new Date(), 15).getTime() / 1000, // Expiring time = current time + 15 days
+        exp: addDays(new Date(), 14).getTime() / 1000, // Expiring time = current time + 14 days
       })
 
       const [session] = await db('sessions')
