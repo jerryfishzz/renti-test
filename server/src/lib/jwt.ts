@@ -52,7 +52,7 @@ export const sign = (payload: Payload) => {
 
 export const verify = (access_token: string, key: Key = 'public') => {
   const jwtMaterial = getJwtMaterial(key)
-  return jwt.verify(access_token, jwtMaterial)
+  return jwt.verify(access_token, jwtMaterial) as Payload
 }
 
 export const auth = () => (req: Request, res: Response, next: NextFunction) => {
@@ -63,8 +63,7 @@ export const auth = () => (req: Request, res: Response, next: NextFunction) => {
   try {
     // Token valid and correct role
     const sub = verify(access_token.replace('Bearer ', ''))
-    if (typeof sub === 'string' || !sub.isAuthenticated)
-      return res.sendStatus(403)
+    if (!sub.isAuthenticated) return res.sendStatus(403)
 
     next()
   } catch (e) {
