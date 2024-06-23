@@ -93,7 +93,7 @@ router.post(
       const refresh_token = sign({
         id: account.id,
         iat: new Date().getTime() / 1000,
-        exp: addDays(new Date(), 14).getTime() / 1000, // Expiring time = current time + 14 days
+        exp: addDays(new Date(), 14).getTime() / 1000, // 2 weeks
       })
 
       const [session] = await db('sessions')
@@ -109,7 +109,7 @@ router.post(
         httpOnly: true,
         secure: isProduction,
         sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000 * 14, // 14 days in milliseconds
+        expires: addDays(new Date(), 14), // 2 weeks
       })
     }
 
