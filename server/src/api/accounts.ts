@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { Response } from 'express'
 
 import { db } from 'lib/db'
-import { auth, sign } from 'lib/jwt'
+import { auth, sign, verify } from 'lib/jwt'
 import { guard, router } from './utils'
 import validate from 'lib/validate'
 import {
@@ -85,9 +85,6 @@ router.post(
     )
     if (!checkPassword) return res.sendStatus(403)
 
-    console.log(req.cookies)
-    console.log(req.cookies?.sessionId)
-
     // First time login or session expired
     if (!req.cookies?.sessionId) {
       const refresh_token = sign({
@@ -111,19 +108,87 @@ router.post(
         sameSite: 'strict',
         expires: addDays(new Date(), 14), // 2 weeks
       })
+
+      const access_token = sign({
+        id: account.id,
+        iat: new Date().getTime() / 1000, // Current time
+        exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
+      })
+
+      return res.send({
+        ...account,
+        access_token,
+      })
+    } else {
+      const sessionId = Number(req.cookies.sessionId as string)
+      const session = await db('sessions').where('id', sessionId).first()
+
+      let isValid = true
+      if (session) {
+        try {
+          const sub = verify(session.refresh_token)
+
+          res.cookie('sessionId', sessionId, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: 'strict',
+            expires: new Date(sub.exp * 1000),
+          })
+        } catch (e) {
+          console.error(e)
+          isValid = false
+        }
+      }
+
+      if (session && isValid) {
+        const access_token = sign({
+          id: account.id,
+          iat: new Date().getTime() / 1000, // Current time
+          exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
+        })
+
+        return res.send({
+          ...account,
+          access_token,
+        })
+      } else {
+        console.log('db error')
+        const refresh_token = sign({
+          id: account.id,
+          iat: new Date().getTime() / 1000,
+          exp: addDays(new Date(), 14).getTime() / 1000, // 2 weeks
+        })
+
+        const [session] = await db('sessions')
+          .insert({
+            account_id: account.id,
+            refresh_token,
+          })
+          .returning('*')
+        const sessionId = (session as Session).id.toString()
+
+        // Set the cookie with the session ID
+        res.cookie('sessionId', sessionId, {
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: 'strict',
+          expires: addDays(new Date(), 14), // 2 weeks
+        })
+
+        const access_token = sign({
+          id: account.id,
+          iat: new Date().getTime() / 1000, // Current time
+          exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
+        })
+
+        return res.send({
+          ...account,
+          access_token,
+        })
+      }
     }
 
     // TODO: create a new session if the current session from the cookie cannot be found in the database
-
-    const access_token = sign({
-      id: account.id,
-      iat: new Date().getTime() / 1000, // Current time
-      exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
-    })
-    return res.send({
-      ...account,
-      access_token,
-    })
   })
 )
 
