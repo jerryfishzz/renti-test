@@ -5,6 +5,7 @@ import {
   CreateSessionRequest,
   CreateSessionResponse,
   GetSessionsByAccountIdResponse,
+  GetSessionsByIdResponse,
   createSession,
 } from 'schemas/session.schema'
 import { GetParamsIdRequest, getParamsId } from 'schemas/shared.schema'
@@ -14,6 +15,19 @@ router.post(
   validate(createSession),
   guard(async (req: CreateSessionRequest, res: CreateSessionResponse) => {
     const [session] = await db('sessions').insert(req.body).returning('*')
+
+    return res.send(session)
+  })
+)
+
+router.get(
+  '/sessions/:id',
+  validate(getParamsId),
+  guard(async (req: GetParamsIdRequest, res: GetSessionsByIdResponse) => {
+    const session = await db('sessions')
+      .where('id', req.params.id)
+      .returning('*')
+      .first()
 
     return res.send(session)
   })
