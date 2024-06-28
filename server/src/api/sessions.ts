@@ -1,3 +1,5 @@
+import { Response } from 'express'
+
 import { guard, router } from './utils'
 import validate from 'lib/validate'
 import { db } from 'lib/db'
@@ -45,6 +47,17 @@ router.get(
       return res.send(sessions)
     }
   )
+)
+
+router.delete(
+  '/sessions/:id',
+  validate(getParamsId),
+  guard(async (req: GetParamsIdRequest, res: Response) => {
+    const response = await db('sessions').where('id', req.params.id).del()
+    if (response === 0) return res.sendStatus(404)
+
+    return res.sendStatus(200)
+  })
 )
 
 export { router as sessions }
