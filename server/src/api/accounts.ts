@@ -67,6 +67,31 @@ router.post(
   })
 )
 
+async function deleteExpiredSessions(accountId: number) {
+  const existingSessions = await db('sessions').where('account_id', accountId)
+  const expiredSessions: Session[] = []
+  console.log(existingSessions)
+
+  for (const session of existingSessions) {
+    console.log('in the loop')
+    try {
+      verify(session.refresh_token)
+    } catch (error) {
+      console.error(error)
+      expiredSessions.push(session)
+    }
+  }
+
+  if (expiredSessions.length) {
+    await db('sessions')
+      .whereIn(
+        'id',
+        expiredSessions.map(s => s.id)
+      )
+      .del()
+  }
+}
+
 router.post(
   '/login',
   validate(login),
@@ -94,31 +119,7 @@ router.post(
       })
 
       // Check the existing expired sessions and delete them
-      const existingSessions = await db('sessions').where(
-        'account_id',
-        account.id
-      )
-      const expiredSessions: Session[] = []
-      console.log(existingSessions)
-
-      for (const session of existingSessions) {
-        console.log('in the loop')
-        try {
-          verify(session.refresh_token)
-        } catch (error) {
-          console.error(error)
-          expiredSessions.push(session)
-        }
-      }
-
-      if (expiredSessions.length) {
-        await db('sessions')
-          .whereIn(
-            'id',
-            expiredSessions.map(s => s.id)
-          )
-          .del()
-      }
+      await deleteExpiredSessions(account.id)
 
       const [session] = await db('sessions')
         .insert({
@@ -187,31 +188,7 @@ router.post(
         })
 
         // Check the existing expired sessions and delete them
-        const existingSessions = await db('sessions').where(
-          'account_id',
-          account.id
-        )
-        const expiredSessions: Session[] = []
-        console.log(existingSessions)
-
-        for (const session of existingSessions) {
-          console.log('in the loop')
-          try {
-            verify(session.refresh_token)
-          } catch (error) {
-            console.error(error)
-            expiredSessions.push(session)
-          }
-        }
-
-        if (expiredSessions.length) {
-          await db('sessions')
-            .whereIn(
-              'id',
-              expiredSessions.map(s => s.id)
-            )
-            .del()
-        }
+        await deleteExpiredSessions(account.id)
 
         const [session] = await db('sessions')
           .insert({
