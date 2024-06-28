@@ -101,6 +101,15 @@ function createAccessToken(accountId: number) {
   })
 }
 
+function addSessionCookie(res: Response, sessionId: number, expires: Date) {
+  res.cookie('sessionId', sessionId, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'strict',
+    expires,
+  })
+}
+
 router.post(
   '/login',
   validate(login),
@@ -136,15 +145,10 @@ router.post(
           refresh_token,
         })
         .returning('*')
-      const sessionId = (session as Session).id.toString()
+      if (!session) return res.sendStatus(500)
 
       // Set the cookie with the session ID
-      res.cookie('sessionId', sessionId, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: 'strict',
-        expires: addDays(new Date(), 14), // 2 weeks
-      })
+      addSessionCookie(res, session.id, addDays(new Date(), 14))
 
       const access_token = createAccessToken(account.id)
 
@@ -153,7 +157,7 @@ router.post(
         access_token,
       })
     } else {
-      const sessionId = Number(req.cookies.sessionId as string)
+      const sessionId = Number(req.cookies.sessionId)
       const session = await db('sessions').where('id', sessionId).first()
 
       let isValid = true
@@ -162,12 +166,7 @@ router.post(
           const sub = verify(session.refresh_token)
 
           // Update session cookie
-          res.cookie('sessionId', sessionId, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: 'strict',
-            expires: new Date(sub.exp * 1000),
-          })
+          addSessionCookie(res, sessionId, new Date(sub.exp * 1000))
         } catch (e) {
           console.error(e)
           isValid = false
@@ -198,15 +197,10 @@ router.post(
             refresh_token,
           })
           .returning('*')
-        const sessionId = (session as Session).id.toString()
+        if (!session) return res.sendStatus(500)
 
         // Set the cookie with the session ID
-        res.cookie('sessionId', sessionId, {
-          httpOnly: true,
-          secure: isProduction,
-          sameSite: 'strict',
-          expires: addDays(new Date(), 14), // 2 weeks
-        })
+        addSessionCookie(res, session.id, addDays(new Date(), 14))
 
         const access_token = createAccessToken(account.id)
 
