@@ -23,6 +23,7 @@ import {
   login,
 } from 'schemas/account.schema'
 import { Session } from 'types/db'
+import { create } from 'domain'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -92,6 +93,14 @@ async function deleteExpiredSessions(accountId: number) {
   }
 }
 
+function createAccessToken(accountId: number) {
+  return sign({
+    id: accountId,
+    iat: new Date().getTime() / 1000, // Current time
+    exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
+  })
+}
+
 router.post(
   '/login',
   validate(login),
@@ -137,11 +146,7 @@ router.post(
         expires: addDays(new Date(), 14), // 2 weeks
       })
 
-      const access_token = sign({
-        id: account.id,
-        iat: new Date().getTime() / 1000, // Current time
-        exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
-      })
+      const access_token = createAccessToken(account.id)
 
       return res.send({
         ...account,
@@ -169,11 +174,7 @@ router.post(
       }
 
       if (session && isValid) {
-        const access_token = sign({
-          id: account.id,
-          iat: new Date().getTime() / 1000, // Current time
-          exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
-        })
+        const access_token = createAccessToken(account.id)
 
         return res.send({
           ...account,
@@ -206,11 +207,7 @@ router.post(
           expires: addDays(new Date(), 14), // 2 weeks
         })
 
-        const access_token = sign({
-          id: account.id,
-          iat: new Date().getTime() / 1000, // Current time
-          exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
-        })
+        const access_token = createAccessToken(account.id)
 
         return res.send({
           ...account,
