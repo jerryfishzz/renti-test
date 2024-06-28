@@ -93,11 +93,11 @@ async function deleteExpiredSessions(accountId: number) {
   }
 }
 
-function createAccessToken(accountId: number) {
+function createToken(accountId: number, exp: number) {
   return sign({
     id: accountId,
-    iat: new Date().getTime() / 1000, // Current time
-    exp: addHours(new Date(), 1).getTime() / 1000, // Expiring time = current time + 1 hour
+    iat: new Date().getTime() / 1000,
+    exp,
   })
 }
 
@@ -114,6 +114,9 @@ router.post(
   '/login',
   validate(login),
   guard(async (req: LoginRequest, res: LoginResponse) => {
+    const accessExp = addHours(new Date(), 1).getTime() / 1000
+    const refreshExp = addDays(new Date(), 14).getTime() / 1000
+
     // Validate username and password
     const account = await db('accounts')
       .where({
@@ -130,11 +133,7 @@ router.post(
 
     // First time login or session expired
     if (!req.cookies?.sessionId) {
-      const refresh_token = sign({
-        id: account.id,
-        iat: new Date().getTime() / 1000,
-        exp: addDays(new Date(), 14).getTime() / 1000, // 2 weeks
-      })
+      const refresh_token = createToken(account.id, refreshExp)
 
       // Check the existing expired sessions and delete them
       await deleteExpiredSessions(account.id)
@@ -150,7 +149,7 @@ router.post(
       // Set the cookie with the session ID
       addSessionCookie(res, session.id, addDays(new Date(), 14))
 
-      const access_token = createAccessToken(account.id)
+      const access_token = createToken(account.id, accessExp)
 
       return res.send({
         ...account,
@@ -174,7 +173,7 @@ router.post(
       }
 
       if (session && isValid) {
-        const access_token = createAccessToken(account.id)
+        const access_token = createToken(account.id, accessExp)
 
         return res.send({
           ...account,
@@ -182,11 +181,7 @@ router.post(
         })
       } else {
         console.log('db error')
-        const refresh_token = sign({
-          id: account.id,
-          iat: new Date().getTime() / 1000,
-          exp: addDays(new Date(), 14).getTime() / 1000, // 2 weeks
-        })
+        const refresh_token = createToken(account.id, refreshExp)
 
         // Check the existing expired sessions and delete them
         await deleteExpiredSessions(account.id)
@@ -202,7 +197,7 @@ router.post(
         // Set the cookie with the session ID
         addSessionCookie(res, session.id, addDays(new Date(), 14))
 
-        const access_token = createAccessToken(account.id)
+        const access_token = createToken(account.id, accessExp)
 
         return res.send({
           ...account,
