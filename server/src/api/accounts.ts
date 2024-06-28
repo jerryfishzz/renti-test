@@ -186,6 +186,33 @@ router.post(
           exp: addDays(new Date(), 14).getTime() / 1000, // 2 weeks
         })
 
+        // Check the existing expired sessions and delete them
+        const existingSessions = await db('sessions').where(
+          'account_id',
+          account.id
+        )
+        const expiredSessions: Session[] = []
+        console.log(existingSessions)
+
+        for (const session of existingSessions) {
+          console.log('in the loop')
+          try {
+            verify(session.refresh_token)
+          } catch (error) {
+            console.error(error)
+            expiredSessions.push(session)
+          }
+        }
+
+        if (expiredSessions.length) {
+          await db('sessions')
+            .whereIn(
+              'id',
+              expiredSessions.map(s => s.id)
+            )
+            .del()
+        }
+
         const [session] = await db('sessions')
           .insert({
             account_id: account.id,
