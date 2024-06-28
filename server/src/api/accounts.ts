@@ -161,6 +161,7 @@ router.post(
         try {
           const sub = verify(session.refresh_token)
 
+          // Update session cookie
           res.cookie('sessionId', sessionId, {
             httpOnly: true,
             secure: isProduction,
