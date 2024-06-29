@@ -137,7 +137,7 @@ router.post(
     if (!checkPassword) return res.sendStatus(403)
 
     // Issue access token and refresh token
-    const cookieSessionId = req.cookies?.cookieSessionId as undefined | number
+    const cookieSessionId = req.cookies?.sessionId as undefined | number
     let isValid = false
     let session: Session | undefined
 
