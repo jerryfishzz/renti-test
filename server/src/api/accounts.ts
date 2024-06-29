@@ -131,12 +131,35 @@ router.post(
     )
     if (!checkPassword) return res.sendStatus(403)
 
-    // First time login or session expired
-    if (!req.cookies?.sessionId) {
-      const refresh_token = createToken(account.id, refreshExp)
+    // Issue access token and refresh token
+    const cookieSessionId = req.cookies?.cookieSessionId as undefined | number
+    let isValid = false
+    let session: Session | undefined
 
-      // Check the existing expired sessions and delete them
-      await deleteExpiredSessions(account.id)
+    if (cookieSessionId)
+      session = await db('sessions').where('id', cookieSessionId).first()
+
+    if (session) {
+      try {
+        const sub = verify(session.refresh_token)
+
+        // Update session cookie
+        addSessionCookie(res, session.id, new Date(sub.exp * 1000))
+        isValid = true
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
+    if (session && isValid) {
+      const access_token = createToken(account.id, accessExp)
+
+      return res.send({
+        ...account,
+        access_token,
+      })
+    } else {
+      const refresh_token = createToken(account.id, refreshExp)
 
       const [session] = await db('sessions')
         .insert({
@@ -145,6 +168,9 @@ router.post(
         })
         .returning('*')
       if (!session) return res.sendStatus(500)
+
+      // Check the existing expired sessions and delete them
+      await deleteExpiredSessions(account.id)
 
       // Set the cookie with the session ID
       addSessionCookie(res, session.id, addDays(new Date(), 14))
@@ -155,55 +181,6 @@ router.post(
         ...account,
         access_token,
       })
-    } else {
-      const sessionId = Number(req.cookies.sessionId)
-      const session = await db('sessions').where('id', sessionId).first()
-
-      let isValid = true
-      if (session) {
-        try {
-          const sub = verify(session.refresh_token)
-
-          // Update session cookie
-          addSessionCookie(res, sessionId, new Date(sub.exp * 1000))
-        } catch (e) {
-          console.error(e)
-          isValid = false
-        }
-      }
-
-      if (session && isValid) {
-        const access_token = createToken(account.id, accessExp)
-
-        return res.send({
-          ...account,
-          access_token,
-        })
-      } else {
-        console.log('db error')
-        const refresh_token = createToken(account.id, refreshExp)
-
-        // Check the existing expired sessions and delete them
-        await deleteExpiredSessions(account.id)
-
-        const [session] = await db('sessions')
-          .insert({
-            account_id: account.id,
-            refresh_token,
-          })
-          .returning('*')
-        if (!session) return res.sendStatus(500)
-
-        // Set the cookie with the session ID
-        addSessionCookie(res, session.id, addDays(new Date(), 14))
-
-        const access_token = createToken(account.id, accessExp)
-
-        return res.send({
-          ...account,
-          access_token,
-        })
-      }
     }
 
     // TODO: create a new session if the current session from the cookie cannot be found in the database
