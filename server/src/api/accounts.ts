@@ -139,8 +139,6 @@ router.post(
         access_token,
       })
     }
-
-    // TODO: create a new session if the current session from the cookie cannot be found in the database
   })
 )
 
