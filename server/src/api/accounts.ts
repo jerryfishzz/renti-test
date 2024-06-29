@@ -69,27 +69,32 @@ router.post(
 )
 
 async function deleteExpiredSessions(accountId: number) {
-  const existingSessions = await db('sessions').where('account_id', accountId)
-  const expiredSessions: Session[] = []
-  console.log(existingSessions)
+  try {
+    const existingSessions = await db('sessions').where('account_id', accountId)
+    const expiredSessions: Session[] = []
+    console.log(existingSessions)
 
-  for (const session of existingSessions) {
-    console.log('in the loop')
-    try {
-      verify(session.refresh_token)
-    } catch (error) {
-      console.error(error)
-      expiredSessions.push(session)
+    for (const session of existingSessions) {
+      console.log('in the loop')
+      try {
+        verify(session.refresh_token)
+      } catch (error) {
+        console.error(error)
+        expiredSessions.push(session)
+      }
     }
-  }
 
-  if (expiredSessions.length) {
-    await db('sessions')
-      .whereIn(
-        'id',
-        expiredSessions.map(s => s.id)
-      )
-      .del()
+    if (expiredSessions.length) {
+      await db('sessions')
+        .whereIn(
+          'id',
+          expiredSessions.map(s => s.id)
+        )
+        .del()
+    }
+  } catch (error) {
+    // Only output the error, but not stop the login process
+    console.error(error)
   }
 }
 
