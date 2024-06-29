@@ -23,7 +23,6 @@ import {
   login,
 } from 'schemas/account.schema'
 import { Session } from 'types/db'
-import { create } from 'domain'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -67,53 +66,6 @@ router.post(
     return res.send(account)
   })
 )
-
-async function deleteExpiredSessions(accountId: number) {
-  try {
-    const existingSessions = await db('sessions').where('account_id', accountId)
-    const expiredSessions: Session[] = []
-    console.log(existingSessions)
-
-    for (const session of existingSessions) {
-      console.log('in the loop')
-      try {
-        verify(session.refresh_token)
-      } catch (error) {
-        console.error(error)
-        expiredSessions.push(session)
-      }
-    }
-
-    if (expiredSessions.length) {
-      await db('sessions')
-        .whereIn(
-          'id',
-          expiredSessions.map(s => s.id)
-        )
-        .del()
-    }
-  } catch (error) {
-    // Only output the error, but not stop the login process
-    console.error(error)
-  }
-}
-
-function createToken(accountId: number, exp: number) {
-  return sign({
-    id: accountId,
-    iat: new Date().getTime() / 1000,
-    exp,
-  })
-}
-
-function addSessionCookie(res: Response, sessionId: number, expires: Date) {
-  res.cookie('sessionId', sessionId, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: 'strict',
-    expires,
-  })
-}
 
 router.post(
   '/login',
@@ -203,5 +155,52 @@ router.delete(
     return res.sendStatus(200)
   })
 )
+
+async function deleteExpiredSessions(accountId: number) {
+  try {
+    const existingSessions = await db('sessions').where('account_id', accountId)
+    const expiredSessions: Session[] = []
+    console.log(existingSessions)
+
+    for (const session of existingSessions) {
+      console.log('in the loop')
+      try {
+        verify(session.refresh_token)
+      } catch (error) {
+        console.error(error)
+        expiredSessions.push(session)
+      }
+    }
+
+    if (expiredSessions.length) {
+      await db('sessions')
+        .whereIn(
+          'id',
+          expiredSessions.map(s => s.id)
+        )
+        .del()
+    }
+  } catch (error) {
+    // Only output the error, but not stop the login process
+    console.error(error)
+  }
+}
+
+function createToken(accountId: number, exp: number) {
+  return sign({
+    id: accountId,
+    iat: new Date().getTime() / 1000,
+    exp,
+  })
+}
+
+function addSessionCookie(res: Response, sessionId: number, expires: Date) {
+  res.cookie('sessionId', sessionId, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'strict',
+    expires,
+  })
+}
 
 export { router as accounts }
