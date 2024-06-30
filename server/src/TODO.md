@@ -13,3 +13,4 @@
 ## Low
 
 - [ ] Standardized module exports
+- [ ] Remove models folder and its jest settings
