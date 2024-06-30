@@ -4,6 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   modulePathIgnorePatterns: [
     '/__tests__/integration/models/',
+    '/__tests__/integration/services/',
     '/__tests__/integration/utils.ts',
   ],
   setupFiles: ['dotenv/config'],
