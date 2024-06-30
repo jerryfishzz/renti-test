@@ -8,6 +8,7 @@
 
 - [ ] Check the deleting endpoints for the universal return type
 - [ ] Explicitly type `guard` function
+- [ ] Add pagination to all the get endpoints
 
 ## Low
 
