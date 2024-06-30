@@ -14,6 +14,7 @@ import {
   GetByIdResponse,
   GetByUsernameRequest,
   GetByUsernameResponse,
+  GetListResponse,
   LoginRequest,
   LoginResponse,
   createAccount,
@@ -49,6 +50,16 @@ router.get(
     if (!account) return res.sendStatus(404)
 
     return res.send(account)
+  })
+)
+
+router.get(
+  '/accounts',
+  auth(),
+  guard(async (req, res: GetListResponse) => {
+    const accounts = await db('accounts').returning('*')
+
+    return res.send(accounts)
   })
 )
 

@@ -15,6 +15,8 @@ export type GetByUsernameRequest = Request<
 >
 export type GetByUsernameResponse = Response<Account>
 
+export type GetListResponse = Response<Account[]>
+
 export const createAccount = z.object({
   body: account.omit({ id: true, created_at: true, updated_at: true }),
 })
