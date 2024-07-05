@@ -14,3 +14,4 @@
 
 - [ ] Standardized module exports
 - [ ] Remove models folder and its jest settings
+- [ ] Add package version check tools
