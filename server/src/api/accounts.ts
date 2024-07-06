@@ -171,10 +171,8 @@ async function deleteExpiredSessions(accountId: number) {
   try {
     const existingSessions = await db('sessions').where('account_id', accountId)
     const expiredSessions: Session[] = []
-    console.log(existingSessions)
 
     for (const session of existingSessions) {
-      console.log('in the loop')
       try {
         verify(session.refresh_token)
       } catch (error) {
