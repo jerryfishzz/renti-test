@@ -6,6 +6,7 @@ import app from 'lib/express'
 import { accounts } from 'api/accounts'
 import { books } from 'api/books'
 import { genres } from 'api/genres'
+import { sessions } from 'api/sessions'
 
 let access_token: string
 let sessionId: number
@@ -14,6 +15,7 @@ const { API_USER, API_PASS } = process.env
 app.use(accounts)
 app.use(books)
 app.use(genres)
+app.use(sessions)
 const agent = request(app)
 
 // Customize the response type from supertest
@@ -52,6 +54,8 @@ type BaseOptions<T extends Method> = {
 }
 type GetOptions<T extends Method> = T extends 'get'
   ? BaseOptions<T> | undefined
+  : T extends 'delete'
+  ? BaseOptions<T>
   : BaseOptions<T> & { body: Record<string, any> }
 
 function doAgentQuery<T extends Method>(path: string, options?: GetOptions<T>) {
@@ -93,7 +97,7 @@ export async function jsonQuery({ path, options, failed = false }: QueryProps) {
   return response.body
 }
 
-async function textQuery({ path, options, failed = false }: QueryProps) {
+export async function textQuery({ path, options, failed = false }: QueryProps) {
   const response = await query({ path, options, failed })
 
   return response.text
