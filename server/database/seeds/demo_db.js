@@ -4,7 +4,15 @@ const { SALT_ROUNDS } = process.env
 
 const accounts = [
   {
-    id: 1,
+    username: 'admin',
+    email: 'admin@admin.com',
+    password: 'admin',
+    profile: {
+      name: 'Admin',
+      reading_preferences: [],
+    },
+  },
+  {
     username: 'booklover1',
     email: 'booklover1@example.com',
     password: 'hashedpassword1',
@@ -14,7 +22,6 @@ const accounts = [
     },
   },
   {
-    id: 2,
     username: 'literaturefan',
     email: 'literaturefan@example.com',
     password: 'hashedpassword2',
@@ -24,7 +31,6 @@ const accounts = [
     },
   },
   {
-    id: 3,
     username: 'novelenthusiast',
     email: 'novelenthusiast@example.com',
     password: 'hashedpassword3',
