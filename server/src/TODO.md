@@ -9,6 +9,16 @@
 - [ ] Check the deleting endpoints for the universal return type
 - [ ] Explicitly type `guard` function
 - [ ] Add pagination to all the get endpoints
+- [ ] Should user in login response be an individual prop like:
+
+  ```json
+  {
+    "user": {
+      "id": 1,
+      "email": "jerry@jk.cm"
+    }
+  }
+  ```
 
 ## Low
 
