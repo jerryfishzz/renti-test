@@ -5,13 +5,19 @@ import { accounts } from 'api/accounts'
 import Account from './models/account'
 import { db } from 'lib/db'
 import * as AccountService from './services/account.service'
+import { logIn } from './utils'
 
 app.use(accounts)
 const agent = request(app)
 
+let sessionId: number
 const { API_USER, API_PASS } = process.env
 
 let test_acct: Account = null as unknown as Account
+
+beforeAll(async () => {
+  sessionId = await logIn(agent)
+})
 
 beforeEach(async () => {
   // test_acct = new Account(agent)

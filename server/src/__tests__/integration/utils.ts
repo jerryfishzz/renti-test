@@ -33,6 +33,8 @@ export async function logIn(agent: TestAgent) {
   }
 
   access_token = response.body.access_token
+
+  return response.body.sessionId
 }
 
 // To be deleted
