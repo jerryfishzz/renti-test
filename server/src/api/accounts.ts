@@ -25,8 +25,6 @@ import {
 } from 'schemas/account.schema'
 import { Session } from 'types/db'
 
-const isProduction = process.env.NODE_ENV === 'production'
-
 router.get(
   '/accounts/:id',
   auth(),
@@ -206,7 +204,7 @@ function createToken(accountId: number, exp: number) {
 function addSessionCookie(res: Response, sessionId: number, expires: Date) {
   res.cookie('sessionId', sessionId, {
     httpOnly: true,
-    secure: isProduction,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     expires,
   })
