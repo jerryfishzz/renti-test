@@ -25,5 +25,5 @@
 - [ ] Standardized module exports
 - [ ] Remove models folder and its jest settings
 - [ ] Add package version check tools
-- [ ] Add auth middleware
+- [ ] Add authorization in auth middleware
 - [ ] jsonwebtoken can't work with docker
