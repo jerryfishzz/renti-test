@@ -123,6 +123,7 @@ router.post(
       const access_token = createToken(account.id, accessExp)
 
       return res.send({
+        sessionId: session.id,
         ...account,
         access_token,
       })
@@ -146,6 +147,7 @@ router.post(
       const access_token = createToken(account.id, accessExp)
 
       return res.send({
+        sessionId: session.id,
         ...account,
         access_token,
       })
