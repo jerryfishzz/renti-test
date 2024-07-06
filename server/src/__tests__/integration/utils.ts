@@ -35,6 +35,7 @@ export async function logIn(agent: TestAgent) {
   access_token = response.body.access_token
 }
 
+// To be deleted
 export function createDoAuth(login: CustomResponse<LoginReturn>) {
   return (test: Test): Promise<CustomResponse> => {
     return test
