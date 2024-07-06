@@ -40,4 +40,5 @@ export type LoginRequest = Request<
   unknown,
   z.infer<typeof login>['body']
 >
-export type LoginResponse = Response<Account & { access_token: string }>
+export type LoginReturn = Account & { access_token: string }
+export type LoginResponse = Response<LoginReturn>
