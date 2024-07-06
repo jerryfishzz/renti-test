@@ -26,3 +26,4 @@
 - [ ] Remove models folder and its jest settings
 - [ ] Add package version check tools
 - [ ] Add auth middleware
+- [ ] jsonwebtoken can't work with docker
