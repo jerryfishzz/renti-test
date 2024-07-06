@@ -4,8 +4,10 @@ import app from 'lib/express'
 import { accounts } from 'api/accounts'
 import Account from './models/account'
 import { db } from 'lib/db'
-import * as AccountService from './services/account.service'
 import { logIn } from './utils'
+
+import * as AccountService from './services/account.service'
+import * as SessionService from './services/session.service'
 
 app.use(accounts)
 const agent = request(app)
@@ -30,6 +32,7 @@ afterEach(async () => {
 })
 
 afterAll(async () => {
+  await SessionService.deleteById(sessionId)
   await db.destroy()
 })
 
