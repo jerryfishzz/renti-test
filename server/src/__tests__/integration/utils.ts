@@ -1,5 +1,5 @@
 import TestAgent from 'supertest/lib/agent'
-import request, { Response, Test } from 'supertest'
+import request, { Response as STResponse, Test } from 'supertest'
 
 import { LoginReturn } from 'schemas/account.schema'
 import app from 'lib/express'
@@ -14,7 +14,7 @@ const agent = request(app)
 
 // Customize the response type from supertest
 // to make it generic.
-export type CustomResponse<T = any> = Omit<Response, 'body'> & { body: T }
+export type Response<T = any> = Omit<STResponse, 'body'> & { body: T }
 type LogInProps = { username?: string; password?: string }
 
 function createLogIn(agent: TestAgent) {
@@ -22,7 +22,7 @@ function createLogIn(agent: TestAgent) {
     const response = (await agent.post('/login').send({
       username: username ?? API_USER,
       password: password ?? API_PASS,
-    })) as Awaited<CustomResponse<LoginReturn>>
+    })) as Awaited<Response<LoginReturn>>
 
     if (response.status === 403) {
       console.error(response.text)
@@ -37,8 +37,8 @@ function createLogIn(agent: TestAgent) {
 export const logIn = createLogIn(agent)
 
 // To be deleted
-export function createDoAuth(login: CustomResponse<LoginReturn>) {
-  return (test: Test): Promise<CustomResponse> => {
+export function createDoAuth(login: Response<LoginReturn>) {
+  return (test: Test): Promise<Response> => {
     return test
       .set('Authorization', `Bearer ${login.body.access_token}`)
       .set('Accept', 'application/json')
@@ -74,7 +74,7 @@ type QueryProps = {
   options?: GetOptions<Method>
   failed?: boolean
 }
-async function query({ path, options, failed = false }: QueryProps) {
+export async function query({ path, options, failed = false }: QueryProps) {
   // This can occur errors.
   // Use status and others to check errors.
 
@@ -86,16 +86,4 @@ async function query({ path, options, failed = false }: QueryProps) {
   }
 
   return response
-}
-
-export async function jsonQuery({ path, options, failed = false }: QueryProps) {
-  const response = await query({ path, options, failed })
-
-  return response.body
-}
-
-export async function textQuery({ path, options, failed = false }: QueryProps) {
-  const response = await query({ path, options, failed })
-
-  return response.text
 }
