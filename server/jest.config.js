@@ -14,4 +14,5 @@ module.exports = {
     '^schemas/(.*)$': '<rootDir>/src/schemas/$1',
     '^types/(.*)$': '<rootDir>/src/types/$1',
   },
+  moduleDirectories: ['node_modules', 'src'],
 }

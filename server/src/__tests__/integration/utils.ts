@@ -3,7 +3,7 @@ import request, { Response, Test } from 'supertest'
 
 import { LoginReturn } from 'schemas/account.schema'
 import app from 'lib/express'
-import routes from '../../routes'
+import routes from 'routes'
 
 let access_token: string
 let sessionId: number
