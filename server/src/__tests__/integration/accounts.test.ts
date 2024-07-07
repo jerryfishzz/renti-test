@@ -1,16 +1,8 @@
-import request from 'supertest'
-
-import app from 'lib/express'
-import { accounts } from 'api/accounts'
 import Account from './models/account'
 import { db } from 'lib/db'
 import { logIn } from './utils'
-
 import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
-
-app.use(accounts)
-const agent = request(app)
 
 let sessionId: number
 const { API_USER, API_PASS } = process.env
@@ -18,7 +10,7 @@ const { API_USER, API_PASS } = process.env
 let test_acct: Account = null as unknown as Account
 
 beforeAll(async () => {
-  sessionId = await logIn(agent)
+  sessionId = await logIn()
 })
 
 beforeEach(async () => {
