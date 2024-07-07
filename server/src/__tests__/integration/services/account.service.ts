@@ -1,10 +1,10 @@
 import { Account } from 'types/db'
-import { jsonQuery } from '../utils'
+import { query, Response } from '../utils'
 
-export function getById(id: number): Promise<Account[]> {
-  return jsonQuery({ path: `/accounts/${id}` })
+export function getById(id: number): Promise<Response<Account>> {
+  return query({ path: `/accounts/${id}` })
 }
 
-export function readList(): Promise<Account[]> {
-  return jsonQuery({ path: '/accounts' })
+export function readList(): Promise<Response<Account[]>> {
+  return query({ path: '/accounts' })
 }
