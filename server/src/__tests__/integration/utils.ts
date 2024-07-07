@@ -3,41 +3,38 @@ import request, { Response, Test } from 'supertest'
 
 import { LoginReturn } from 'schemas/account.schema'
 import app from 'lib/express'
-import { accounts } from 'api/accounts'
-import { books } from 'api/books'
-import { genres } from 'api/genres'
-import { sessions } from 'api/sessions'
+import routes from '../../routes'
 
 let access_token: string
 let sessionId: number
 const { API_USER, API_PASS } = process.env
 
-app.use(accounts)
-app.use(books)
-app.use(genres)
-app.use(sessions)
+routes(app)
 const agent = request(app)
 
 // Customize the response type from supertest
 // to make it generic.
 export type CustomResponse<T = any> = Omit<Response, 'body'> & { body: T }
+type LogInProps = { username?: string; password?: string }
 
-export async function logIn(agent: TestAgent) {
-  const response = (await agent
-    .post('/login')
-    .send({ username: API_USER, password: API_PASS })) as Awaited<
-    CustomResponse<LoginReturn>
-  >
+function createLogIn(agent: TestAgent) {
+  return async ({ username, password }: LogInProps = {}) => {
+    const response = (await agent.post('/login').send({
+      username: username ?? API_USER,
+      password: password ?? API_PASS,
+    })) as Awaited<CustomResponse<LoginReturn>>
 
-  if (response.status === 403) {
-    console.error(response.text)
-    throw Error('Failed to login')
+    if (response.status === 403) {
+      console.error(response.text)
+      throw Error('Failed to login')
+    }
+
+    access_token = response.body.access_token
+
+    return response.body.sessionId
   }
-
-  access_token = response.body.access_token
-
-  return response.body.sessionId
 }
+export const logIn = createLogIn(agent)
 
 // To be deleted
 export function createDoAuth(login: CustomResponse<LoginReturn>) {
@@ -84,7 +81,7 @@ async function query({ path, options, failed = false }: QueryProps) {
   const response = await doAgentQuery(path, options)
 
   if (response.status === 403 && !failed) {
-    await logIn(agent)
+    await logIn()
     return query({ path, options, failed: true })
   }
 
