@@ -27,3 +27,4 @@
 - [ ] Add package version check tools
 - [ ] Add authorization in auth middleware
 - [ ] jsonwebtoken can't work with docker
+- [ ] Remove sum.ts
