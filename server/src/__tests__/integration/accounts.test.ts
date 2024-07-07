@@ -42,8 +42,28 @@ afterAll(async () => {
 //   expect(response.status).toBe(403)
 // })
 
-test.only('gets 3 accounts', async () => {
-  const results = await AccountService.readList()
+test('gets 3 accounts', async () => {
+  const response = await AccountService.readList()
 
-  expect(results.length).toBeGreaterThan(0)
+  expect(response.body.length).toBeGreaterThan(0)
+})
+
+describe('accounts', () => {
+  describe('get account by id', () => {
+    describe('given the account id does not exist', () => {
+      it('should return 404', async () => {
+        let notFoundId = Math.floor(Math.random() * 1000)
+        const { body } = await AccountService.readList()
+
+        let same = true
+        while (same) {
+          same = body.some(account => account.id === notFoundId)
+          same && (notFoundId = Math.floor(Math.random() * 1000))
+        }
+
+        const { statusCode } = await AccountService.getById(notFoundId)
+        expect(statusCode).toBe(404)
+      })
+    })
+  })
 })
