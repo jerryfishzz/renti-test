@@ -20,6 +20,8 @@
   }
   ```
 
+- [ ] Check if `db.destroy()` is still necessary
+
 ## Low
 
 - [ ] Standardized module exports
