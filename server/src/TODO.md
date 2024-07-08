@@ -3,6 +3,7 @@
 ## High
 
 - [ ] Add tests for the accounts api
+- [ ] Return from account query should not include password
 
 ## Medium
 
