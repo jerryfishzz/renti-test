@@ -1,12 +1,12 @@
+import { faker } from '@faker-js/faker'
+
 // import Account from './models/account'
 import { db } from 'lib/db'
 import { logIn } from './utils'
 import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
 import { Account } from 'types/db'
-import { faker } from '@faker-js/faker'
 import { Response } from './utils'
-import exp from 'constants'
 
 let sessionId: number
 const { API_USER, API_PASS } = process.env
@@ -50,16 +50,15 @@ describe('accounts', () => {
   describe('get account by id', () => {
     describe('given the account id does not exist', () => {
       it('should return 404', async () => {
-        const notFoundId = faker.number.int({ min: 1 })
-        const mockGetById = jest
-          .spyOn(AccountService, 'getById')
-          // @ts-ignore
-          .mockReturnValueOnce({ statusCode: 404 })
+        const notFoundId = await createNotFound({
+          getByValue: AccountService.getById,
+          key: 'id',
+          createMockValue: () => faker.number.int({ min: 1, max: 100000 }),
+        })
 
         const { statusCode } = await AccountService.getById(notFoundId)
 
         expect(statusCode).toBe(404)
-        expect(mockGetById).toHaveBeenCalledWith(notFoundId)
       })
     })
 
@@ -88,18 +87,17 @@ describe('accounts', () => {
   describe('get account by username', () => {
     describe('given the account username does not exist', () => {
       it('should return 404', async () => {
-        const notFoundUsername = faker.internet.userName()
-        const mockGetByUsername = jest
-          .spyOn(AccountService, 'getByUsername')
-          // @ts-ignore
-          .mockReturnValueOnce({ statusCode: 404 })
+        const notFoundUsername = await createNotFound({
+          getByValue: AccountService.getByUsername,
+          key: 'username',
+          createMockValue: () => faker.internet.userName(),
+        })
 
         const { statusCode } = await AccountService.getByUsername(
           notFoundUsername
         )
 
         expect(statusCode).toBe(404)
-        expect(mockGetByUsername).toHaveBeenCalledWith(notFoundUsername)
       })
     })
 
@@ -138,26 +136,26 @@ describe('accounts', () => {
   })
 })
 
-// type CreateNotFoundProps<
-//   TObj extends Record<string, any>,
-//   TKey extends keyof TObj
-// > = {
-//   getList: () => Promise<Response<TObj[]>>
-//   key: TKey
-//   createMockValue: () => TObj[TKey]
-// }
-// async function createNotFound<
-//   TObj extends Record<string, any>,
-//   TKey extends keyof TObj
-// >({ getList, key, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
-//   let notFound = createMockValue()
-//   const { body } = await getList()
+type CreateNotFoundProps<
+  TObj extends Record<string, any>,
+  TKey extends keyof TObj
+> = {
+  getByValue: (value: TObj[TKey]) => Promise<Response<TObj>>
+  key: TKey
+  createMockValue: () => TObj[TKey]
+}
+async function createNotFound<
+  TObj extends Record<string, any>,
+  TKey extends keyof TObj
+>({ getByValue, key, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
+  let notFound = createMockValue()
 
-//   let same = true
-//   while (same) {
-//     same = body.some(obj => obj[key] === notFound)
-//     same && (notFound = createMockValue())
-//   }
+  let isDuplicate = true
+  while (isDuplicate) {
+    const { statusCode } = await getByValue(notFound)
+    isDuplicate = statusCode === 200
+    isDuplicate && (notFound = createMockValue())
+  }
 
-//   return notFound
-// }
+  return notFound
+}
