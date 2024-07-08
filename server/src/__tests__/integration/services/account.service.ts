@@ -8,7 +8,7 @@ export function createMockAccount(
   mockAccount: Partial<CreateAccount> = {}
 ): CreateAccount {
   return {
-    username: faker.internet.userName(),
+    username: faker.string.uuid(),
     password: faker.internet.password(),
     email: faker.internet.email(),
     name: faker.person.fullName(),
