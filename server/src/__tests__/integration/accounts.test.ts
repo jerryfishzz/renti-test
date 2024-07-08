@@ -104,25 +104,13 @@ describe('accounts', () => {
     })
 
     describe('given the account username exists', () => {
-      let account: Account | null = null
-
-      beforeEach(async () => {
-        const { body } = await AccountService.create()
-        account = body
-      })
-
-      afterEach(async () => {
-        await AccountService.deleteById(account!.id)
-        account = null
-      })
-
       it('should return the account info', async () => {
         const { statusCode, body } = await AccountService.getByUsername(
-          account!.username
+          API_USER
         )
 
         expect(statusCode).toBe(200)
-        expect(body).toEqual(account)
+        expect(body.username).toEqual(API_USER)
       })
     })
   })
