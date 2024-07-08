@@ -6,6 +6,7 @@ import * as SessionService from './services/session.service'
 import { Account } from 'types/db'
 import { faker } from '@faker-js/faker'
 import { Response } from './utils'
+import exp from 'constants'
 
 let sessionId: number
 const { API_USER, API_PASS } = process.env
@@ -49,14 +50,16 @@ describe('accounts', () => {
   describe('get account by id', () => {
     describe('given the account id does not exist', () => {
       it('should return 404', async () => {
-        const notFoundId = await createNotFound({
-          getList: () => AccountService.getList(),
-          key: 'id',
-          createMockValue: () => Math.floor(Math.random() * 1000),
-        })
+        const notFoundId = faker.number.int({ min: 1 })
+        const mockGetById = jest
+          .spyOn(AccountService, 'getById')
+          // @ts-ignore
+          .mockReturnValueOnce({ statusCode: 404 })
 
         const { statusCode } = await AccountService.getById(notFoundId)
+
         expect(statusCode).toBe(404)
+        expect(mockGetById).toHaveBeenCalledWith(notFoundId)
       })
     })
 
@@ -147,26 +150,26 @@ describe('accounts', () => {
   })
 })
 
-type CreateNotFoundProps<
-  TObj extends Record<string, any>,
-  TKey extends keyof TObj
-> = {
-  getList: () => Promise<Response<TObj[]>>
-  key: TKey
-  createMockValue: () => TObj[TKey]
-}
-async function createNotFound<
-  TObj extends Record<string, any>,
-  TKey extends keyof TObj
->({ getList, key, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
-  let notFound = createMockValue()
-  const { body } = await getList()
+// type CreateNotFoundProps<
+//   TObj extends Record<string, any>,
+//   TKey extends keyof TObj
+// > = {
+//   getList: () => Promise<Response<TObj[]>>
+//   key: TKey
+//   createMockValue: () => TObj[TKey]
+// }
+// async function createNotFound<
+//   TObj extends Record<string, any>,
+//   TKey extends keyof TObj
+// >({ getList, key, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
+//   let notFound = createMockValue()
+//   const { body } = await getList()
 
-  let same = true
-  while (same) {
-    same = body.some(obj => obj[key] === notFound)
-    same && (notFound = createMockValue())
-  }
+//   let same = true
+//   while (same) {
+//     same = body.some(obj => obj[key] === notFound)
+//     same && (notFound = createMockValue())
+//   }
 
-  return notFound
-}
+//   return notFound
+// }
