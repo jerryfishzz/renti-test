@@ -45,12 +45,6 @@ afterAll(async () => {
 //   expect(response.status).toBe(403)
 // })
 
-test('gets 3 accounts', async () => {
-  const response = await AccountService.getList()
-
-  expect(response.body.length).toBeGreaterThan(0)
-})
-
 describe('accounts', () => {
   describe('get account by id', () => {
     describe('given the account id does not exist', () => {
@@ -122,6 +116,16 @@ describe('accounts', () => {
 
         expect(statusCode).toBe(200)
         expect(body).toEqual(account)
+      })
+    })
+  })
+
+  describe('get list', () => {
+    describe('given there are more than one account in the table', () => {
+      it('should return an array with the length greater than 0', async () => {
+        const response = await AccountService.getList()
+
+        expect(response.body.length).toBeGreaterThan(0)
       })
     })
   })
