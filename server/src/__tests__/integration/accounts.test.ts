@@ -1,13 +1,14 @@
-import Account from './models/account'
+// import Account from './models/account'
 import { db } from 'lib/db'
 import { logIn } from './utils'
 import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
+import { Account } from 'types/db'
 
 let sessionId: number
 const { API_USER, API_PASS } = process.env
 
-let test_acct: Account = null as unknown as Account
+// let test_acct: Account = null as unknown as Account
 
 beforeAll(async () => {
   sessionId = await logIn()
@@ -63,6 +64,26 @@ describe('accounts', () => {
 
         const { statusCode } = await AccountService.getById(notFoundId)
         expect(statusCode).toBe(404)
+      })
+    })
+
+    describe('given the account id exists', () => {
+      let account: Account
+
+      beforeEach(async () => {
+        const { body } = await AccountService.create()
+        account = body
+      })
+
+      afterEach(async () => {
+        await AccountService.deleteById(account.id)
+      })
+
+      it('should return the account info', async () => {
+        const { statusCode, body } = await AccountService.getById(account.id)
+
+        expect(statusCode).toBe(200)
+        expect(body).toEqual(account)
       })
     })
   })

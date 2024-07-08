@@ -20,11 +20,8 @@ export type GetListResponse = Response<Account[]>
 export const createAccount = z.object({
   body: account.omit({ id: true, created_at: true, updated_at: true }),
 })
-export type CreateAccountRequest = Request<
-  unknown,
-  unknown,
-  z.infer<typeof createAccount>['body']
->
+export type CreateAccount = z.infer<typeof createAccount>['body']
+export type CreateAccountRequest = Request<unknown, unknown, CreateAccount>
 export type CreateAccountResponse = Response<Account>
 
 export const deleteById = z.object({
