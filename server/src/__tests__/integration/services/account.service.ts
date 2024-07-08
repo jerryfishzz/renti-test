@@ -29,10 +29,10 @@ export function getList(): Promise<Response<Account[]>> {
   return query({ path: '/accounts' })
 }
 
-export function create(): Promise<Response<Account>> {
+export function create(account?: CreateAccount): Promise<Response<Account>> {
   return query({
     path: '/accounts',
-    options: { method: 'post', body: createMockAccount() },
+    options: { method: 'post', body: account ? account : createMockAccount() },
   })
 }
 
