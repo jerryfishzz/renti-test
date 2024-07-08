@@ -43,7 +43,7 @@ afterAll(async () => {
 // })
 
 test('gets 3 accounts', async () => {
-  const response = await AccountService.readList()
+  const response = await AccountService.getList()
 
   expect(response.body.length).toBeGreaterThan(0)
 })
@@ -53,7 +53,7 @@ describe('accounts', () => {
     describe('given the account id does not exist', () => {
       it('should return 404', async () => {
         let notFoundId = Math.floor(Math.random() * 1000)
-        const { body } = await AccountService.readList()
+        const { body } = await AccountService.getList()
 
         let same = true
         while (same) {

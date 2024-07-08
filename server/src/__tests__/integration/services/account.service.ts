@@ -5,6 +5,6 @@ export function getById(id: number): Promise<Response<Account>> {
   return query({ path: `/accounts/${id}` })
 }
 
-export function readList(): Promise<Response<Account[]>> {
+export function getList(): Promise<Response<Account[]>> {
   return query({ path: '/accounts' })
 }
