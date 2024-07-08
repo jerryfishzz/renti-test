@@ -61,7 +61,7 @@ describe('accounts', () => {
     })
 
     describe('given the account id exists', () => {
-      let account: Account
+      let account: Account | null = null
 
       beforeEach(async () => {
         const { body } = await AccountService.create()
@@ -69,11 +69,12 @@ describe('accounts', () => {
       })
 
       afterEach(async () => {
-        await AccountService.deleteById(account.id)
+        await AccountService.deleteById(account!.id)
+        account = null
       })
 
       it('should return the account info', async () => {
-        const { statusCode, body } = await AccountService.getById(account.id)
+        const { statusCode, body } = await AccountService.getById(account!.id)
 
         expect(statusCode).toBe(200)
         expect(body).toEqual(account)
@@ -98,7 +99,7 @@ describe('accounts', () => {
     })
 
     describe('given the account username exists', () => {
-      let account: Account
+      let account: Account | null = null
 
       beforeEach(async () => {
         const { body } = await AccountService.create()
@@ -106,12 +107,13 @@ describe('accounts', () => {
       })
 
       afterEach(async () => {
-        await AccountService.deleteById(account.id)
+        await AccountService.deleteById(account!.id)
+        account = null
       })
 
       it('should return the account info', async () => {
         const { statusCode, body } = await AccountService.getByUsername(
-          account.username
+          account!.username
         )
 
         expect(statusCode).toBe(200)
