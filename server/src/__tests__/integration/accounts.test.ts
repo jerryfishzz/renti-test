@@ -85,16 +85,18 @@ describe('accounts', () => {
   describe('get account by username', () => {
     describe('given the account username does not exist', () => {
       it('should return 404', async () => {
-        const notFoundUsername = await createNotFound({
-          getList: () => AccountService.getList(),
-          key: 'username',
-          createMockValue: () => faker.internet.userName(),
-        })
+        const notFoundUsername = faker.internet.userName()
+        const mockGetByUsername = jest
+          .spyOn(AccountService, 'getByUsername')
+          // @ts-ignore
+          .mockReturnValueOnce({ statusCode: 404 })
 
         const { statusCode } = await AccountService.getByUsername(
           notFoundUsername
         )
+
         expect(statusCode).toBe(404)
+        expect(mockGetByUsername).toHaveBeenCalledWith(notFoundUsername)
       })
     })
 
