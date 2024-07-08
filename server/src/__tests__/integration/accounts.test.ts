@@ -134,6 +134,28 @@ describe('accounts', () => {
       })
     })
   })
+
+  describe('create account', () => {
+    describe('given the username already exists', () => {
+      it('should return 500', async () => {
+        const newAccount = AccountService.createMockAccount({
+          username: API_USER,
+        })
+
+        const { statusCode } = await AccountService.create(newAccount)
+
+        expect(statusCode).toBe(500)
+      })
+    })
+
+    // describe('given the account already exists', () => {
+    //   it('should return 400', async () => {
+    //     const { statusCode } = await AccountService.create()
+
+    //     expect(statusCode).toBe(400)
+    //   })
+    // })
+  })
 })
 
 type CreateNotFoundProps<
