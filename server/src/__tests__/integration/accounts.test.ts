@@ -147,7 +147,7 @@ type CreateNotFoundProps<
 async function createNotFound<
   TObj extends Record<string, any>,
   TKey extends keyof TObj
->({ getByValue, key, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
+>({ getByValue, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
   let notFound = createMockValue()
 
   let isDuplicate = true
