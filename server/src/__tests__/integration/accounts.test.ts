@@ -123,7 +123,19 @@ describe('accounts', () => {
   })
 
   describe('get list', () => {
-    describe('given there are more than one account in the table', () => {
+    describe('given there is at least one account in the table', () => {
+      let account: Account | null = null
+
+      beforeEach(async () => {
+        const { body } = await AccountService.create()
+        account = body
+      })
+
+      afterEach(async () => {
+        await AccountService.deleteById(account!.id)
+        account = null
+      })
+
       it('should return an array with the length greater than 0', async () => {
         const response = await AccountService.getList()
 
