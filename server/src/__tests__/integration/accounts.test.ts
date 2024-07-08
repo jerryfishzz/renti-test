@@ -5,6 +5,7 @@ import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
 import { Account } from 'types/db'
 import { faker } from '@faker-js/faker'
+import { Response } from './utils'
 
 let sessionId: number
 const { API_USER, API_PASS } = process.env
@@ -54,14 +55,11 @@ describe('accounts', () => {
   describe('get account by id', () => {
     describe('given the account id does not exist', () => {
       it('should return 404', async () => {
-        let notFoundId = Math.floor(Math.random() * 1000)
-        const { body } = await AccountService.getList()
-
-        let same = true
-        while (same) {
-          same = body.some(account => account.id === notFoundId)
-          same && (notFoundId = Math.floor(Math.random() * 1000))
-        }
+        const notFoundId = await createNotFound({
+          getList: () => AccountService.getList(),
+          key: 'id',
+          createMockValue: () => Math.floor(Math.random() * 1000),
+        })
 
         const { statusCode } = await AccountService.getById(notFoundId)
         expect(statusCode).toBe(404)
@@ -92,14 +90,11 @@ describe('accounts', () => {
   describe('get account by username', () => {
     describe('given the account username does not exist', () => {
       it('should return 404', async () => {
-        let notFoundUsername = faker.internet.userName()
-        const { body } = await AccountService.getList()
-
-        let same = true
-        while (same) {
-          same = body.some(account => account.username === notFoundUsername)
-          same && (notFoundUsername = faker.internet.userName())
-        }
+        const notFoundUsername = await createNotFound({
+          getList: () => AccountService.getList(),
+          key: 'username',
+          createMockValue: () => faker.internet.userName(),
+        })
 
         const { statusCode } = await AccountService.getByUsername(
           notFoundUsername
@@ -129,3 +124,27 @@ describe('accounts', () => {
     })
   })
 })
+
+type CreateNotFoundProps<
+  TObj extends Record<string, any>,
+  TKey extends keyof TObj
+> = {
+  getList: () => Promise<Response<TObj[]>>
+  key: TKey
+  createMockValue: () => TObj[TKey]
+}
+async function createNotFound<
+  TObj extends Record<string, any>,
+  TKey extends keyof TObj
+>({ getList, key, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
+  let notFound = createMockValue()
+  const { body } = await getList()
+
+  let same = true
+  while (same) {
+    same = body.some(obj => obj[key] === notFound)
+    same && (notFound = createMockValue())
+  }
+
+  return notFound
+}
