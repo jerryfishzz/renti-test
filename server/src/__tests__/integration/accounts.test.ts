@@ -103,7 +103,7 @@ describe('accounts', () => {
       })
     })
 
-    describe('given the account id exists', () => {
+    describe('given the account username exists', () => {
       let account: Account
 
       beforeEach(async () => {
@@ -116,7 +116,9 @@ describe('accounts', () => {
       })
 
       it('should return the account info', async () => {
-        const { statusCode, body } = await AccountService.getById(account.id)
+        const { statusCode, body } = await AccountService.getByUsername(
+          account.username
+        )
 
         expect(statusCode).toBe(200)
         expect(body).toEqual(account)
