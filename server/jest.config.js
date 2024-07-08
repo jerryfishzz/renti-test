@@ -15,4 +15,7 @@ module.exports = {
     '^types/(.*)$': '<rootDir>/src/types/$1',
   },
   moduleDirectories: ['node_modules', 'src'],
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
 }
