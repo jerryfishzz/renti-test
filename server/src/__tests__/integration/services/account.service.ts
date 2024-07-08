@@ -16,6 +16,10 @@ export function getById(id: number): Promise<Response<Account>> {
   return query({ path: `/accounts/${id}` })
 }
 
+export function getByUsername(username: string): Promise<Response<Account>> {
+  return query({ path: `/accounts/username/${username}` })
+}
+
 export function getList(): Promise<Response<Account[]>> {
   return query({ path: '/accounts' })
 }

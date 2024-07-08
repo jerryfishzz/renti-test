@@ -4,6 +4,7 @@ import { logIn } from './utils'
 import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
 import { Account } from 'types/db'
+import { faker } from '@faker-js/faker'
 
 let sessionId: number
 const { API_USER, API_PASS } = process.env
@@ -63,6 +64,46 @@ describe('accounts', () => {
         }
 
         const { statusCode } = await AccountService.getById(notFoundId)
+        expect(statusCode).toBe(404)
+      })
+    })
+
+    describe('given the account id exists', () => {
+      let account: Account
+
+      beforeEach(async () => {
+        const { body } = await AccountService.create()
+        account = body
+      })
+
+      afterEach(async () => {
+        await AccountService.deleteById(account.id)
+      })
+
+      it('should return the account info', async () => {
+        const { statusCode, body } = await AccountService.getById(account.id)
+
+        expect(statusCode).toBe(200)
+        expect(body).toEqual(account)
+      })
+    })
+  })
+
+  describe('get account by username', () => {
+    describe('given the account username does not exist', () => {
+      it('should return 404', async () => {
+        let notFoundUsername = faker.internet.userName()
+        const { body } = await AccountService.getList()
+
+        let same = true
+        while (same) {
+          same = body.some(account => account.username === notFoundUsername)
+          same && (notFoundUsername = faker.internet.userName())
+        }
+
+        const { statusCode } = await AccountService.getByUsername(
+          notFoundUsername
+        )
         expect(statusCode).toBe(404)
       })
     })
