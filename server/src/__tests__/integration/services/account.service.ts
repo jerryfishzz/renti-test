@@ -1,8 +1,11 @@
 import { faker } from '@faker-js/faker'
 
-import { Account } from 'types/db'
 import { query, Response } from '../utils'
-import { CreateAccount, LoginReturn } from 'schemas/account.schema'
+import {
+  CreateAccount,
+  AccountReturn,
+  LoginReturn,
+} from 'schemas/account.schema'
 
 export function createMockAccount(
   mockAccount: Partial<CreateAccount> = {}
@@ -12,24 +15,28 @@ export function createMockAccount(
     password: faker.internet.password(),
     email: faker.internet.email(),
     name: faker.person.fullName(),
-    reading_preferences: [],
+    reading_preferences: ['Fantasy'],
     ...mockAccount,
   }
 }
 
-export function getById(id: number): Promise<Response<Account>> {
+export function getById(id: number): Promise<Response<AccountReturn>> {
   return query({ path: `/accounts/${id}` })
 }
 
-export function getByUsername(username: string): Promise<Response<Account>> {
+export function getByUsername(
+  username: string
+): Promise<Response<AccountReturn>> {
   return query({ path: `/accounts/username/${username}` })
 }
 
-export function getList(): Promise<Response<Account[]>> {
+export function getList(): Promise<Response<AccountReturn[]>> {
   return query({ path: '/accounts' })
 }
 
-export function create(account?: CreateAccount): Promise<Response<Account>> {
+export function create(
+  account?: CreateAccount
+): Promise<Response<AccountReturn>> {
   return query({
     path: '/accounts',
     options: { method: 'post', body: account ? account : createMockAccount() },
