@@ -117,6 +117,9 @@ router.post(
     console.log(refreshExpDate)
     console.log(new Date())
 
+    const { id, username, email, name, reading_preferences } = account
+    const accountReturn = { id, username, email, name, reading_preferences }
+
     const cookieSessionId = req.cookies?.sessionId as undefined | number
     let isValid = false
     let session: Session | undefined
@@ -141,7 +144,7 @@ router.post(
 
       return res.send({
         sessionId: session.id,
-        ...account,
+        ...accountReturn,
         access_token,
       })
     } else {
@@ -165,7 +168,7 @@ router.post(
 
       return res.send({
         sessionId: session.id,
-        ...account,
+        ...accountReturn,
         access_token,
       })
     }

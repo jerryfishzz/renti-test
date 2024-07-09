@@ -42,5 +42,8 @@ export type LoginRequest = Request<
   unknown,
   z.infer<typeof login>['body']
 >
-export type LoginReturn = Account & { access_token: string; sessionId: number }
+export type LoginReturn = AccountReturn & {
+  access_token: string
+  sessionId: number
+}
 export type LoginResponse = Response<LoginReturn>
