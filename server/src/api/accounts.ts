@@ -30,7 +30,10 @@ router.get(
   auth(),
   validate(getById),
   guard(async (req: GetByIdRequest, res: GetByIdResponse) => {
-    const account = await db('accounts').where('id', req.params.id).first()
+    const account = await db('accounts')
+      .where('id', req.params.id)
+      .select(['id', 'username', 'email', 'name', 'reading_preferences'])
+      .first()
     if (!account) return res.sendStatus(404)
 
     return res.send(account)
@@ -44,6 +47,7 @@ router.get(
   guard(async (req: GetByUsernameRequest, res: GetByUsernameResponse) => {
     const account = await db('accounts')
       .where('username', req.params.username)
+      .select(['id', 'username', 'email', 'name', 'reading_preferences'])
       .first()
     if (!account) return res.sendStatus(404)
 
@@ -55,7 +59,13 @@ router.get(
   '/accounts',
   auth(),
   guard(async (req, res: GetListResponse) => {
-    const accounts = await db('accounts').returning('*')
+    const accounts = await db('accounts').returning([
+      'id',
+      'username',
+      'email',
+      'name',
+      'reading_preferences',
+    ])
 
     return res.send(accounts)
   })
@@ -69,9 +79,13 @@ router.post(
     const salt = bcrypt.genSaltSync(Number(process.env.SALT_ROUNDS))
     const hashed = bcrypt.hashSync(req.body.password, salt)
 
+    // When inserting into the database, we need to convert the reading_preferences to JSON string
+    const reading_preferences = JSON.stringify(req.body.reading_preferences)
+
     const [account] = await db('accounts')
-      .insert({ ...req.body, password: hashed })
-      .returning('*')
+      // @ts-ignore
+      .insert({ ...req.body, password: hashed, reading_preferences })
+      .returning(['id', 'username', 'email', 'name', 'reading_preferences'])
     return res.send(account)
   })
 )
