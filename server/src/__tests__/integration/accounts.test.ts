@@ -5,8 +5,8 @@ import { db } from 'lib/db'
 import { logIn } from './utils'
 import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
-import { Account } from 'types/db'
 import { Response } from './utils'
+import { AccountReturn } from 'schemas/account.schema'
 
 let sessionId: number
 const { API_USER, API_PASS } = process.env
@@ -63,7 +63,7 @@ describe('accounts', () => {
     })
 
     describe('given the account id exists', () => {
-      let account: Account | null = null
+      let account: AccountReturn | null = null
 
       beforeEach(async () => {
         const { body } = await AccountService.create()
@@ -115,7 +115,7 @@ describe('accounts', () => {
 
   describe('get list', () => {
     describe('given there is at least one account in the table', () => {
-      let account: Account | null = null
+      let account: AccountReturn | null = null
 
       beforeEach(async () => {
         const { body } = await AccountService.create()
@@ -148,13 +148,29 @@ describe('accounts', () => {
       })
     })
 
-    // describe('given the account already exists', () => {
-    //   it('should return 400', async () => {
-    //     const { statusCode } = await AccountService.create()
+    describe('given the account info is correct', () => {
+      let account: AccountReturn | null = null
 
-    //     expect(statusCode).toBe(400)
-    //   })
-    // })
+      afterEach(async () => {
+        if (account) {
+          await AccountService.deleteById(account.id)
+          account = null
+        }
+      })
+
+      it('should return the newly created account info', async () => {
+        const newAccount = AccountService.createMockAccount()
+        const { password, ...newAccountWithoutPassword } = newAccount
+
+        const { body } = await AccountService.create(newAccount)
+        account = body
+
+        expect(body).toEqual({
+          ...newAccountWithoutPassword,
+          id: expect.any(Number),
+        })
+      })
+    })
   })
 })
 
