@@ -4,7 +4,7 @@ import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
 import { AccountReturn } from 'schemas/account.schema'
 
-let sessionId: number
+let sessionId: number | null = null
 const { API_USER } = process.env
 
 beforeAll(async () => {
@@ -12,7 +12,10 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await SessionService.deleteById(sessionId)
+  if (sessionId) {
+    await SessionService.deleteById(sessionId)
+    sessionId = null
+  }
   await db.destroy()
 })
 
