@@ -48,13 +48,25 @@ afterAll(async () => {
 
 describe('accounts', () => {
   describe('get account by id', () => {
+    let account: AccountReturn | null = null
+
+    beforeEach(async () => {
+      const { body } = await AccountService.create()
+      account = body
+    })
+
+    afterEach(async () => {
+      if (account) {
+        await AccountService.deleteById(account.id)
+        account = null
+      }
+    })
+
     describe('given the account id does not exist', () => {
       it('should return 404', async () => {
-        const notFoundId = await createNotFound({
-          getByValue: AccountService.getById,
-          key: 'id',
-          createMockValue: () => faker.number.int({ min: 1, max: 100000 }),
-        })
+        const notFoundId = account!.id
+        await AccountService.deleteById(notFoundId)
+        account = null
 
         const { statusCode } = await AccountService.getById(notFoundId)
 
@@ -63,6 +75,17 @@ describe('accounts', () => {
     })
 
     describe('given the account id exists', () => {
+      it('should return the account info', async () => {
+        const { statusCode, body } = await AccountService.getById(account!.id)
+
+        expect(statusCode).toBe(200)
+        expect(body).toEqual(account)
+      })
+    })
+  })
+
+  describe('get account by username', () => {
+    describe('given the account username does not exist', () => {
       let account: AccountReturn | null = null
 
       beforeEach(async () => {
@@ -77,23 +100,10 @@ describe('accounts', () => {
         }
       })
 
-      it('should return the account info', async () => {
-        const { statusCode, body } = await AccountService.getById(account!.id)
-
-        expect(statusCode).toBe(200)
-        expect(body).toEqual(account)
-      })
-    })
-  })
-
-  describe('get account by username', () => {
-    describe('given the account username does not exist', () => {
       it('should return 404', async () => {
-        const notFoundUsername = await createNotFound({
-          getByValue: AccountService.getByUsername,
-          key: 'username',
-          createMockValue: () => faker.internet.userName(),
-        })
+        const notFoundUsername = account!.username
+        await AccountService.deleteById(account!.id)
+        account = null
 
         const { statusCode } = await AccountService.getByUsername(
           notFoundUsername
@@ -177,27 +187,3 @@ describe('accounts', () => {
     })
   })
 })
-
-type CreateNotFoundProps<
-  TObj extends Record<string, any>,
-  TKey extends keyof TObj
-> = {
-  getByValue: (value: TObj[TKey]) => Promise<Response<TObj>>
-  key: TKey
-  createMockValue: () => TObj[TKey]
-}
-async function createNotFound<
-  TObj extends Record<string, any>,
-  TKey extends keyof TObj
->({ getByValue, createMockValue }: CreateNotFoundProps<TObj, TKey>) {
-  let notFound = createMockValue()
-
-  let isDuplicate = true
-  while (isDuplicate) {
-    const { statusCode } = await getByValue(notFound)
-    isDuplicate = statusCode === 200
-    isDuplicate && (notFound = createMockValue())
-  }
-
-  return notFound
-}
