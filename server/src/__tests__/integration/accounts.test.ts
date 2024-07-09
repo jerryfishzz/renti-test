@@ -71,8 +71,10 @@ describe('accounts', () => {
       })
 
       afterEach(async () => {
-        await AccountService.deleteById(account!.id)
-        account = null
+        if (account) {
+          await AccountService.deleteById(account.id)
+          account = null
+        }
       })
 
       it('should return the account info', async () => {
@@ -123,8 +125,10 @@ describe('accounts', () => {
       })
 
       afterEach(async () => {
-        await AccountService.deleteById(account!.id)
-        account = null
+        if (account) {
+          await AccountService.deleteById(account.id)
+          account = null
+        }
       })
 
       it('should return an array with the length greater than 0', async () => {
