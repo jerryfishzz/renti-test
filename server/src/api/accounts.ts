@@ -166,6 +166,82 @@ router.post(
     }
   })
 )
+// router.post(
+//   '/login',
+//   validate(login),
+//   guard(async (req: LoginRequest, res: LoginResponse) => {
+//     const accessExp = addHours(new Date(), 1).getTime() / 1000
+//     const refreshExp = addDays(new Date(), 14).getTime() / 1000
+
+//     // Validate username and password
+//     const account = await db('accounts')
+//       .where({
+//         username: req.body.username,
+//       })
+//       .first()
+//     if (!account) return res.sendStatus(403)
+
+//     const checkPassword = await bcrypt.compare(
+//       req.body.password || '',
+//       account.password
+//     )
+//     if (!checkPassword) return res.sendStatus(403)
+
+//     // Issue access token and refresh token
+//     const cookieSessionId = req.cookies?.sessionId as undefined | number
+//     let isValid = false
+//     let session: Session | undefined
+
+//     if (cookieSessionId)
+//       session = await db('sessions').where('id', cookieSessionId).first()
+
+//     if (session) {
+//       try {
+//         const sub = verify(session.refresh_token)
+
+//         // Update session cookie
+//         addSessionCookie(res, session.id, new Date(sub.exp * 1000))
+//         isValid = true
+//       } catch (e) {
+//         console.error(e)
+//       }
+//     }
+
+//     if (session && isValid) {
+//       const access_token = createToken(account.id, accessExp)
+
+//       return res.send({
+//         sessionId: session.id,
+//         ...account,
+//         access_token,
+//       })
+//     } else {
+//       const refresh_token = createToken(account.id, refreshExp)
+
+//       const [session] = await db('sessions')
+//         .insert({
+//           account_id: account.id,
+//           refresh_token,
+//         })
+//         .returning('*')
+//       if (!session) return res.sendStatus(500)
+
+//       // Check the existing expired sessions and delete them
+//       await deleteExpiredSessions(account.id)
+
+//       // Set the cookie with the session ID
+//       addSessionCookie(res, session.id, addDays(new Date(), 14))
+
+//       const access_token = createToken(account.id, accessExp)
+
+//       return res.send({
+//         sessionId: session.id,
+//         ...account,
+//         access_token,
+//       })
+//     }
+//   })
+// )
 
 router.delete(
   '/accounts/:id',
