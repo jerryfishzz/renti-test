@@ -21,7 +21,7 @@
   }
   ```
 
-- [ ] Check if `db.destroy()` is still necessary
+- [✔️] Check if `db.destroy()` is still necessary _Yes_
 
 ## Low
 
