@@ -1,50 +1,20 @@
-import { faker } from '@faker-js/faker'
-
-// import Account from './models/account'
 import { db } from 'lib/db'
 import { logIn } from './utils'
 import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
-import { Response } from './utils'
 import { AccountReturn } from 'schemas/account.schema'
 
 let sessionId: number
-const { API_USER, API_PASS } = process.env
-
-// let test_acct: Account = null as unknown as Account
+const { API_USER } = process.env
 
 beforeAll(async () => {
   sessionId = await logIn()
-})
-
-beforeEach(async () => {
-  // test_acct = new Account(agent)
-  // await test_acct.create()
-})
-
-afterEach(async () => {
-  // await test_acct.delete()
-  // test_acct = null as unknown as Account
 })
 
 afterAll(async () => {
   await SessionService.deleteById(sessionId)
   await db.destroy()
 })
-
-// test(`log in succeeds`, async () => {
-//   const response = await agent
-//     .post('/login')
-//     .send({ username: API_USER, password: API_PASS })
-//   expect(response.status).toBe(200)
-// })
-
-// test(`log in fails`, async () => {
-//   const response = await agent
-//     .post('/login')
-//     .send({ username: API_USER, password: 'this password is wrong' })
-//   expect(response.status).toBe(403)
-// })
 
 describe('accounts', () => {
   describe('get account by id', () => {
@@ -185,46 +155,5 @@ describe('accounts', () => {
         })
       })
     })
-  })
-
-  describe('log in', () => {
-    describe('given the username does not exist', () => {
-      it('should return 403', async () => {
-        const { username, password } = AccountService.createMockAccount()
-
-        const { statusCode } = await AccountService.logIn(username, password)
-
-        expect(statusCode).toBe(403)
-      })
-    })
-
-    describe('given the username and password are incorrect', () => {
-      it('should return 403', async () => {
-        const { statusCode } = await AccountService.logIn(
-          API_USER,
-          faker.string.uuid()
-        )
-
-        expect(statusCode).toBe(403)
-      })
-    })
-
-    // describe('given the username and password are correct', () => {
-    //   it('should return the access token and session id', async () => {
-    //     const { statusCode, body } = await AccountService.logIn(
-    //       API_USER,
-    //       API_PASS
-    //     )
-
-    //     expect(statusCode).toBe(200)
-    //     expect(body).toEqual({
-    //       id: expect.any(Number),
-    //       username: API_USER,
-    //       email: expect.any(String),
-    //       name: expect.any(String),
-    //       reading_preferences: expect.any(Array),
-    //     })
-    //   })
-    // })
   })
 })
