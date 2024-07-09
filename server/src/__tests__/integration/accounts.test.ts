@@ -186,4 +186,45 @@ describe('accounts', () => {
       })
     })
   })
+
+  describe('log in', () => {
+    describe('given the username does not exist', () => {
+      it('should return 403', async () => {
+        const { username, password } = AccountService.createMockAccount()
+
+        const { statusCode } = await AccountService.logIn(username, password)
+
+        expect(statusCode).toBe(403)
+      })
+    })
+
+    describe('given the username and password are incorrect', () => {
+      it('should return 403', async () => {
+        const { statusCode } = await AccountService.logIn(
+          API_USER,
+          faker.string.uuid()
+        )
+
+        expect(statusCode).toBe(403)
+      })
+    })
+
+    // describe('given the username and password are correct', () => {
+    //   it('should return the access token and session id', async () => {
+    //     const { statusCode, body } = await AccountService.logIn(
+    //       API_USER,
+    //       API_PASS
+    //     )
+
+    //     expect(statusCode).toBe(200)
+    //     expect(body).toEqual({
+    //       id: expect.any(Number),
+    //       username: API_USER,
+    //       email: expect.any(String),
+    //       name: expect.any(String),
+    //       reading_preferences: expect.any(Array),
+    //     })
+    //   })
+    // })
+  })
 })
