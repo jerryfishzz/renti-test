@@ -94,9 +94,6 @@ router.post(
   '/login',
   validate(login),
   guard(async (req: LoginRequest, res: LoginResponse) => {
-    const accessExp = addHours(new Date(), 1).getTime() / 1000
-    const refreshExp = addDays(new Date(), 14).getTime() / 1000
-
     // Validate username and password
     const account = await db('accounts')
       .where({
@@ -112,6 +109,14 @@ router.post(
     if (!checkPassword) return res.sendStatus(403)
 
     // Issue access token and refresh token
+    const accessExpDate = addHours(new Date(), 1)
+    const refreshExpDate = addDays(new Date(), 14)
+    const accessExp = accessExpDate.getTime() / 1000
+    const refreshExp = refreshExpDate.getTime() / 1000
+    console.log(accessExpDate)
+    console.log(refreshExpDate)
+    console.log(new Date())
+
     const cookieSessionId = req.cookies?.sessionId as undefined | number
     let isValid = false
     let session: Session | undefined
@@ -154,7 +159,7 @@ router.post(
       await deleteExpiredSessions(account.id)
 
       // Set the cookie with the session ID
-      addSessionCookie(res, session.id, addDays(new Date(), 14))
+      addSessionCookie(res, session.id, refreshExpDate)
 
       const access_token = createToken(account.id, accessExp)
 
