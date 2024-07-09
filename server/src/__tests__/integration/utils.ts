@@ -80,7 +80,7 @@ export async function query({ path, options, failed = false }: QueryProps) {
 
   const response = await doAgentQuery(path, options)
 
-  if (response.status === 403 && !failed) {
+  if (response.status === 403 && !failed && path !== '/login') {
     await logIn()
     return query({ path, options, failed: true })
   }
