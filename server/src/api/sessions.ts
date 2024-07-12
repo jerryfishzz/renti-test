@@ -7,7 +7,7 @@ import {
   CreateSessionRequest,
   CreateSessionResponse,
   GetSessionsByAccountIdResponse,
-  GetSessionsByIdResponse,
+  GetSessionByIdResponse,
   createSession,
 } from 'schemas/session.schema'
 import { GetParamsIdRequest, getParamsId } from 'schemas/shared.schema'
@@ -16,7 +16,7 @@ import { get } from 'http'
 router.get(
   '/sessions/:id',
   validate(getParamsId),
-  guard(async (req: GetParamsIdRequest, res: GetSessionsByIdResponse) => {
+  guard(async (req: GetParamsIdRequest, res: GetSessionByIdResponse) => {
     const session = await db('sessions')
       .where('id', req.params.id)
       .returning('*')

@@ -3,7 +3,7 @@ import type { Request, Response } from 'express'
 
 import { Session, session } from 'types/db'
 
-export type GetSessionsByIdResponse = Response<Session>
+export type GetSessionByIdResponse = Response<Session>
 
 export type GetSessionsByAccountIdResponse = Response<Session[]>
 
