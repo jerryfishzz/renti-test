@@ -22,6 +22,7 @@
   ```
 
 - [✔️] Check if `db.destroy()` is still necessary _Yes_
+- [ ] Simplify return type of tables
 
 ## Low
 
