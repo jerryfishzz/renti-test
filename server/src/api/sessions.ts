@@ -12,16 +12,6 @@ import {
 } from 'schemas/session.schema'
 import { GetParamsIdRequest, getParamsId } from 'schemas/shared.schema'
 
-router.post(
-  '/sessions',
-  validate(createSession),
-  guard(async (req: CreateSessionRequest, res: CreateSessionResponse) => {
-    const [session] = await db('sessions').insert(req.body).returning('*')
-
-    return res.send(session)
-  })
-)
-
 router.get(
   '/sessions/:id',
   validate(getParamsId),
@@ -47,6 +37,16 @@ router.get(
       return res.send(sessions)
     }
   )
+)
+
+router.post(
+  '/sessions',
+  validate(createSession),
+  guard(async (req: CreateSessionRequest, res: CreateSessionResponse) => {
+    const [session] = await db('sessions').insert(req.body).returning('*')
+
+    return res.send(session)
+  })
 )
 
 router.delete(
