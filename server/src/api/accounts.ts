@@ -4,7 +4,7 @@ import { Response } from 'express'
 
 import { db } from 'lib/db'
 import { auth, sign, verify } from 'lib/jwt'
-import { guard, router } from './utils'
+import { getUserAgent, guard, router } from './utils'
 import validate from 'lib/validate'
 import {
   CreateAccountRequest,
@@ -154,6 +154,7 @@ router.post(
         .insert({
           account_id: account.id,
           refresh_token,
+          user_agent: getUserAgent(req),
         })
         .returning('*')
       if (!session) return res.sendStatus(500)

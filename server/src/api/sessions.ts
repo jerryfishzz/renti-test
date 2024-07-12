@@ -1,6 +1,6 @@
 import { Response } from 'express'
 
-import { guard, router } from './utils'
+import { getUserAgent, guard, router } from './utils'
 import validate from 'lib/validate'
 import { db } from 'lib/db'
 import {
@@ -11,6 +11,7 @@ import {
   createSession,
 } from 'schemas/session.schema'
 import { GetParamsIdRequest, getParamsId } from 'schemas/shared.schema'
+import { get } from 'http'
 
 router.get(
   '/sessions/:id',
@@ -43,7 +44,9 @@ router.post(
   '/sessions',
   validate(createSession),
   guard(async (req: CreateSessionRequest, res: CreateSessionResponse) => {
-    const [session] = await db('sessions').insert(req.body).returning('*')
+    const [session] = await db('sessions')
+      .insert({ ...req.body, user_agent: getUserAgent(req) })
+      .returning('*')
 
     return res.send(session)
   })

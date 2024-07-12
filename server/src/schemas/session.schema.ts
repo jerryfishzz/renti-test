@@ -19,8 +19,8 @@ export const createSession = z.object({
   body: session.omit({ id: true, created_at: true, updated_at: true }),
 })
 export type CreateSessionRequest = Request<
-  unknown,
-  unknown,
+  any,
+  any,
   z.infer<typeof createSession>['body']
 >
 export type CreateSessionResponse = Response<Session>

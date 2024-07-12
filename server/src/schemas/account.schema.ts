@@ -37,11 +37,7 @@ export type DeleteByIdRequest = Request<z.infer<typeof deleteById>['params']>
 export const login = z.object({
   body: account.pick({ username: true, password: true }),
 })
-export type LoginRequest = Request<
-  unknown,
-  unknown,
-  z.infer<typeof login>['body']
->
+export type LoginRequest = Request<any, any, z.infer<typeof login>['body']>
 export type LoginReturn = AccountReturn & {
   access_token: string
   sessionId: number
