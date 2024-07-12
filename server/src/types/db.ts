@@ -43,6 +43,7 @@ export const session = z.object({
   id: z.number(),
   account_id: z.number(),
   refresh_token: z.string(),
+  user_agent: z.string(),
   created_at: z.date(),
   updated_at: z.date(),
 })
