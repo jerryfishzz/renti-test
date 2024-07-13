@@ -24,6 +24,7 @@
 - [✔️] Check if `db.destroy()` is still necessary _Yes_
 - [ ] Simplify return type of tables
 - [ ] Change all the created_at and updated_at to coerce date type
+- [ ] Session API should not be directly used by normal users but only for admin. Its auth should be admin only.
 
 ## Low
 

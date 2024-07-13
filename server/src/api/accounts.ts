@@ -142,6 +142,21 @@ router.post(
     if (session && isValid) {
       const access_token = createToken(account.id, accessExp)
 
+      try {
+        const [session] = await db('sessions')
+          .where('id', cookieSessionId)
+          .update({
+            user_agent: getUserAgent(req),
+            updated_at: new Date(),
+          })
+          .returning(['id', 'account_id', 'user_agent'])
+
+        if (!session) throw new Error('Update session failed')
+      } catch (error) {
+        // Update session failed should not stop login process
+        console.error(error)
+      }
+
       return res.send({
         sessionId: session.id,
         ...accountReturn,
