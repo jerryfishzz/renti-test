@@ -1,6 +1,7 @@
+import { Session } from 'types/db'
 import { query, Response } from '../utils'
 
-export function getById(id: number): Promise<Response<string>> {
+export function getById(id: number): Promise<Response<Session>> {
   return query({ path: `/sessions/${id}` })
 }
 
