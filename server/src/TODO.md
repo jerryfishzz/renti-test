@@ -23,6 +23,7 @@
 
 - [✔️] Check if `db.destroy()` is still necessary _Yes_
 - [ ] Simplify return type of tables
+- [ ] Change all the created_at and updated_at to coerce date type
 
 ## Low
 
