@@ -12,6 +12,9 @@ import {
   GetSessionByAccountIdAndUserAgentResponse,
   GetSessionByAccountIdAndUserAgentRequest,
   getSessionByAccountIdAndUserAgent,
+  updateSessionById,
+  UpdateSessionByIdRequest,
+  UpdateSessionByIdResponse,
 } from 'schemas/session.schema'
 import { GetParamsIdRequest, getParamsId } from 'schemas/shared.schema'
 
@@ -77,6 +80,25 @@ router.post(
 
     return res.send(session)
   })
+)
+
+router.patch(
+  '/sessions/:id',
+  validate(updateSessionById),
+  guard(
+    async (req: UpdateSessionByIdRequest, res: UpdateSessionByIdResponse) => {
+      const [session] = await db('sessions')
+        .where('id', req.params.id)
+        .update({
+          user_agent: getUserAgent(req),
+          updated_at: new Date(),
+        })
+        .returning(['id', 'account_id', 'user_agent'])
+      if (!session) return res.sendStatus(404)
+
+      return res.send(session)
+    }
+  )
 )
 
 router.delete(

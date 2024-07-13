@@ -13,6 +13,6 @@ export function guard(fn: (req: Request<any>, res: Response) => Promise<any>) {
 
 export const router = Router({ mergeParams: true })
 
-export function getUserAgent(req: Request) {
+export function getUserAgent(req: Request<any, any, any, any>) {
   return req.headers['user-agent'] || ''
 }

@@ -45,6 +45,6 @@ export const session = z.object({
   refresh_token: z.string(),
   user_agent: z.string(),
   created_at: z.date(),
-  updated_at: z.date(),
+  updated_at: z.coerce.date(),
 })
 export type Session = z.infer<typeof session>

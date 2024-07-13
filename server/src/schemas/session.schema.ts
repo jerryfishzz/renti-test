@@ -24,3 +24,13 @@ export type CreateSessionRequest = Request<
   z.infer<typeof createSession>['body']
 >
 export type CreateSessionResponse = Response<Session>
+
+export const updateSessionById = z.object({
+  params: z.object({ id: z.coerce.number() }),
+})
+export type UpdateSessionByIdRequest = Request<
+  z.infer<typeof updateSessionById>['params']
+>
+export type UpdateSessionByIdResponse = Response<
+  Pick<Session, 'id' | 'account_id' | 'user_agent'>
+>
