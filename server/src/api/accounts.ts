@@ -110,8 +110,11 @@ router.post(
 
     // Issue access token and refresh token
     const accessExpDate = addHours(new Date(), 1)
-    const refreshExpDate = addDays(new Date(), 14)
     const accessExp = accessExpDate.getTime() / 1000
+
+    // Both refresh token and session cookie use the same expiration date.
+    // That means the session cookie will always be expired when the refresh token is expired.
+    const refreshExpDate = addDays(new Date(), 14)
     const refreshExp = refreshExpDate.getTime() / 1000
 
     const { id, username, email, name, reading_preferences } = account
