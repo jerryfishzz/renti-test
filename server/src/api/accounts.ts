@@ -124,8 +124,18 @@ router.post(
     let isValid = false
     let session: Session | undefined
 
-    if (cookieSessionId)
+    if (cookieSessionId) {
       session = await db('sessions').where('id', cookieSessionId).first()
+    } else {
+      session = await db('sessions')
+        .where({
+          account_id: id,
+          user_agent: getUserAgent(req),
+        })
+        .orderBy('updated_at', 'desc')
+        .returning('*')
+        .first()
+    }
 
     if (session) {
       try {
@@ -143,15 +153,15 @@ router.post(
       const access_token = createToken(account.id, accessExp)
 
       try {
-        const [session] = await db('sessions')
-          .where('id', cookieSessionId)
+        const [updatedSession] = await db('sessions')
+          .where('id', session.id)
           .update({
             user_agent: getUserAgent(req),
             updated_at: new Date(),
           })
           .returning(['id', 'account_id', 'user_agent'])
 
-        if (!session) throw new Error('Update session failed')
+        if (!updatedSession) throw new Error('Update session failed')
       } catch (error) {
         // Update session failed should not stop login process
         console.error(error)
@@ -165,25 +175,25 @@ router.post(
     } else {
       const refresh_token = createToken(account.id, refreshExp)
 
-      const [session] = await db('sessions')
+      const [newSession] = await db('sessions')
         .insert({
           account_id: account.id,
           refresh_token,
           user_agent: getUserAgent(req),
         })
         .returning('*')
-      if (!session) return res.sendStatus(500)
+      if (!newSession) return res.sendStatus(500)
 
       // Check the existing expired sessions and delete them
       await deleteExpiredSessions(account.id)
 
       // Set the cookie with the session ID
-      addSessionCookie(res, session.id, refreshExpDate)
+      addSessionCookie(res, newSession.id, refreshExpDate)
 
       const access_token = createToken(account.id, accessExp)
 
       return res.send({
-        sessionId: session.id,
+        sessionId: newSession.id,
         ...accountReturn,
         access_token,
       })
