@@ -55,7 +55,7 @@ describe('log in', () => {
 
     beforeEach(async () => {
       // @ts-ignore
-      addHours.mockReturnValueOnce(accessExpDate)
+      addHours.mockReturnValue(accessExpDate)
       // @ts-ignore
       addDays.mockReturnValueOnce(refreshExpDate)
 
@@ -85,8 +85,6 @@ describe('log in', () => {
 
     describe('given the account logs in first time', () => {
       it('should return session id, user info, and access token', async () => {
-        // @ts-ignore
-        addHours.mockReturnValueOnce(accessExpDate)
         // @ts-ignore
         addDays.mockReturnValueOnce(refreshExpDate)
 
