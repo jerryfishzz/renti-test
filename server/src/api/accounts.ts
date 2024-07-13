@@ -182,7 +182,7 @@ router.post(
       if (!newSession) return res.sendStatus(500)
 
       // Check the existing expired sessions and delete them
-      await deleteExpiredSessions(account.id)
+      await deleteExpiredSessions(account.id, newSession.id)
 
       // Set the cookie with the session ID
       addSessionCookie(res, newSession.id, refreshExpDate)
@@ -210,13 +210,18 @@ router.delete(
   })
 )
 
-async function deleteExpiredSessions(accountId: number) {
+async function deleteExpiredSessions(
+  accountId: number,
+  currentSessionId: number
+) {
   try {
     const existingSessions = await db('sessions').where('account_id', accountId)
     const expiredSessions: Session[] = []
 
     for (const session of existingSessions) {
       try {
+        // Don't delete itself when the expired date is quite short to reach like in testing
+        if (session.id === currentSessionId) continue
         verify(session.refresh_token)
       } catch (error) {
         console.error(error)
