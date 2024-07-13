@@ -28,6 +28,7 @@ router.get(
       .where('id', req.params.id)
       .returning('*')
       .first()
+    if (!session) return res.sendStatus(404)
 
     return res.send(session)
   })
