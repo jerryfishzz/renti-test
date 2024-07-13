@@ -7,14 +7,6 @@ export type GetSessionByIdResponse = Response<Session>
 
 export type GetSessionsByAccountIdResponse = Response<Session[]>
 
-export const getSessionByAccountIdAndUserAgent = z.object({
-  params: z.object({ account_id: z.coerce.number(), user_agent: z.string() }),
-})
-export type GetSessionByAccountIdAndUserAgentRequest = Request<
-  z.infer<typeof getSessionByAccountIdAndUserAgent>['params']
->
-export type GetSessionByAccountIdAndUserAgentResponse = Response<Session>
-
 export const createSession = z.object({
   body: session.omit({ id: true, created_at: true, updated_at: true }),
 })

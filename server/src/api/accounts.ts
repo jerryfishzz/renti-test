@@ -126,15 +126,6 @@ router.post(
 
     if (cookieSessionId) {
       session = await db('sessions').where('id', cookieSessionId).first()
-    } else {
-      session = await db('sessions')
-        .where({
-          account_id: id,
-          user_agent: getUserAgent(req),
-        })
-        .orderBy('updated_at', 'desc')
-        .returning('*')
-        .first()
     }
 
     if (session) {

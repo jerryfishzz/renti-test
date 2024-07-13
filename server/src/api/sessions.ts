@@ -9,9 +9,6 @@ import {
   GetSessionsByAccountIdResponse,
   GetSessionByIdResponse,
   createSession,
-  GetSessionByAccountIdAndUserAgentResponse,
-  GetSessionByAccountIdAndUserAgentRequest,
-  getSessionByAccountIdAndUserAgent,
   updateSessionById,
   UpdateSessionByIdRequest,
   UpdateSessionByIdResponse,
@@ -44,29 +41,6 @@ router.get(
         .returning('*')
 
       return res.send(sessions)
-    }
-  )
-)
-
-router.get(
-  '/sessions/account/:account_id/:user_agent',
-  validate(getSessionByAccountIdAndUserAgent),
-  guard(
-    async (
-      req: GetSessionByAccountIdAndUserAgentRequest,
-      res: GetSessionByAccountIdAndUserAgentResponse
-    ) => {
-      const session = await db('sessions')
-        .where({
-          account_id: req.params.account_id,
-          user_agent: req.params.user_agent,
-        })
-        .orderBy('updated_at', 'desc')
-        .returning('*')
-        .first()
-      if (!session) return res.sendStatus(404)
-
-      return res.send(session)
     }
   )
 )
