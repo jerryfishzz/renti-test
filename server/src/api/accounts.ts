@@ -113,9 +113,6 @@ router.post(
     const refreshExpDate = addDays(new Date(), 14)
     const accessExp = accessExpDate.getTime() / 1000
     const refreshExp = refreshExpDate.getTime() / 1000
-    console.log(accessExpDate)
-    console.log(refreshExpDate)
-    console.log(new Date())
 
     const { id, username, email, name, reading_preferences } = account
     const accountReturn = { id, username, email, name, reading_preferences }
