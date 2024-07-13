@@ -25,6 +25,8 @@
 - [ ] Simplify return type of tables
 - [ ] Change all the created_at and updated_at to coerce date type
 - [ ] Session API should not be directly used by normal users but only for admin. Its auth should be admin only.
+- [ ] Add soft delete
+- [ ] Add RLS
 
 ## Low
 
