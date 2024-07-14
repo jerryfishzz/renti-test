@@ -5,6 +5,7 @@ import * as AccountService from './services/account.service'
 import * as SessionService from './services/session.service'
 import { db } from 'lib/db'
 import { AccountReturn } from 'schemas/account.schema'
+import { logIn } from './utils'
 
 // Wait async function to pause for certain amount of time
 function wait(time: number) {
@@ -21,7 +22,7 @@ jest.mock('date-fns', () => ({
   addHours: jest.fn(),
 }))
 
-const { API_USER, API_PASS } = process.env
+const { API_USER } = process.env
 
 const accessExpDate = new Date()
 accessExpDate.setHours(accessExpDate.getHours() + 1)
@@ -59,12 +60,22 @@ describe('log in', () => {
     let password: string = ''
     let account: AccountReturn | null = null
     let sessionId: number = 0
+    let adminSessionId: number = 0
 
     beforeEach(async () => {
       // @ts-ignore
       addHours.mockReturnValue(accessExpDate)
       // @ts-ignore
       addDays.mockReturnValue(refreshExpDate)
+
+      // Log in as admin manually to get admin session id.
+      // So after the test, we can delete the session.
+      // AccountService.create below can log in automatically as admin,
+      // but can't get the session id from that api.
+      // Note, can't use AccountService.logIn
+      // because it won't create access token for tests.
+      // Check query in utils for detail.
+      adminSessionId = await logIn()
 
       const newAccount = AccountService.createMockAccount()
       username = newAccount.username
@@ -79,6 +90,11 @@ describe('log in', () => {
       if (sessionId) {
         await SessionService.deleteById(sessionId)
         sessionId = 0
+      }
+
+      if (adminSessionId) {
+        await SessionService.deleteById(adminSessionId)
+        adminSessionId = 0
       }
 
       // Need to delete after session is deleted since it's a foreign key
