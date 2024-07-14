@@ -65,7 +65,7 @@ describe('log in', () => {
         // @ts-ignore
         addHours.mockReturnValue(accessExpDate)
         // @ts-ignore
-        addDays.mockReturnValueOnce(refreshExpDate)
+        addDays.mockReturnValue(refreshExpDate)
 
         const newAccount = AccountService.createMockAccount()
         username = newAccount.username
@@ -92,9 +92,6 @@ describe('log in', () => {
       })
 
       it('should return session id, user info, and access token', async () => {
-        // @ts-ignore
-        addDays.mockReturnValueOnce(refreshExpDate)
-
         const { statusCode, body } = await AccountService.logIn(
           username,
           password
@@ -117,11 +114,11 @@ describe('log in', () => {
       let account: AccountReturn | null = null
       let sessionId: number | null = null
 
-      beforeAll(async () => {
+      beforeEach(async () => {
         // @ts-ignore
         addHours.mockReturnValue(accessExpDate)
         // @ts-ignore
-        addDays.mockReturnValueOnce(refreshExpDate)
+        addDays.mockReturnValue(refreshExpDate)
 
         const newAccount = AccountService.createMockAccount()
         username = newAccount.username
@@ -132,7 +129,7 @@ describe('log in', () => {
         account = body
       })
 
-      afterAll(async () => {
+      afterEach(async () => {
         if (sessionId) {
           await SessionService.deleteById(sessionId)
           sessionId = null
@@ -152,13 +149,11 @@ describe('log in', () => {
         password = ''
       })
 
-      it('should return user info, access token, and newly created session id', async () => {
+      it('should delete the expired session and return user info, access token, and newly created session id', async () => {
         // The mock in beforeAll won't work here, but beforeEach works
+
         // @ts-ignore
-        addHours.mockReturnValue(accessExpDate)
-        const exp = new Date(Date.now() + 100)
-        // @ts-ignore
-        addDays.mockReturnValueOnce(exp)
+        addDays.mockReturnValueOnce(new Date(Date.now() + 100))
 
         const { body: lastBody } = await AccountService.logIn(
           username,
@@ -173,8 +168,6 @@ describe('log in', () => {
         // Wait long enough till last session expires
         await wait(2000)
 
-        // @ts-ignore
-        addDays.mockReturnValueOnce(refreshExpDate)
         const { statusCode, body } = await AccountService.logIn(
           username,
           password
@@ -187,18 +180,12 @@ describe('log in', () => {
           access_token: expect.any(String),
           sessionId: expect.any(Number),
         })
-      })
 
-      it('should delete the expired session', async () => {
-        if (lastSessionId) {
-          const response = await SessionService.getById(lastSessionId)
+        const response = await SessionService.getById(lastSessionId)
 
-          expect(response.statusCode).toBe(404)
+        expect(response.statusCode).toBe(404)
 
-          lastSessionId = 0
-        } else {
-          expect(true).toBe(true)
-        }
+        lastSessionId = 0
       })
     })
   })
