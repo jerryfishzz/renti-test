@@ -27,6 +27,7 @@
 - [ ] Session API should not be directly used by normal users but only for admin. Its auth should be admin only.
 - [ ] Add soft delete
 - [ ] Add RLS
+- [ ] Remove cascade delete
 
 ## Low
 
