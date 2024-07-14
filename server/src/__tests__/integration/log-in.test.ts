@@ -58,7 +58,7 @@ describe('log in', () => {
     let username: string = ''
     let password: string = ''
     let account: AccountReturn | null = null
-    let sessionId: number | null = null
+    let sessionId: number = 0
 
     beforeEach(async () => {
       // @ts-ignore
@@ -78,7 +78,7 @@ describe('log in', () => {
     afterEach(async () => {
       if (sessionId) {
         await SessionService.deleteById(sessionId)
-        sessionId = null
+        sessionId = 0
       }
 
       // Need to delete after session is deleted since it's a foreign key
