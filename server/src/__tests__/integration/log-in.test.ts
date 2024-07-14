@@ -55,42 +55,42 @@ describe('log in', () => {
   })
 
   describe('login logic', () => {
+    let username: string = ''
+    let password: string = ''
+    let account: AccountReturn | null = null
+    let sessionId: number | null = null
+
+    beforeEach(async () => {
+      // @ts-ignore
+      addHours.mockReturnValue(accessExpDate)
+      // @ts-ignore
+      addDays.mockReturnValue(refreshExpDate)
+
+      const newAccount = AccountService.createMockAccount()
+      username = newAccount.username
+      password = newAccount.password
+
+      // Log in as admin
+      const { body } = await AccountService.create(newAccount)
+      account = body
+    })
+
+    afterEach(async () => {
+      if (sessionId) {
+        await SessionService.deleteById(sessionId)
+        sessionId = null
+      }
+
+      // Need to delete after session is deleted since it's a foreign key
+      if (account) {
+        await AccountService.deleteById(account.id)
+        account = null
+      }
+      username = ''
+      password = ''
+    })
+
     describe('given the account logs in first time', () => {
-      let username: string = ''
-      let password: string = ''
-      let account: AccountReturn | null = null
-      let sessionId: number | null = null
-
-      beforeEach(async () => {
-        // @ts-ignore
-        addHours.mockReturnValue(accessExpDate)
-        // @ts-ignore
-        addDays.mockReturnValue(refreshExpDate)
-
-        const newAccount = AccountService.createMockAccount()
-        username = newAccount.username
-        password = newAccount.password
-
-        // Log in as admin
-        const { body } = await AccountService.create(newAccount)
-        account = body
-      })
-
-      afterEach(async () => {
-        if (sessionId) {
-          await SessionService.deleteById(sessionId)
-          sessionId = null
-        }
-
-        // Need to delete after session is deleted since it's a foreign key
-        if (account) {
-          await AccountService.deleteById(account.id)
-          account = null
-        }
-        username = ''
-        password = ''
-      })
-
       it('should return session id, user info, and access token', async () => {
         const { statusCode, body } = await AccountService.logIn(
           username,
@@ -109,44 +109,12 @@ describe('log in', () => {
 
     describe('given session cookie is expired', () => {
       let lastSessionId: number = 0
-      let username: string = ''
-      let password: string = ''
-      let account: AccountReturn | null = null
-      let sessionId: number | null = null
-
-      beforeEach(async () => {
-        // @ts-ignore
-        addHours.mockReturnValue(accessExpDate)
-        // @ts-ignore
-        addDays.mockReturnValue(refreshExpDate)
-
-        const newAccount = AccountService.createMockAccount()
-        username = newAccount.username
-        password = newAccount.password
-
-        // Log in as admin
-        const { body } = await AccountService.create(newAccount)
-        account = body
-      })
 
       afterEach(async () => {
-        if (sessionId) {
-          await SessionService.deleteById(sessionId)
-          sessionId = null
-        }
-
         if (lastSessionId) {
           await SessionService.deleteById(lastSessionId)
           lastSessionId = 0
         }
-
-        // Need to delete after session is deleted since it's a foreign key
-        if (account) {
-          await AccountService.deleteById(account.id)
-          account = null
-        }
-        username = ''
-        password = ''
       })
 
       it('should delete the expired session and return user info, access token, and newly created session id', async () => {
