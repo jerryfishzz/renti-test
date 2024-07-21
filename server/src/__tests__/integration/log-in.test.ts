@@ -14,8 +14,6 @@ function wait(time: number) {
   })
 }
 
-jest.setTimeout(1000 * 60 * 10)
-
 jest.mock('date-fns', () => ({
   ...jest.requireActual('date-fns'),
   addDays: jest.fn(),
