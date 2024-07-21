@@ -37,4 +37,9 @@ export type SearchRequest = Request<
   Pagination
 >
 export type SearchResponse = Response<PaginationResult<z.infer<typeof Account>>>
+
+await db('settings')
+  .insert(entries)
+  .onConflict(['active_from', 'entity_id', 'entity_type', 'key'])
+  .merge()
 ```
