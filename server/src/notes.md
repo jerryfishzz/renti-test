@@ -108,3 +108,87 @@ test(`POST /pays`, async () => {
   }
 })
 ```
+
+## RLS
+
+```typescript
+import { db, scopedTransaction } from '../../../lib/db'
+
+const bureaus = [0, 1, 2, 3, 4, 5]
+let repeating_transactions: Array<{ id: number; bureau_id: number }> = []
+
+beforeAll(async () => {
+  repeating_transactions = await db('repeating_transactions')
+    .insert(
+      bureaus
+        .map(b =>
+          Array(b).fill({
+            employment_id: 1,
+            bureau_id: b,
+          })
+        )
+        .flat()
+    )
+    .returning(['id', 'bureau_id'])
+})
+
+afterAll(async () => {
+  await scopedTransaction('admin', 0, async db => {
+    await db('repeating_transactions')
+      .whereIn(
+        'id',
+        repeating_transactions.map(r => r.id)
+      )
+      .delete()
+  })
+  db.destroy()
+})
+
+describe('RLS repeating trasactions', () => {
+  it('Scopes by bureau', async () => {
+    // Verify that bureaus are scoped correctly
+    for (const bureau of bureaus) {
+      await scopedTransaction('api', bureau, async db => {
+        const result = await db('repeating_transactions').select([
+          'id',
+          'bureau_id',
+        ])
+        expect(result).toHaveLength(bureau)
+        expect(result.every(r => r.bureau_id === bureau)).toBe(true)
+      })
+    }
+  })
+
+  it('Does not scope admins', async () => {
+    // Verify that admin can see all bureaus
+    await scopedTransaction('admin', 0, async db => {
+      const result = await db('repeating_transactions').select([
+        'id',
+        'bureau_id',
+      ])
+      expect(result).toHaveLength(bureaus.reduce((a, b) => a + b))
+    })
+  })
+})
+```
+
+```typescript
+export const scopedTransaction = async (
+  role: string,
+  bureau_id: number | null,
+  fn: (db: Knex.Transaction) => Promise<any>
+) => {
+  const transaction = await db.transaction()
+  try {
+    await transaction.raw(
+      `SET ROLE ${role === 'admin' ? POSTGRES_USER : 'api'}`
+    )
+    await transaction.raw(`SET app.bureau_id = ${bureau_id ?? 0}`)
+    await fn(transaction)
+    await transaction.commit()
+  } catch (e) {
+    await transaction.rollback()
+    throw e
+  }
+}
+```
