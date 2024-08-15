@@ -42,7 +42,7 @@ describe('log in', () => {
     })
   })
 
-  describe('given the username and password are incorrect', () => {
+  describe('given the password are incorrect', () => {
     it('should return 403', async () => {
       const { statusCode } = await AccountService.logIn(
         API_USER,
