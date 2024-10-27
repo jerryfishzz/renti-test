@@ -214,7 +214,7 @@ async function deleteExpiredSessions(
 
     for (const session of existingSessions) {
       try {
-        // Don't delete itself when the expired date is quite short to reach like in testing
+        // Don't delete itself, especially for the case when the expired date is quite short, like in testing
         if (session.id === currentSessionId) continue
         verify(session.refresh_token)
       } catch (error) {
