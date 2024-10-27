@@ -7,6 +7,7 @@
 
 ## Medium
 
+- [ ] Re-create access token when the current one is expired but refresh token is still valid
 - [ ] Check the deleting endpoints for the universal return type
 - [ ] Explicitly type `guard` function
 - [ ] Add pagination to all the get endpoints
