@@ -165,6 +165,12 @@ describe('log in - /login', () => {
 
         expect(response.statusCode).toBe(404)
 
+        // Reset lastSessionId to avoid running contents in afterEach
+        // since it has been deleted successfully
+        lastSessionId = 0
+      })
+    })
+
         // Reset lastSessionId to avoid afterEach since it has been deleted successfully
         lastSessionId = 0
       })
