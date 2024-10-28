@@ -79,7 +79,7 @@ describe('log in', () => {
       username = newAccount.username
       password = newAccount.password
 
-      // Log in as admin
+      // Act as admin
       const { body } = await AccountService.create(newAccount)
       account = body
     })
@@ -89,12 +89,10 @@ describe('log in', () => {
         await SessionService.deleteById(sessionId)
         sessionId = 0
       }
-
       if (adminSessionId) {
         await SessionService.deleteById(adminSessionId)
         adminSessionId = 0
       }
-
       // Need to delete after session is deleted since it's a foreign key
       if (account) {
         await AccountService.deleteById(account.id)
@@ -167,6 +165,7 @@ describe('log in', () => {
 
         expect(response.statusCode).toBe(404)
 
+        // Reset lastSessionId to avoid afterEach since it has been deleted successfully
         lastSessionId = 0
       })
     })

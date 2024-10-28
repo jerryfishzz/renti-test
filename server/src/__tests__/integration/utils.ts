@@ -75,8 +75,8 @@ type QueryProps = {
   failed?: boolean
 }
 export async function query({ path, options, failed = false }: QueryProps) {
-  // This can occur errors.
-  // Use status and others to check errors.
+  // This can occur to async errors.
+  // Use try catch with status and others for error handling.
 
   const response = await doAgentQuery(path, options)
 
