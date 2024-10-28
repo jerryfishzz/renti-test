@@ -53,7 +53,7 @@ describe('log in - /login', () => {
     })
   })
 
-  describe('login logic', () => {
+  describe('login logic after username and password passed', () => {
     let username: string = ''
     let password: string = ''
     let account: AccountReturn | null = null
@@ -102,7 +102,7 @@ describe('log in - /login', () => {
       password = ''
     })
 
-    describe('given the account logs in first time', () => {
+    describe('given the session exists and is not expired', () => {
       it('should return session id, user info, and access token', async () => {
         const { statusCode, body } = await AccountService.logIn(
           username,
@@ -119,7 +119,7 @@ describe('log in - /login', () => {
       })
     })
 
-    describe('given session cookie is expired', () => {
+    describe('given the session is expired', () => {
       let lastSessionId: number = 0
 
       afterEach(async () => {
