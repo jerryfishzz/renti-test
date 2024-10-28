@@ -171,7 +171,42 @@ describe('log in - /login', () => {
       })
     })
 
-        // Reset lastSessionId to avoid afterEach since it has been deleted successfully
+    describe('given the session does not exist anymore', () => {
+      let lastSessionId: number = 0
+
+      afterEach(async () => {
+        if (lastSessionId) {
+          await SessionService.deleteById(lastSessionId)
+          lastSessionId = 0
+        }
+      })
+
+      it('should return user info, access token, and newly created session id', async () => {
+        const { body: lastBody } = await AccountService.logIn(
+          username,
+          password
+        )
+        lastSessionId = lastBody.sessionId
+
+        await SessionService.deleteById(lastSessionId)
+        const lastResponse = await SessionService.getById(lastSessionId)
+
+        expect(lastResponse.statusCode).toBe(404)
+
+        const { statusCode, body } = await AccountService.logIn(
+          username,
+          password
+        )
+        sessionId = body.sessionId
+
+        expect(statusCode).toBe(200)
+        expect(body).toEqual({
+          ...account,
+          access_token: expect.any(String),
+          sessionId: expect.any(Number),
+        })
+        expect(sessionId).not.toBe(lastSessionId)
+
         lastSessionId = 0
       })
     })
