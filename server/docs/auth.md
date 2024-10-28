@@ -27,7 +27,7 @@ id  | account_id | refresh_token | created_at | updated_at | user_agent
   const cookieSessionId = req.cookies?.sessionId as undefined | number
   ```
 
-  由上可知，创建时我们是在 response 的 `cookie` 上创建的 session 信息，创建时起的这个名 `sessionId` 是自定义的，所以我们在之后从 request 中的 `cookie` 里读取时，typescript 的提示是 any，所以我们要自己断言它的类型。
+  由上可知，创建时我们是在 response 的 `cookie` 上创建的 session 信息，创建时起的这个名 `sessionId` 是自定义的，所以我们在之后从 request 中的 `cookie` 里读取时，typescript 的提示是 any，需要我们自己断言它的类型。
 
 - 每次成功读取 session 信息后，我们都会更新前端的 session cookie 信息，时刻保证前端的 session 和服务器上的一致。
 
