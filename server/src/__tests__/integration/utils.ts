@@ -55,7 +55,16 @@ type GetOptions<T extends Method> = T extends 'get'
   ? BaseOptions<T>
   : BaseOptions<T> & { body: Record<string, any> }
 
-function doAgentQuery<T extends Method>(path: string, options?: GetOptions<T>) {
+type DoAgentQueryProps<T extends Method> = {
+  path: string
+  options?: GetOptions<T>
+  cookie?: string[]
+}
+function doAgentQuery<T extends Method>({
+  path,
+  options,
+  cookie,
+}: DoAgentQueryProps<T>) {
   const test =
     !options || options.method === 'get'
       ? agent.get(path)
@@ -64,21 +73,30 @@ function doAgentQuery<T extends Method>(path: string, options?: GetOptions<T>) {
       : options.method === 'patch'
       ? agent.patch(path).send(options.body)
       : agent.delete(path)
-  return test
+  const response = test
     .set('Authorization', `Bearer ${access_token}`)
     .set('Accept', 'application/json')
+
+  // Manually set session cookie on agent
+  return cookie ? response.set('Cookie', [...cookie]) : response
 }
 
 type QueryProps = {
   path: string
   options?: GetOptions<Method>
   failed?: boolean
+  cookie?: string[]
 }
-export async function query({ path, options, failed = false }: QueryProps) {
+export async function query({
+  path,
+  options,
+  failed = false,
+  cookie,
+}: QueryProps) {
   // This can occur to async errors.
   // Use try catch with status and others for error handling.
 
-  const response = await doAgentQuery(path, options)
+  const response = await doAgentQuery({ path, options, cookie })
 
   if (response.status === 403 && !failed && path !== '/login') {
     await logIn()

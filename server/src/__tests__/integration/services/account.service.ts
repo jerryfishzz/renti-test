@@ -45,11 +45,13 @@ export function create(
 
 export function logIn(
   username: string,
-  password: string
+  password: string,
+  cookie?: string[]
 ): Promise<Response<LoginReturn>> {
   return query({
     path: '/login',
     options: { method: 'post', body: { username, password } },
+    cookie,
   })
 }
 
