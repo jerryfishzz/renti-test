@@ -32,7 +32,7 @@ afterAll(async () => {
 })
 
 describe('log in - /login', () => {
-  describe('Login-1-f-1 - given the username does not exist', () => {
+  describe('Login-1-f-1: given the username does not exist', () => {
     it('should return 403', async () => {
       const { username, password } = AccountService.createMockAccount()
 
@@ -42,7 +42,7 @@ describe('log in - /login', () => {
     })
   })
 
-  describe('Login-1-f-2 - given the password is incorrect', () => {
+  describe('Login-1-f-2: given the password is incorrect', () => {
     it('should return 403', async () => {
       const { statusCode } = await AccountService.logIn(
         API_USER,
@@ -53,7 +53,7 @@ describe('log in - /login', () => {
     })
   })
 
-  describe('Login-1-t - login logic after username and password passed', () => {
+  describe('login logic after username and password passed', () => {
     let username: string = ''
     let password: string = ''
     let account: AccountReturn | null = null
@@ -102,7 +102,7 @@ describe('log in - /login', () => {
       password = ''
     })
 
-    describe('Login-2-f - given the use logs in first time', () => {
+    describe('Login-2-f: given the use logs in first time', () => {
       it('should return session id, user info, and access token', async () => {
         const { statusCode, body } = await AccountService.logIn(
           username,
@@ -119,7 +119,7 @@ describe('log in - /login', () => {
       })
     })
 
-    describe('Login-3-f-1 - given the session in db is expired', () => {
+    describe('Login-3-f-1: given the session in db is expired', () => {
       let lastSessionId: number = 0
 
       afterEach(async () => {
@@ -171,7 +171,7 @@ describe('log in - /login', () => {
       })
     })
 
-    describe('Login-3-f-2 - given the session in db does not exist anymore', () => {
+    describe('Login-3-f-2: given the session in db does not exist anymore', () => {
       let lastSessionId: number = 0
 
       afterEach(async () => {
@@ -211,7 +211,7 @@ describe('log in - /login', () => {
       })
     })
 
-    describe('Login-3-t - given the user already logged in before and attempts to log in again while its session cookie in db is not expired', () => {
+    describe('Login-3-t: given the user already logged in before and attempts to log in again while its session cookie in db is not expired', () => {
       let lastSessionId: number = 0
 
       afterEach(async () => {
