@@ -102,7 +102,7 @@ describe('log in - /login', () => {
       password = ''
     })
 
-    describe('Login-3-t - given the session exists and is not expired', () => {
+    describe('Login-2-f - given the use logs in first time', () => {
       it('should return session id, user info, and access token', async () => {
         const { statusCode, body } = await AccountService.logIn(
           username,
@@ -207,6 +207,38 @@ describe('log in - /login', () => {
         })
         expect(sessionId).not.toBe(lastSessionId)
 
+        lastSessionId = 0
+      })
+    })
+
+    describe('Login-3-t - given the user already logged in before and attempts to log in again while its session cookie in db is not expired', () => {
+      let lastSessionId: number = 0
+
+      afterEach(async () => {
+        if (lastSessionId) {
+          await SessionService.deleteById(lastSessionId)
+          lastSessionId = 0
+        }
+      })
+
+      it('should return the same session id the second time', async () => {
+        const { header, body: lastBody } = await AccountService.logIn(
+          username,
+          password
+        )
+        lastSessionId = lastBody.sessionId
+
+        const { body } = await AccountService.logIn(
+          username,
+          password,
+          header['set-cookie'] as unknown as string[]
+          // Manually set the same cookie as the first login to simulate the testing scenario
+        )
+        sessionId = body.sessionId
+
+        expect(lastSessionId).toBe(sessionId)
+
+        // Avoid duplicate deleting since it's the same session
         lastSessionId = 0
       })
     })
