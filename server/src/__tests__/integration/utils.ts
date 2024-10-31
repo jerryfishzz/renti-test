@@ -93,8 +93,9 @@ export async function query({
   failed = false,
   cookie,
 }: QueryProps) {
-  // This can occur to async errors.
-  // Use try catch with status and others for error handling.
+  // This function can occur to async errors.
+  // But it is not what api tests are concerned for.
+  // So won't set try catch to handle it.
 
   const response = await doAgentQuery({ path, options, cookie })
 
