@@ -31,7 +31,7 @@ afterAll(async () => {
   await db.destroy()
 })
 
-describe('log in - /login', () => {
+describe('/login', () => {
   describe('Login-1-f-1: given the username does not exist', () => {
     it('should return 403', async () => {
       const { username, password } = AccountService.createMockAccount()
