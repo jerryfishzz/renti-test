@@ -119,7 +119,7 @@ describe('/login', () => {
       })
     })
 
-    describe('Login-3-f-1: given the session in db is expired', () => {
+    describe('Tests that need to log in twice by the same username/password pair', () => {
       let lastSessionId: number = 0
 
       afterEach(async () => {
@@ -129,117 +129,101 @@ describe('/login', () => {
         }
       })
 
-      it('should delete the expired session and return user info, access token, and newly created session id', async () => {
-        // The mock in beforeAll won't work here, but beforeEach works
+      describe('Login-3-f-1: given the session in db is expired', () => {
+        it('should delete the expired session and return user info, access token, and newly created session id', async () => {
+          // The mock in beforeAll won't work here, but beforeEach works
 
-        // @ts-ignore
-        addDays.mockReturnValueOnce(new Date(Date.now() + 100))
+          // @ts-ignore
+          addDays.mockReturnValueOnce(new Date(Date.now() + 100))
 
-        const { body: lastBody } = await AccountService.logIn(
-          username,
-          password
-        )
-        lastSessionId = lastBody.sessionId
+          const { body: lastBody } = await AccountService.logIn(
+            username,
+            password
+          )
+          lastSessionId = lastBody.sessionId
 
-        const lastResponse = await SessionService.getById(lastSessionId)
+          const lastResponse = await SessionService.getById(lastSessionId)
 
-        expect(lastResponse.body.id).toBe(lastSessionId)
+          expect(lastResponse.body.id).toBe(lastSessionId)
 
-        // Wait long enough till last session expires
-        await wait(2000)
+          // Wait long enough till last session expires
+          await wait(2000)
 
-        const { statusCode, body } = await AccountService.logIn(
-          username,
-          password
-        )
-        sessionId = body.sessionId
+          const { statusCode, body } = await AccountService.logIn(
+            username,
+            password
+          )
+          sessionId = body.sessionId
 
-        expect(statusCode).toBe(200)
-        expect(body).toEqual({
-          ...account,
-          access_token: expect.any(String),
-          sessionId: expect.any(Number),
+          expect(statusCode).toBe(200)
+          expect(body).toEqual({
+            ...account,
+            access_token: expect.any(String),
+            sessionId: expect.any(Number),
+          })
+
+          const response = await SessionService.getById(lastSessionId)
+
+          expect(response.statusCode).toBe(404)
+
+          // Reset lastSessionId to avoid running contents in afterEach
+          // since it has been deleted successfully
+          lastSessionId = 0
         })
-
-        const response = await SessionService.getById(lastSessionId)
-
-        expect(response.statusCode).toBe(404)
-
-        // Reset lastSessionId to avoid running contents in afterEach
-        // since it has been deleted successfully
-        lastSessionId = 0
       })
-    })
 
-    describe('Login-3-f-2: given the session in db does not exist anymore', () => {
-      let lastSessionId: number = 0
+      describe('Login-3-f-2: given the session in db does not exist anymore', () => {
+        it('should return user info, access token, and newly created session id', async () => {
+          const { body: lastBody } = await AccountService.logIn(
+            username,
+            password
+          )
+          lastSessionId = lastBody.sessionId
 
-      afterEach(async () => {
-        if (lastSessionId) {
           await SessionService.deleteById(lastSessionId)
+          const lastResponse = await SessionService.getById(lastSessionId)
+
+          expect(lastResponse.statusCode).toBe(404)
+
+          const { statusCode, body } = await AccountService.logIn(
+            username,
+            password
+          )
+          sessionId = body.sessionId
+
+          expect(statusCode).toBe(200)
+          expect(body).toEqual({
+            ...account,
+            access_token: expect.any(String),
+            sessionId: expect.any(Number),
+          })
+          expect(sessionId).not.toBe(lastSessionId)
+
           lastSessionId = 0
-        }
-      })
-
-      it('should return user info, access token, and newly created session id', async () => {
-        const { body: lastBody } = await AccountService.logIn(
-          username,
-          password
-        )
-        lastSessionId = lastBody.sessionId
-
-        await SessionService.deleteById(lastSessionId)
-        const lastResponse = await SessionService.getById(lastSessionId)
-
-        expect(lastResponse.statusCode).toBe(404)
-
-        const { statusCode, body } = await AccountService.logIn(
-          username,
-          password
-        )
-        sessionId = body.sessionId
-
-        expect(statusCode).toBe(200)
-        expect(body).toEqual({
-          ...account,
-          access_token: expect.any(String),
-          sessionId: expect.any(Number),
         })
-        expect(sessionId).not.toBe(lastSessionId)
-
-        lastSessionId = 0
       })
-    })
 
-    describe('Login-3-t: given the user already logged in before and attempts to log in again while its session cookie in db is not expired', () => {
-      let lastSessionId: number = 0
+      describe('Login-3-t: given the user already logged in before and attempts to log in again while its session cookie in db is not expired', () => {
+        it('should return the same session id the second time', async () => {
+          const { header, body: lastBody } = await AccountService.logIn(
+            username,
+            password
+          )
+          lastSessionId = lastBody.sessionId
 
-      afterEach(async () => {
-        if (lastSessionId) {
-          await SessionService.deleteById(lastSessionId)
+          const { body } = await AccountService.logIn(
+            username,
+            password,
+            header['set-cookie'] as unknown as string[]
+            // Manually set the same cookie as the first login to simulate the testing scenario
+          )
+          sessionId = body.sessionId
+
+          expect(lastSessionId).toBe(sessionId)
+
+          // Avoid duplicate deleting since it's the same session
           lastSessionId = 0
-        }
-      })
-
-      it('should return the same session id the second time', async () => {
-        const { header, body: lastBody } = await AccountService.logIn(
-          username,
-          password
-        )
-        lastSessionId = lastBody.sessionId
-
-        const { body } = await AccountService.logIn(
-          username,
-          password,
-          header['set-cookie'] as unknown as string[]
-          // Manually set the same cookie as the first login to simulate the testing scenario
-        )
-        sessionId = body.sessionId
-
-        expect(lastSessionId).toBe(sessionId)
-
-        // Avoid duplicate deleting since it's the same session
-        lastSessionId = 0
+        })
       })
     })
   })
