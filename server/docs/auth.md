@@ -1,4 +1,12 @@
-# Auth in App
+# Use HTTP cookie and sessions table to do login and auth
+
+Login 是检查用户是否有权限访问资源，而 auth 是检查用户请求是否来自其本人。
+
+Login 只会在用户第一次登录或登出后再登录 app 时发生，而 auth 发生在每次的请求中。
+
+如果 login 失败，用户将无法正常使用 app，而 auth 失败，系统会试图检查用户的合法性。如果合法，会重新颁发用户许可 access token，用户可以继续正常使用 app；反之，请求则不会被接受。而具体是不是强制登出用户，这个取决于客户端的实现。
+
+在本 app 中，用户登录会在 db 中生成具有实效性的 session 记录，session 的 id 会保存在客户端，如浏览器中。用户每次使用 app 时会通过 session id 从 db 中验证用户登录是否过期，如果没有过期，则不需要重新登录，这样可以减少用户的登录次数。用户许可则存储在 app 中，每次刷新或关闭 app 都会重置 token，但只要用户登录 session 有效，用户就可以继续使用 app。
 
 App 的认证是通过 HTTP cookie 完成的。我们通过在服务器上创建 session 信息，并把 session 信息通过 response 上的 cookie 发送给前端，使前端获得 session 信息。在每次前端发送来的请求 request 中，都会在 HTTP cookie 上携带 session 信息，这样就可以通过和服务器上的 session 进行比对来完成认证了。
 
