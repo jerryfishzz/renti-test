@@ -9,6 +9,12 @@ import { CreateBook } from 'schemas/book.schema'
 import { createDoAuth, logIn } from './utils'
 import { genres } from 'api/genres'
 import { Book, Genre } from 'types/db'
+import { getCreateMockBooks } from './services/book.service'
+
+import * as AccountService from './services/account.service'
+import * as BookService from './services/book.service'
+import * as GenreService from './services/genre.service'
+import * as SessionService from './services/session.service'
 
 app.use(accounts)
 app.use(books)
@@ -20,44 +26,37 @@ let doAuth: (test: Test) => Test
 type CreateMockBooks = (counts?: number) => Omit<Book, 'id' | 'created_at'>[]
 let createMockBooks: CreateMockBooks
 
-function getCreateMockBooks(min: number, max: number) {
-  return (counts: number = 1) => {
-    const books: CreateBook[] = []
-    for (let i = 0; i < counts; i++) {
-      const book: CreateBook = {
-        title: faker.lorem.words({ min: 1, max: 4 }),
-        author: faker.person.fullName(),
-        genre_id: faker.number.int({ min, max }),
-        cover_image: faker.image.url(),
-      }
-      books.push(book)
-    }
-    return books
-  }
-}
+let sessionId: number | null = null
+const { API_USER } = process.env
 
 beforeAll(async () => {
-  const login = await logIn(agent)
-  doAuth = createDoAuth(login)
+  sessionId = await logIn()
 
-  const response = await doAuth(agent.get('/genres'))
-  const orderedGenreIds = response.body
-    .map((genre: Genre) => genre.id)
+  const { body } = await GenreService.getList()
+  const orderedGenreIds = body
+    .map(genre => genre.id)
     .sort((a: number, b: number) => a - b)
 
   createMockBooks = getCreateMockBooks(
-    orderedGenreIds[0],
-    orderedGenreIds[orderedGenreIds.length - 1]
+    orderedGenreIds[0]!,
+    orderedGenreIds[orderedGenreIds.length - 1]!
   )
 })
 
 afterAll(async () => {
+  if (sessionId) {
+    await SessionService.deleteById(sessionId)
+    sessionId = null
+  }
   await db.destroy()
 })
 
 describe('books', () => {
   test('get books', async () => {
-    const response = await doAuth(agent.get('/books/account/1'))
+    const {
+      body: { id },
+    } = await AccountService.getByUsername(API_USER)
+    const response = await BookService.getListWithAccountId(id)
   })
 
   describe('test create a book then delete it', () => {
