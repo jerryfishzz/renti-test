@@ -20,7 +20,7 @@ afterAll(async () => {
 })
 
 describe('accounts', () => {
-  describe('get account by id', () => {
+  describe('GET /accounts/:id', () => {
     let account: AccountReturn | null = null
 
     beforeEach(async () => {
@@ -57,7 +57,7 @@ describe('accounts', () => {
     })
   })
 
-  describe('get account by username', () => {
+  describe('GET /accounts/username/:username', () => {
     describe('given the account username does not exist', () => {
       let account: AccountReturn | null = null
 
@@ -93,12 +93,12 @@ describe('accounts', () => {
         )
 
         expect(statusCode).toBe(200)
-        expect(body.username).toEqual(API_USER)
+        expect(body.username).toEqual(API_USER) // TODO: should also check other returned fields
       })
     })
   })
 
-  describe('get list', () => {
+  describe('GET /accounts', () => {
     describe('given there is at least one account in the table', () => {
       let account: AccountReturn | null = null
 
@@ -122,7 +122,7 @@ describe('accounts', () => {
     })
   })
 
-  describe('create account', () => {
+  describe('POST /accounts', () => {
     describe('given the username already exists', () => {
       it('should return 500', async () => {
         const newAccount = AccountService.createMockAccount({
@@ -160,3 +160,5 @@ describe('accounts', () => {
     })
   })
 })
+
+// TODO: delete by id

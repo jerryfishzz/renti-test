@@ -29,6 +29,8 @@
 - [ ] Add soft delete
 - [ ] Add RLS
 - [ ] Remove cascade delete
+- [ ] Should check other returned fields in get user by username endpoint
+- [ ] Add tests for delete user by id
 
 ## Low
 
