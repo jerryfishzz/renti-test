@@ -19,7 +19,7 @@ export function getCreateMockBooks(min: number, max: number) {
   }
 }
 
-export function getByAccountId(
+export function getListWithAccountId(
   id: number
 ): Promise<Response<GetBooksByAccountIdReturn[]>> {
   return query({ path: `/books/account/${id}` })
