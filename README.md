@@ -22,7 +22,9 @@ $ ls jwt*
 jwtRS256.key            jwtRS256.key.pub        jwtRS256.key.pub.pem
 ```
 
-If you use Windows, check this article for creating keys: [How to Generate SSH Key in Windows 10 or 11](https://phoenixnap.com/kb/generate-ssh-key-windows-10#:~:text=to%20download%20PuTTY.-,Generate%20SSH%20Key%20Pair%20in%20Windows%20via%20OpenSSH%20(ssh%2Dkeygen,the%20Command%20Prompt%20or%20PowerShell.)
+If you use Windows, check this article for creating keys: [How to Generate SSH Key in Windows 10 or 11](<https://phoenixnap.com/kb/generate-ssh-key-windows-10#:~:text=to%20download%20PuTTY.-,Generate%20SSH%20Key%20Pair%20in%20Windows%20via%20OpenSSH%20(ssh%2Dkeygen,the%20Command%20Prompt%20or%20PowerShell)>).
+
+Note, please try NOT to use PowerShell to create keys since its default encoding is UTF-16, which is not supported by OpenSSH.
 
 ### Run the dev environment
 
