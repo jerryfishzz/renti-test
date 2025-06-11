@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken'
+import { NextFunction, Request, Response } from 'express'
 import fs from 'fs'
-import { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
 
 const {
   JWT_PRIVATE_KEY_PATH,
