@@ -93,6 +93,8 @@ services:
       - node_modules_client:/usr/src/renti/node_modules
     ports:
       - '3000:3000'
+    environment:
+      WATCHPACK_POLLING: true
     depends_on:
       db:
         condition: service_healthy
