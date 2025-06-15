@@ -1,10 +1,10 @@
-import { useState, MouseEvent, Dispatch, SetStateAction } from 'react'
+import { Check } from '@mui/icons-material'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import { Fab, ListItemIcon, ListItemText } from '@mui/material'
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { Fab, ListItemIcon, ListItemText } from '@mui/material'
-import { Check } from '@mui/icons-material'
+import { Dispatch, MouseEvent, SetStateAction, useState } from 'react'
 
 import { StatusState, readingStatus } from './BookCard'
 
@@ -25,7 +25,7 @@ export default function StatusMenu({ status, setStatus }: StatusMenuProps) {
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLElement>,
     index: number,
-    status: StatusState
+    status: StatusState,
   ) => {
     setSelectedIndex(index)
     setStatus(status)
