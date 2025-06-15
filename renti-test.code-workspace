@@ -13,7 +13,6 @@
     }
   ],
   "settings": {
-    "jest.disabledWorkspaceFolders": ["renti-test"],
-    "prettier.singleQuote": true
+    "jest.disabledWorkspaceFolders": ["renti-test"]
   }
 }
